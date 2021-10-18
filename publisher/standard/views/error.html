@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Error</title>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
+    <link rel="shortcut icon" href="/images/favicon.png" />
+</head>
+<body>
+<h1>UID2 Publisher Standard Integration Example</h1>
+<p>Something went wrong:</p>
+<pre><%= error %></pre>
+<p>Response from the UID2 operator:</p>
+<pre><%= JSON.stringify(error.response.data) %></pre>
+<p>HTTP error:</p>
+<pre><%= error.response.status + ' ' + error.response.statusText %></pre>
+<p><a href="/">Go back to main page</a></p>
+</body>
+</html>
