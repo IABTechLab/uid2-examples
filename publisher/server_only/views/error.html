@@ -1,0 +1,9 @@
+<%- include('header.html'); -%>
+<p>Something went wrong:</p>
+<pre><%= error %></pre>
+<p>Response from the UID2 operator:</p>
+<pre><%= error.response ? JSON.stringify(error.response.data) : '' %></pre>
+<p>HTTP error:</p>
+<pre><%= error.response ? (error.response.status + ' ' + error.response.statusText) : '' %></pre>
+<p><a href="/">Go back to main page</a></p>
+<%- include('footer.html'); -%>
