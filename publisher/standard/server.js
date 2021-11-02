@@ -1,14 +1,14 @@
 const axios = require('axios');
 const ejs = require('ejs');
-const express = require('express')
+const express = require('express');
 
-const app = express()
-const port = 3000
+const app = express();
+const port = 3000;
 
 const uid2BaseUrl = process.env.UID2_BASE_URL;
 const uid2ApiKey = process.env.UID2_API_KEY;
 
-app.use(express.static('public'))
+app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 
 app.engine('.html', ejs.__express);
@@ -21,15 +21,15 @@ app.post('/login', (req, res) => {
   axios.get(uid2BaseUrl + '/v1/token/generate?email=' + encodeURIComponent(req.body.email), { headers: { 'Authorization': 'Bearer ' + uid2ApiKey } })
     .then((response) => {
         if (response.data.status !== 'success') {
-            res.render('error', { error: 'Got unexpected token generate status: ' + response.data.status });
+            res.render('error', { error: 'Got unexpected token generate status: ' + response.data.status, response: response });
         } else if (typeof response.data.body !== 'object') {
-            res.render('error', { error: 'Unexpected token generate response format: ' + response.data });
+            res.render('error', { error: 'Unexpected token generate response format: ' + response.data, response: response });
         } else {
             res.render('login', { identity: response.data.body, uid2BaseUrl: uid2BaseUrl });
         }
     })
     .catch((error) => {
-        res.render('error', { error: error });
+        res.render('error', { error: error, response: error.response });
     });
 });
 app.post('/logout', (req, res) => {
@@ -37,5 +37,5 @@ app.post('/logout', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
+  console.log(`Example app listening at http://localhost:${port}`);
+});

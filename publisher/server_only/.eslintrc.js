@@ -22,6 +22,9 @@ module.exports = {
         "error",
         "unix"
       ],
+      "semi": [
+        "error"
+      ],
       "constructor-super": [
         "error"
       ],
