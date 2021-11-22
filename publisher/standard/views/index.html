@@ -12,6 +12,7 @@
         let callbackCounter = 0;
 
         function updateGuiElements(state) {
+          $("#targeted_advertising_ready").html(__uid2.getAdvertisingToken() ? "yes" : "no");
           $("#advertising_token").html(__uid2.getAdvertisingToken());
           $("#login_required").html(__uid2.isLoginRequired() ? "yes" : "no");
           $("#update_counter").html(callbackCounter);
@@ -31,6 +32,11 @@
           updateGuiElements(state);
         }
 
+        $("#logout").click(() => {
+          __uid2.disconnect();
+          updateGuiElements(undefined);
+        });
+
         updateGuiElements(undefined);
 
         __uid2.init({
@@ -43,6 +49,7 @@
   <body>
     <h1>UID2 Publisher Standard Integration Example</h1>
     <table id="uid2_state">
+      <tr><td class="label">Ready for targeted advertising:</td><td class="value"><pre id="targeted_advertising_ready"></pre></td></tr>
       <tr><td class="label">UID2 Advertising Token:</td><td class="value"><pre id="advertising_token"></pre></td></tr>
       <tr><td class="label">Is UID2 login required?</td><td class="value"><pre id="login_required"></pre></td></tr>
       <tr><td class="label">UID2 Identity Updated Counter:</td><td class="value"><pre id="update_counter"></pre></td></tr>
@@ -52,8 +59,8 @@
       <div class="email_prompt"><input type="text" id="email" name="email" placeholder="Enter an email address" style="border-style: none;"></div>
       <div><input type="submit" value="Login" class="button"></div>
     </form></div>
-    <div id="logout_form" style="display:none" class="form"><form action="/logout" method="POST">
-      <input type="submit" value="Logout" class="button">
+    <div id="logout_form" style="display:none" class="form"><form>
+      <button type="button" class="button" id="logout">Logout</button>
     </form></div>
   </body>
 </html>

@@ -32,9 +32,6 @@ app.post('/login', (req, res) => {
         res.render('error', { error: error, response: error.response });
     });
 });
-app.post('/logout', (req, res) => {
-  res.render('logout', { uid2BaseUrl: uid2BaseUrl });
-});
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
