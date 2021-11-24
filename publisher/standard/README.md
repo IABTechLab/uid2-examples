@@ -3,7 +3,7 @@
 This example demonstrates how a content publisher can use the UID2 services and the [Client-Side Identity JavaScript SDK](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/sdks/client-side-identity-v1.md), also known as the UID2 SDK, to implement the [standard UID2 publisher integration workflow](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/guides/publisher-client-side.md).
 
 >NOTE: While the server side of the example application is implemented in JavaScript using node.js, it is not
-a requirement. You can use any technology of your choice and refer to the example application for the functionality that needs to be implemented.
+a requirement. You can use any technology of your choice and refer to the example application for illustration of the functionality that needs to be implemented.
 
 ## Build the Example Application
 
