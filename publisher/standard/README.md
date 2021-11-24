@@ -1,15 +1,13 @@
 # UID2 Publisher Integration Example (Standard)
 
-This example demonstrates how a content publisher can work with UID2 services and UID2 JavaScript SDK
-to implement the standard UID2 publisher integration workflow (XREF).
+This example demonstrates how a content publisher can use the UID2 services and the [Client-Side Identity JavaScript SDK](../uid2docs/blob/main/api/v1/sdks/client-side-identity-v1.md), also known as the UID2 SDK, to implement the [standard UID2 publisher integration workflow](../uid2docs/blob/main/api/v1/guides/publisher-client-side.md).
 
-While the server side of the example application is implemented in JavaScript using node.js, it is not
-a requirement. The server side can be implemented using any technology of your choice, and you can use
-the example application as a reference of the functionality that needs to be implemented.
+>NOTE: While the server side of the example application is implemented in JavaScript using node.js, it is not
+a requirement. You can use any technology of your choice and refer to the example application for the functionality that needs to be implemented.
 
-## Building and Running the Example
+## Build the Example Application
 
-The easiest way to trying the example is to rely on docker:
+The easiest way to try the example is to use the following docker build command:
 
 ```
 docker build . -t uid2-publisher-standard
@@ -19,14 +17,16 @@ docker run -it --rm -p 3000:3000 \
     uid2-publisher-standard
 ```
 
-The following parameters must be specified in form of environment variables to start the application:
+The following table lists the environment variables that you must specify to start the application.
 
-| Setting | Description |
-| :--- | :--- |
-| `UID2_BASE_URL` | Base URL of the UID2 services. For example, production uid2 services are available on `https://prod.uidapi.com` |
-| `UID2_API_KEY` | Your UID2 authentication key for the UID2 service above. |
+| Parameter | Data Type | Description |
+| :--- | :--- | :--- |
+| `UID2_BASE_URL` | string | The base URL of the UID2 service. For example:</br>Testing environment: `https://integ.uidapi.com`<br/>Production environment: `https://prod.uidapi.com` |
+| `UID2_API_KEY` | string | Your UID2 authentication key for the UID2 service specified in `UID2_BASE_URL`. |
 
-Once the application starts up successfully, you should see output similar to below:
+## Run the Example Application
+
+After you see output similar to the following, the example application is up and running.
 
 ```
 > uid2-publisher@1.0.0 start /usr/src/app
@@ -34,10 +34,15 @@ Once the application starts up successfully, you should see output similar to be
 
 Example app listening at http://localhost:3000
 ```
+To use the example application, do the following:
 
-You should then be able to navigate to the application's main page in your browser: `http://localhost:3000`.
+1. In you browser, navigate to the application main page at `http://localhost:3000`. The example application interface appears.
+2. In the text field, at the bottom, enter the user email address you want to use for testing and click **Login**. TBD - should be Log in (2 words).</br>A confirmation message appears with the established UID2 identity information returned by the [GET /token/generate](../uid2docs/blob/main/api/v1/endpoints/get-token-generate.md) API call.
+3. Click the **Go back the main page** link.
+4. On the updated application page, note the newly populated **UID2 Advertising Token** value.
+5. Explore the application by inspecting the code, noting the number of auto-refresh counter updates. TBD
+6. To exit the application, click **Logout** (TBD - 2 words). Alternatively, terminate the docker container or use the `Ctrl+C` keyboard shortcut.
 
-You can quit the application by terminating the docker container or by hitting `Ctrl+C`.
 
 ## Key Points
 
