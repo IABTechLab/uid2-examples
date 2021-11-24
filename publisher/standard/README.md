@@ -1,6 +1,6 @@
 # UID2 Publisher Integration Example (Standard)
 
-This example demonstrates how a content publisher can use the UID2 services and the [Client-Side Identity JavaScript SDK](https://github.com/UnifiedID2//uid2docs/blob/main/api/v1/sdks/client-side-identity-v1.md), also known as the UID2 SDK, to implement the [standard UID2 publisher integration workflow](https://github.com/UnifiedID2//uid2docs/blob/main/api/v1/guides/publisher-client-side.md).
+This example demonstrates how a content publisher can use the UID2 services and the [Client-Side Identity JavaScript SDK](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/sdks/client-side-identity-v1.md), also known as the UID2 SDK, to implement the [standard UID2 publisher integration workflow](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/guides/publisher-client-side.md).
 
 >NOTE: While the server side of the example application is implemented in JavaScript using node.js, it is not
 a requirement. You can use any technology of your choice and refer to the example application for the functionality that needs to be implemented.
@@ -37,7 +37,7 @@ Example app listening at http://localhost:3000
 To use the example application, do the following:
 
 1. In you browser, navigate to the application main page at `http://localhost:3000`. The example application interface appears.
-2. In the text field, at the bottom, enter the user email address you want to use for testing and click **Login**. TBD - should be Log in (2 words).</br>A confirmation message appears with the established UID2 identity information returned by the [GET /token/generate](https://github.com/UnifiedID2//uid2docs/blob/main/api/v1/endpoints/get-token-generate.md) API call.
+2. In the text field, at the bottom, enter the user email address you want to use for testing and click **Login**. TBD - should be Log in (2 words).</br>A confirmation message appears with the established UID2 identity information returned by the [GET /token/generate](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/endpoints/get-token-generate.md) API call.
 3. Click the **Go back the main page** link.
 4. On the updated application page, note the newly populated **UID2 Advertising Token** value.
 5. Explore the application by inspecting the code, noting the number of auto-refresh counter updates. TBD
