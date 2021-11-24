@@ -57,7 +57,7 @@ async function verifyIdentity(req) {
   if (!isRefreshableIdentity(req.session.identity)) {
     return false;
   }
-  if (Date.now() >= identity.refresh_from || Date.now() >= identity.identity_expires) {
+  if (Date.now() >= req.session.identity.refresh_from || Date.now() >= req.session.identity.identity_expires) {
     req.session.identity = await refreshIdentity(req.session.identity);
     return !!req.session.identity;
   }
