@@ -1,14 +1,16 @@
-# UID2 Publisher Integration Example (Custom, Server-Only)
 
-This example demonstrates how a content publisher can use the UID2 services to implement the [custom UID2 publisher integration workflow](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/guides/custom-publisher-integration.md)
+# UID2 Publisher Integration Example (Custom, Server Only)
 
-For an example application using the [Client-Side Identity JavaScript SDK](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/sdks/client-side-identity-v1.md), see [UID2 Publisher Integration Example (Standard)](../standard/README.md).
+This example demonstrates how a content publisher can work with UID2 services to implement UID2 publisher
+custom integration workflow (XREF).
 
-NOTE: While the server side of the example application is implemented in JavaScript using node.js, it is not a requirement. You can use any technology of your choice and refer to the example application for illustration of the functionality that needs to be implemented.
+While the example application is implemented in JavaScript using node.js, it is not  a requirement.
+One can be implement a UID2-enabled application using any technology of their choice, and use this
+example as a reference of the functionality that needs to be considered.
 
-## Build and Run the Example Application
+## Building and Running the Example
 
-The easiest way to try the example is to use the following docker build command:
+The easiest way to trying the example is to rely on docker:
 
 ```
 docker build . -t uid2-publisher-server
@@ -19,15 +21,15 @@ docker run -it --rm -p 3000:3000 \
     uid2-publisher-server
 ```
 
-The following table lists the environment variables that you must specify to start the application.
+The following parameters must be specified in form of environment variables to start the application:
 
-| Parameter | Data Type | Description |
-| :--- | :--- | :--- |
-| `UID2_BASE_URL` | string | The base URL of the UID2 service. For example:</br>Testing environment: `https://integ.uidapi.com`<br/>Production environment: `https://prod.uidapi.com` |
-| `UID2_API_KEY` | string | Your UID2 authentication key for the UID2 service specified in `UID2_BASE_URL`. |
-| `SESSION_KEY` | string |  The key to the encryption session data stored in application's session cookie. |
+| Setting | Description |
+| :--- | :--- |
+| `UID2_BASE_URL` | Base URL of the UID2 services. For example, production uid2 services are available on `https://prod.uidapi.com` |
+| `UID2_API_KEY` | Your UID2 authentication key for the UID2 service above. |
+| `SESSION_KEY` | Key to encryption session data stored in application's session cookie. |
 
-After you see output similar to the following, the example application is up and running.
+Once the application starts up successfully, you should see output similar to below:
 
 ```
 > uid2-publisher@1.0.0 start /usr/src/app
@@ -35,16 +37,6 @@ After you see output similar to the following, the example application is up and
 
 Example app listening at http://localhost:3000
 ```
-
-## Test the Example Application
-
-The example application illustrates the steps documented in the [Publisher Integration Guide (Custom)](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/guides/custom-publisher-integration.md).
-
-TBD - need a demo.
-
-
-
-
 
 You should then be able to navigate to the application's main page in your browser: `http://localhost:3000`.
 
