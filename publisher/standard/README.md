@@ -1,4 +1,4 @@
-# UID2 Publisher Integration Example (Standard)
+# UID2 SDK Integration Example
 
 This example demonstrates how a content publisher can use the UID2 services and the [Client-Side Identity JavaScript SDK](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/sdks/client-side-identity-v1.md) (also known as the UID2 SDK) to implement the [standard UID2 publisher integration workflow](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/guides/publisher-client-side.md).
 
