@@ -1,8 +1,8 @@
-# Server-Only Integration Example
+# Server-Only UID2 Integration Example
 
 This example demonstrates how a content publisher can use the UID2 services to implement the [custom UID2 integration workflow](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/guides/custom-publisher-integration.md).
 
-For an example application using the [Client-Side Identity JavaScript SDK](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/sdks/client-side-identity-v1.md), see [UID2 Publisher Integration Example (Standard)](../standard/README.md).
+For an example application using the [Client-Side Identity JavaScript SDK](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/sdks/client-side-identity-v1.md), see [UID2 SDK Integration Example](../standard/README.md).
 
 >NOTE: While the server side of the example application is implemented in JavaScript using node.js, it is not a requirement. You can use any technology of your choice and refer to the example application for illustration of the functionality that needs to be implemented.
 
@@ -40,7 +40,7 @@ If needed, to close the application, terminate the docker container or use the `
 
 ## Test the Example Application
 
-The example application illustrates the steps documented in the [Publisher Integration Guide (Custom)](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/guides/custom-publisher-integration.md).
+The example application illustrates the steps documented in the [Server-Only UID2 Integration Guide](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/guides/custom-publisher-integration.md).
 
 The application provides three main pages: index (main), example content 1, and example content 2. Access to these pages is possible only after the user completes the login process. If the user is not logged in, they will be redirected to the login page.
 
