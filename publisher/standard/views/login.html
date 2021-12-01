@@ -19,11 +19,11 @@
     </script>
 </head>
 <body>
-<h1>UID2 Publisher Standard Integration Example</h1>
+<%- include('intro.html'); -%>
 <p class="message">Login completed</p>
 <p>UID2 identity:</p>
 <pre><%- JSON.stringify(identity, null, 2) %></pre>
-<p><a href="/">Go back to main page</a></p>
+<p><a href="/">Back to the main page</a></p>
 <p>Normally user would be redirected automatically, but this example demonstrates one way UID2 login could be handled.</p>
 </body>
 </html>

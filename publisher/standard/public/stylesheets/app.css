@@ -79,12 +79,16 @@ h1 {
   padding-bottom: 20px;
 }
 
+#uid2_state {
+  margin-top: 30px;
+}
 #uid2_state .label {
   white-space: nowrap;
   padding-right: 20px;
 }
 #uid2_state tr {
   margin-top: 10px;
+  font-size: 12px;
 }
 
 .message {
@@ -95,4 +99,8 @@ h1 {
   font-weight: 500;
   border: 2px solid green;
   border-radius: 5px;
+}
+
+.intro {
+  display: block;
 }

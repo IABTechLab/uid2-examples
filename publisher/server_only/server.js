@@ -44,7 +44,7 @@ async function refreshIdentity(identity) {
       return undefined;
     } else if (response.data.status !== 'success') {
       throw new Error('Got unexpected token refresh status: ' + response.data.status);
-    } else if (isRefreshableIdentity(response.data.body) || response.data.body.identity_expires <= Date.now()) {
+    } else if (!isRefreshableIdentity(response.data.body) || response.data.body.identity_expires <= Date.now()) {
       throw new Error('Invalid identity in token refresh response: ' + response.data);
     }
     return response.data.body;
