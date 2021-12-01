@@ -2,7 +2,7 @@
 
 This example demonstrates how a content publisher can use the UID2 services and the [Client-Side Identity JavaScript SDK](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/sdks/client-side-identity-v1.md) (also known as the UID2 SDK) to implement the [standard UID2 integration workflow](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/guides/publisher-client-side.md).
 
-For an example application without using the UID2 SDK, see [UID2 Publisher Integration Example (Custom, Server-Only)](../server_only/README.md).
+For an example application without using the UID2 SDK, see [Server-Only UID2 Integration Example](../server_only/README.md).
 
 >NOTE: While the server side of the example application is implemented in JavaScript using node.js, it is not
 a requirement. You can use any technology of your choice and refer to the example application for illustration of the functionality that needs to be implemented.
@@ -38,7 +38,7 @@ If needed, to close the application, terminate the docker container or use the `
 
 ## Test the Example Application
 
-The example application illustrates the steps documented in the [Publisher Integration Guide (Standard)](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/guides/publisher-client-side.md). For an overview of the high-level workflow for establishing UID2 identity, API reference, and explanation of the UID2 cookie format, see [Client-Side Identity JavaScript SDK](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/sdks/client-side-identity-v1.md).
+The example application illustrates the steps documented in the [UID2 SDK Integration Guide](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/guides/publisher-client-side.md). For an overview of the high-level workflow for establishing UID2 identity, API reference, and explanation of the UID2 cookie format, see [Client-Side Identity JavaScript SDK](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/sdks/client-side-identity-v1.md).
 
 The following table outlines and annotates the steps you may take to test and explore the example application.
 
