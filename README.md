@@ -1,6 +1,6 @@
 # UID2 Integration Examples
 
-If you are a content publisher interested in generating identity tokens utilizing UID2 for the RTB bid stream, while integrating directly with UID2 rather than UID2-enabled single-sign-on or identity providers, you can buid and run either of the two example applications to see how you can use the UID2 services and which integration fits your needs best.
+If you are a content publisher interested in generating identity tokens utilizing UID2 for the RTB bid stream, you can buid and run either of the two example applications to see how you can use the UID2 services and which integration fits your needs best.
 
 Both examples illustrate the basic steps that you need to consider for your integration. For example, you need to decide how to implement user login and logout, how to manage UID2 identity information and use it for targeted advertising, how to refresh tokens, deal with missing identities, and handle user opt-outs.
 
