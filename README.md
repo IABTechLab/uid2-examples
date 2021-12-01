@@ -11,7 +11,7 @@ The following table summarizes both examples.
 | [UID2 SDK]() | Publishers with web assets | Demonstrates how to use the UID2 services using the [Client-Side Identity JavaScript SDK](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/sdks/client-side-identity-v1.md) (also known as the UID2 SDK) to implement the standard UID2 integration workflow.  | [UID2 SDK Integration Guide](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/guides/publisher-client-side.md) |
 | [Server-Only]() | App developers and CTV broadcasters | Demonstrates how to use the UID2 services to implement a custom (server-only) UID2 integration workflow without relying on an SDK for establishing client UID2 identity and retrieving advertising tokens.  | [Server-Only UID2 Integration Guide](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/guides/custom-publisher-integration.md) |
 
-The documentation for each example includes instructions on how to build and run the application and provides the steps that you may take to test and explore it. Each step is annotated with comments that explain what takes place on the backend and how the UID2 services work.
+The documentation for each example includes instructions on how to build and run the application and suggests steps that you may take to test and explore it. Each step is annotated with comments that explain what takes place on the backend and how the UID2 services work.
 
 
 
