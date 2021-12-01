@@ -45,7 +45,7 @@ The example application illustrates the steps documented in the [Server-Only UID
 The application provides three main pages: index (main), example content 1, and example content 2. Access to these pages is possible only after the user completes the login process. If the user is not logged in, they will be redirected to the login page.
 
 Submitting the login form simulates logging in to a publisher's application in the real world. Normally the login
-would require checking user secure credentials (for example, a password), but for demonstration purposes this
+would require checking the user's secure credentials (for example, a password), but for demonstration purposes this
 step is omitted, and the login process focuses on integration with the UID2 services instead.
 
 The following table outlines and annotates the steps you may take to test and explore the example application.
