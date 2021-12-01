@@ -6,7 +6,7 @@ Both examples illustrate the basic steps that you need to consider for your inte
 
 The following table summarizes both examples. 
 
-| Documentation | Primary Audience | Example Description | Integration Steps |
+| Example Documentation | Primary Audience | Example Description | Integration Steps |
 | :--- | :--- | :--- | :--- |
 | [UID2 SDK Integration Example](./publisher/standard/README.md) | Publishers with web assets | Demonstrates how to use the UID2 services with the [Client-Side Identity JavaScript SDK](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/sdks/client-side-identity-v1.md) (also known as the UID2 SDK) to implement the standard UID2 integration workflow.  | [UID2 SDK Integration Guide](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/guides/publisher-client-side.md) |
 | [Server-Only UID2 Integration Example](./publisher/server_only/README.md) | App developers and CTV broadcasters | Demonstrates how to use the UID2 services to implement a custom (server-only) UID2 integration workflow without relying on an SDK for establishing client UID2 identity and retrieving advertising tokens.  | [Server-Only UID2 Integration Guide](https://github.com/UnifiedID2/uid2docs/blob/main/api/v1/guides/custom-publisher-integration.md) |
