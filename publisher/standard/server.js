@@ -26,7 +26,7 @@ const ejs = require('ejs');
 const express = require('express');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 const uid2BaseUrl = process.env.UID2_BASE_URL;
 const uid2ApiKey = process.env.UID2_API_KEY;
