@@ -1,4 +1,4 @@
-// Copyright (c) 2021 The Trade Desk, Inc
+// Copyright (c) 2022 The Trade Desk, Inc
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -20,18 +20,82 @@
 // CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
+"use strict";
 
 const axios = require('axios');
 const session = require('cookie-session');
 const ejs = require('ejs');
 const express = require('express');
 const nocache = require('nocache');
+const { subtle, getRandomValues } = require('crypto').webcrypto;
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 const uid2BaseUrl = process.env.UID2_BASE_URL;
 const uid2ApiKey = process.env.UID2_API_KEY;
+const uid2ClientSecret = process.env.UID2_CLIENT_SECRET;
+
+function bufferToBase64(arrayBuffer) {
+  return Buffer.from(arrayBuffer).toString('base64');
+}
+
+function base64ToBuffer(base64) {
+  return Buffer.from(base64, 'base64');
+}
+
+
+async function encryptRequest(message, base64Key) {
+  const cryptoKey = await importKey(base64Key);
+  const iv = getRandomValues(new Uint8Array(12));
+  const ciphertext = await subtle.encrypt( { name: "AES-GCM", iv: iv }, cryptoKey, message);
+
+  return { ciphertext: ciphertext, iv: iv };
+}
+
+async function decrypt(base64Response, base64Key, isRefreshResponse)  {
+  const responseBytes = base64ToBuffer(base64Response);
+  const key = await importKey(base64Key);
+  const ivLength = 12;
+  const iv = responseBytes.subarray(0, ivLength);
+
+  const decrypted = await subtle.decrypt({ "name":"AES-GCM", "iv":iv, tagLength: 128 }, key, responseBytes.subarray(ivLength));
+
+  let payload;
+  if (!isRefreshResponse) {
+    //The following code shows how we could consume timestamp and nonce, if needed.
+    //const timestamp = new DataView(decrypted.slice(0,8)).getBigInt64(0);
+    //const _date = new Date(Number(timestamp));
+    //const _nonce = decrypted.slice(8, 16);
+    payload = decrypted.slice(16);
+  } else {
+    payload = decrypted;
+  }
+
+  const responseString = String.fromCharCode.apply(String, new Uint8Array(payload));
+  return JSON.parse(responseString);
+}
+
+async function importKey(base64Key) {
+  const keyArrayBuffer = Buffer.from(base64Key, 'base64');
+  return await subtle.importKey("raw", keyArrayBuffer, { name: "AES-GCM" }, false, ["encrypt", "decrypt"]);
+}
+
+async function createEnvelope(payload) {
+  const millisec = BigInt(Date.now());
+  const bufferMillisec = new ArrayBuffer(8);
+  new DataView(bufferMillisec).setBigInt64(0, millisec);
+
+  const nonce = getRandomValues(new Uint8Array(8));
+  const payloadEncoded = new TextEncoder().encode(payload);
+  const body = Buffer.concat([Buffer.from(new Uint8Array(bufferMillisec)), nonce, payloadEncoded]);
+
+  const { ciphertext, iv } = await encryptRequest(body, uid2ClientSecret);
+
+  const envelopeVersion =  Buffer.alloc(1, 1);
+  return bufferToBase64(Buffer.concat([envelopeVersion, iv, Buffer.from( new Uint8Array(ciphertext))]));
+}
+
 
 app.use(session({
   keys: [ process.env.SESSION_KEY ],
@@ -53,24 +117,27 @@ function isRefreshableIdentity(identity){
   if (!identity.refresh_expires || Date.now() >= identity.refresh_expires) {
     return false;
   }
-  if (!identity.refresh_token) {
-    return false;
-  }
-  return true;
+  return identity.refresh_token;
 }
+
 async function refreshIdentity(identity) {
+  const headers = {
+    headers: { 'Authorization': 'Bearer ' + uid2ApiKey  }
+  };
+
   try {
-    const response = await axios.get(
-      uid2BaseUrl + '/v1/token/refresh?refresh_token=' + encodeURIComponent(identity.refresh_token),
-      { headers: { 'Authorization': 'Bearer ' + uid2ApiKey } });
-    if (response.data.status === 'optout') {
+    const encryptedResponse = await axios.post(uid2BaseUrl + '/v2/token/refresh', identity.refresh_token, headers);
+
+    const response = await decrypt(encryptedResponse.data, identity.refresh_response_key, true);
+
+    if (response.status === 'optout') {
       return undefined;
-    } else if (response.data.status !== 'success') {
-      throw new Error('Got unexpected token refresh status: ' + response.data.status);
-    } else if (!isRefreshableIdentity(response.data.body) || response.data.body.identity_expires <= Date.now()) {
-      throw new Error('Invalid identity in token refresh response: ' + response.data);
+    } else if (response.status !== 'success') {
+      throw new Error('Got unexpected token refresh status: ' + response.status);
+    } else if (!isRefreshableIdentity(response.body) || response.body.identity_expires <= Date.now()) {
+      throw new Error('Invalid identity in token refresh response: ' + response);
     }
-    return response.data.body;
+    return response.body;
   } catch (err) {
     console.error('Identity refresh failed: ' + err);
     return Date.now() >= identity.identity_expires ? undefined : identity;
@@ -80,13 +147,14 @@ async function verifyIdentity(req) {
   if (!isRefreshableIdentity(req.session.identity)) {
     return false;
   }
+
   if (Date.now() >= req.session.identity.refresh_from || Date.now() >= req.session.identity.identity_expires) {
     req.session.identity = await refreshIdentity(req.session.identity);
     return !!req.session.identity;
   }
   return !!req.session.identity;
 }
-async function protected(req, res, next){
+async function protect(req, res, next){
   if (await verifyIdentity(req)) {
     next();
   } else {
@@ -95,13 +163,13 @@ async function protected(req, res, next){
   }
 }
 
-app.get('/', protected, (req, res) => {
+app.get('/', protect, (req, res) => {
   res.render('index', { identity: req.session.identity });
 });
-app.get('/content1', protected, (req, res) => {
+app.get('/content1', protect, (req, res) => {
   res.render('content', { identity: req.session.identity, content: 'First Sample Content' });
 });
-app.get('/content2', protected, (req, res) => {
+app.get('/content2', protect, (req, res) => {
   res.render('content', { identity: req.session.identity, content: 'Second Sample Content' });
 });
 app.get('/login', async (req, res) => {
@@ -112,22 +180,34 @@ app.get('/login', async (req, res) => {
     res.render('login');
   }
 });
-app.post('/login', (req, res) => {
-  axios.get(uid2BaseUrl + '/v1/token/generate?email=' + encodeURIComponent(req.body.email), { headers: { 'Authorization': 'Bearer ' + uid2ApiKey } })
-    .then((response) => {
-      if (response.data.status !== 'success') {
-        res.render('error', { error: 'Got unexpected token generate status: ' + response.data.status, response: response });
-      } else if (typeof response.data.body !== 'object') {
-        res.render('error', { error: 'Unexpected token generate response format: ' + response.data, response: response });
-      } else {
-        req.session.identity = response.data.body;
-        res.redirect('/');
-      }
-    })
-    .catch((error) => {
-        res.render('error', { error: error, response: error.response });
-    });
+
+app.post('/login', async (req, res) => {
+
+  const jsonEmail = JSON.stringify({ 'email': req.body.email });
+  const envelope = await createEnvelope(jsonEmail);
+
+  const headers = {
+    headers: { 'Authorization': 'Bearer ' + uid2ApiKey  }
+  };
+
+  try {
+    const encryptedResponse = await axios.post(uid2BaseUrl + '/v2/token/generate', envelope, headers);
+    const response = await decrypt(encryptedResponse.data, uid2ClientSecret, false);
+
+    if (response.status !== 'success') {
+      res.render('error', { error: 'Got unexpected token generate status: ' + response.status, response: response });
+    } else if (typeof response.body !== 'object') {
+      res.render('error', { error: 'Unexpected token generate response format: ' + response, response: response });
+    } else {
+      req.session.identity = response.body;
+      res.redirect('/');
+    }
+  } catch (error) {
+    res.render('error', { error: error, response: error.response });
+  }
+
 });
+
 app.get('/logout', (req, res) => {
   req.session = null;
   res.redirect('/login');
