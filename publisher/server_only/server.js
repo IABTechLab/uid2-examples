@@ -53,7 +53,14 @@ async function encryptRequest(message, base64Key) {
   return { ciphertext: ciphertext, iv: iv };
 }
 
-async function decrypt(base64Response, base64Key, isRefreshResponse)  {
+function isEqual(array1, array2) {
+  for (let i = 0; i < array1.byteLength; i++) {
+    if (array1[i] !== array2[i]) return false;
+  }
+  return true;
+}
+
+async function decrypt(base64Response, base64Key, isRefreshResponse, nonceInRequest)  {
   const responseBytes = base64ToBuffer(base64Response);
   const key = await importKey(base64Key);
   const ivLength = 12;
@@ -63,10 +70,13 @@ async function decrypt(base64Response, base64Key, isRefreshResponse)  {
 
   let payload;
   if (!isRefreshResponse) {
-    //The following code shows how we could consume timestamp and nonce, if needed.
+    //The following code shows how we could consume timestamp if needed.
     //const timestamp = new DataView(decrypted.slice(0,8)).getBigInt64(0);
     //const _date = new Date(Number(timestamp));
-    //const _nonce = decrypted.slice(8, 16);
+    const nonceInResponse = decrypted.slice(8, 16);
+    if (!isEqual(nonceInRequest, new Uint8Array(nonceInResponse))) {
+      throw new Error('Nonce in request does not match nonce in response');
+    }
     payload = decrypted.slice(16);
   } else {
     payload = decrypted;
@@ -77,7 +87,7 @@ async function decrypt(base64Response, base64Key, isRefreshResponse)  {
 }
 
 async function importKey(base64Key) {
-  const keyArrayBuffer = Buffer.from(base64Key, 'base64');
+  const keyArrayBuffer = base64ToBuffer(base64Key);
   return await subtle.importKey("raw", keyArrayBuffer, { name: "AES-GCM" }, false, ["encrypt", "decrypt"]);
 }
 
@@ -93,7 +103,8 @@ async function createEnvelope(payload) {
   const { ciphertext, iv } = await encryptRequest(body, uid2ClientSecret);
 
   const envelopeVersion =  Buffer.alloc(1, 1);
-  return bufferToBase64(Buffer.concat([envelopeVersion, iv, Buffer.from( new Uint8Array(ciphertext))]));
+  const envelope = bufferToBase64(Buffer.concat([envelopeVersion, iv, Buffer.from( new Uint8Array(ciphertext))]));
+  return { envelope: envelope, nonce: nonce };
 }
 
 
@@ -184,20 +195,20 @@ app.get('/login', async (req, res) => {
 app.post('/login', async (req, res) => {
 
   const jsonEmail = JSON.stringify({ 'email': req.body.email });
-  const envelope = await createEnvelope(jsonEmail);
+  const { envelope, nonce } = await createEnvelope(jsonEmail);
 
   const headers = {
     headers: { 'Authorization': 'Bearer ' + uid2ApiKey  }
   };
 
   try {
-    const encryptedResponse = await axios.post(uid2BaseUrl + '/v2/token/generate', envelope, headers);
-    const response = await decrypt(encryptedResponse.data, uid2ClientSecret, false);
+    const encryptedResponse = await axios.post(uid2BaseUrl + '/v2/token/generate', envelope, headers); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
+    const response = await decrypt(encryptedResponse.data, uid2ClientSecret, false, nonce);
 
     if (response.status !== 'success') {
-      res.render('error', { error: 'Got unexpected token generate status: ' + response.status, response: response });
+      res.render('error', { error: 'Got unexpected token generate status in decrypted response: ' + response.status, response: response });
     } else if (typeof response.body !== 'object') {
-      res.render('error', { error: 'Unexpected token generate response format: ' + response, response: response });
+      res.render('error', { error: 'Unexpected token generate response format in decrypted response: ' + response, response: response });
     } else {
       req.session.identity = response.body;
       res.redirect('/');
