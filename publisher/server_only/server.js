@@ -128,7 +128,7 @@ function isRefreshableIdentity(identity){
   if (!identity.refresh_expires || Date.now() >= identity.refresh_expires) {
     return false;
   }
-  return identity.refresh_token;
+  return !!identity.refresh_token;
 }
 
 async function refreshIdentity(identity) {
@@ -137,9 +137,14 @@ async function refreshIdentity(identity) {
   };
 
   try {
-    const encryptedResponse = await axios.post(uid2BaseUrl + '/v2/token/refresh', identity.refresh_token, headers);
+    const encryptedResponse = await axios.post(uid2BaseUrl + '/v2/token/refresh', identity.refresh_token, headers); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
 
-    const response = await decrypt(encryptedResponse.data, identity.refresh_response_key, true);
+    let response;
+    if (identity.refresh_response_key) {
+      response = await decrypt(encryptedResponse.data, identity.refresh_response_key, true);
+    } else { //If refresh_response_key doesn't exist, assume refresh_token came from a v1/token/generate query. In that scenario, /v2/token/refresh will return an unencrypted response.
+      response = encryptedResponse.data;
+    }
 
     if (response.status === 'optout') {
       return undefined;
@@ -161,8 +166,8 @@ async function verifyIdentity(req) {
 
   if (Date.now() >= req.session.identity.refresh_from || Date.now() >= req.session.identity.identity_expires) {
     req.session.identity = await refreshIdentity(req.session.identity);
-    return !!req.session.identity;
   }
+
   return !!req.session.identity;
 }
 async function protect(req, res, next){
@@ -192,7 +197,27 @@ app.get('/login', async (req, res) => {
   }
 });
 
+
+function _GenerateTokenV1(req, res) {
+  axios.get(uid2BaseUrl + '/v1/token/generate?email=' + encodeURIComponent(req.body.email), { headers: { 'Authorization': 'Bearer ' + uid2ApiKey } })
+      .then((response) => {
+        if (response.data.status !== 'success') {
+          res.render('error', { error: 'Got unexpected token generate status: ' + response.data.status, response: response });
+        } else if (typeof response.data.body !== 'object') {
+          res.render('error', { error: 'Unexpected token generate response format: ' + response.data, response: response });
+        } else {
+          req.session.identity = response.data.body;
+          res.redirect('/');
+        }
+      })
+      .catch((error) => {
+        res.render('error', { error: error, response: error.response });
+      });
+}
+
 app.post('/login', async (req, res) => {
+  //Uncomment the following line to test that stored V1 sessions will still work when we upgrade to /v2/token/refresh.
+  //_GenerateTokenV1(req, res); return;
 
   const jsonEmail = JSON.stringify({ 'email': req.body.email });
   const { envelope, nonce } = await createEnvelope(jsonEmail);
