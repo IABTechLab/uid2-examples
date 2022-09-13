@@ -27,7 +27,7 @@ const session = require('cookie-session');
 const ejs = require('ejs');
 const express = require('express');
 const nocache = require('nocache');
-const { subtle, getRandomValues } = require('crypto').webcrypto;
+const crypto = require('crypto');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -35,6 +35,12 @@ const port = process.env.PORT || 3000;
 const uid2BaseUrl = process.env.UID2_BASE_URL;
 const uid2ApiKey = process.env.UID2_API_KEY;
 const uid2ClientSecret = process.env.UID2_CLIENT_SECRET;
+
+const ivLength = 12;
+const nonceLength = 8;
+const timestampLength = 8;
+const encryptionAlgo = 'aes-256-gcm';
+
 
 function bufferToBase64(arrayBuffer) {
   return Buffer.from(arrayBuffer).toString('base64');
@@ -45,10 +51,10 @@ function base64ToBuffer(base64) {
 }
 
 
-async function encryptRequest(message, base64Key) {
-  const cryptoKey = await importKey(base64Key);
-  const iv = getRandomValues(new Uint8Array(12));
-  const ciphertext = await subtle.encrypt( { name: "AES-GCM", iv: iv }, cryptoKey, message);
+function encryptRequest(message, base64Key) {
+  const iv = crypto.randomBytes(ivLength);
+  const cipher = crypto.createCipheriv(encryptionAlgo, base64ToBuffer(base64Key), iv);
+  const ciphertext = Buffer.concat([cipher.update(message), cipher.final(), cipher.getAuthTag()]);
 
   return { ciphertext: ciphertext, iv: iv };
 }
@@ -60,24 +66,28 @@ function isEqual(array1, array2) {
   return true;
 }
 
-async function decrypt(base64Response, base64Key, isRefreshResponse, nonceInRequest)  {
+function decrypt(base64Response, base64Key, isRefreshResponse, nonceInRequest)  {
   const responseBytes = base64ToBuffer(base64Response);
-  const key = await importKey(base64Key);
-  const ivLength = 12;
   const iv = responseBytes.subarray(0, ivLength);
 
-  const decrypted = await subtle.decrypt({ "name":"AES-GCM", "iv":iv, tagLength: 128 }, key, responseBytes.subarray(ivLength));
+  const decipher = crypto.createDecipheriv(encryptionAlgo, base64ToBuffer(base64Key), iv);
+
+  const tagLength = 16;
+  const tag = responseBytes.subarray(responseBytes.length - tagLength);
+  decipher.setAuthTag(tag);
+
+  const decrypted = Buffer.concat([decipher.update(responseBytes.subarray(ivLength, responseBytes.length - tagLength)), decipher.final()]);
 
   let payload;
   if (!isRefreshResponse) {
     //The following code shows how we could consume timestamp if needed.
-    //const timestamp = new DataView(decrypted.slice(0,8)).getBigInt64(0);
+    //const timestamp = new DataView(decrypted.subarray(0, timestampLength)).getBigInt64(0);
     //const _date = new Date(Number(timestamp));
-    const nonceInResponse = decrypted.slice(8, 16);
+    const nonceInResponse = decrypted.subarray(timestampLength, timestampLength + nonceLength);
     if (!isEqual(nonceInRequest, new Uint8Array(nonceInResponse))) {
       throw new Error('Nonce in request does not match nonce in response');
     }
-    payload = decrypted.slice(16);
+    payload = decrypted.subarray(timestampLength + nonceLength);
   } else {
     payload = decrypted;
   }
@@ -86,21 +96,16 @@ async function decrypt(base64Response, base64Key, isRefreshResponse, nonceInRequ
   return JSON.parse(responseString);
 }
 
-async function importKey(base64Key) {
-  const keyArrayBuffer = base64ToBuffer(base64Key);
-  return await subtle.importKey("raw", keyArrayBuffer, { name: "AES-GCM" }, false, ["encrypt", "decrypt"]);
-}
-
-async function createEnvelope(payload) {
+function createEnvelope(payload) {
   const millisec = BigInt(Date.now());
-  const bufferMillisec = new ArrayBuffer(8);
+  const bufferMillisec = new ArrayBuffer(timestampLength);
   new DataView(bufferMillisec).setBigInt64(0, millisec);
 
-  const nonce = getRandomValues(new Uint8Array(8));
+  const nonce = crypto.randomBytes(nonceLength);
   const payloadEncoded = new TextEncoder().encode(payload);
   const body = Buffer.concat([Buffer.from(new Uint8Array(bufferMillisec)), nonce, payloadEncoded]);
 
-  const { ciphertext, iv } = await encryptRequest(body, uid2ClientSecret);
+  const { ciphertext, iv } = encryptRequest(body, uid2ClientSecret);
 
   const envelopeVersion =  Buffer.alloc(1, 1);
   const envelope = bufferToBase64(Buffer.concat([envelopeVersion, iv, Buffer.from( new Uint8Array(ciphertext))]));
@@ -141,7 +146,7 @@ async function refreshIdentity(identity) {
 
     let response;
     if (identity.refresh_response_key) {
-      response = await decrypt(encryptedResponse.data, identity.refresh_response_key, true);
+      response = decrypt(encryptedResponse.data, identity.refresh_response_key, true);
     } else { //If refresh_response_key doesn't exist, assume refresh_token came from a v1/token/generate query. In that scenario, /v2/token/refresh will return an unencrypted response.
       response = encryptedResponse.data;
     }
@@ -216,11 +221,11 @@ function _GenerateTokenV1(req, res) {
 }
 
 app.post('/login', async (req, res) => {
-  //Uncomment the following line to test that stored V1 sessions will still work when we upgrade to /v2/token/refresh.
+  //Uncomment the following line to test that stored v1 sessions will still work when we upgrade to /v2/token/refresh.
   //_GenerateTokenV1(req, res); return;
 
   const jsonEmail = JSON.stringify({ 'email': req.body.email });
-  const { envelope, nonce } = await createEnvelope(jsonEmail);
+  const { envelope, nonce } = createEnvelope(jsonEmail);
 
   const headers = {
     headers: { 'Authorization': 'Bearer ' + uid2ApiKey  }
@@ -228,7 +233,7 @@ app.post('/login', async (req, res) => {
 
   try {
     const encryptedResponse = await axios.post(uid2BaseUrl + '/v2/token/generate', envelope, headers); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
-    const response = await decrypt(encryptedResponse.data, uid2ClientSecret, false, nonce);
+    const response = decrypt(encryptedResponse.data, uid2ClientSecret, false, nonce);
 
     if (response.status !== 'success') {
       res.render('error', { error: 'Got unexpected token generate status in decrypted response: ' + response.status, response: response });
