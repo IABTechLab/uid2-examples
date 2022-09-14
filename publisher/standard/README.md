@@ -22,11 +22,11 @@ docker run -it --rm -p 3000:3000 \
 
 The following table lists the environment variables that you must specify to start the application.
 
-| Parameter            | Data Type | Description                                                                                                                                              |
-|:---------------------|:----------|:---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Parameter            | Data Type | Description                                                                                                                                                                                               |
+|:---------------------|:----------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `UID2_BASE_URL`      | string    | The base URL of the UID2 service. For example:</br>Testing environment: `https://operator-integ.uidapi.com`<br/>See [environments](https://github.com/UnifiedID2/uid2docs/tree/main/api/v2#environments). |
-| `UID2_API_KEY`       | string    | Your UID2 authentication key for the UID2 service specified in `UID2_BASE_URL`.                                                                          |
-| `UID2_CLIENT_SECRET` | string    | Your UID2 client secret for the UID2 service specified in `UID2_BASE_URL`.                                                                               |
+| `UID2_API_KEY`       | string    | Your UID2 authentication key for the UID2 service specified in `UID2_BASE_URL`.                                                                                                                           |
+| `UID2_CLIENT_SECRET` | string    | Your UID2 client secret for the UID2 service specified in `UID2_BASE_URL`.                                                                                                                                |
 
 After you see output similar to the following, the example application is up and running.
 
