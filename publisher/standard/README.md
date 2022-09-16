@@ -1,6 +1,6 @@
 # UID2 SDK Integration Example
 
-[This example](https://example-jssdk-integ.uidapi.com/) demonstrates how a content publisher can use the UID2 services and the [Client-Side Identity JavaScript SDK](https://github.com/UnifiedID2/uid2docs/blob/main/api/v2/sdks/client-side-identity.md) (also known as the UID2 SDK) to implement the [standard UID2 integration workflow](https://github.com/UnifiedID2/uid2docs/blob/main/api/v2/guides/publisher-client-side.md).
+[This example](https://example-jssdk-integ.uidapi.com/) demonstrates how a content publisher can use the [UID2 services](https://github.com/UnifiedID2/uid2docs/tree/main) and the [Client-Side Identity JavaScript SDK](https://github.com/UnifiedID2/uid2docs/blob/main/api/v2/sdks/client-side-identity.md) (also known as the UID2 SDK) to implement the [standard UID2 integration workflow](https://github.com/UnifiedID2/uid2docs/blob/main/api/v2/guides/publisher-client-side.md).
 
 For an example application without using the UID2 SDK, see [Server-Only UID2 Integration Example](../server_only/README.md).
 
