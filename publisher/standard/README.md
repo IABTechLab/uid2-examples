@@ -15,8 +15,8 @@ The easiest way to try the example is to use the following docker build command:
 docker build . -t uid2-publisher-standard
 docker run -it --rm -p 3000:3000 \
     -e UID2_BASE_URL="https://operator-integ.uidapi.com" \
-    -e UID2_API_KEY="<your-integ-API-key>" \
-    -e UID2_CLIENT_SECRET="<your-client-secret>" \
+    -e UID2_API_KEY="{INTEG_API_KEY}" \
+    -e UID2_CLIENT_SECRET="{CLIENT_SECRET}" \
     uid2-publisher-standard
 ```
 
@@ -24,7 +24,7 @@ The following table lists the environment variables that you must specify to sta
 
 | Parameter            | Data Type | Description                                                                                                                                                                                               |
 |:---------------------|:----------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `UID2_BASE_URL`      | string    | The base URL of the UID2 service. For example:</br>Testing environment: `https://operator-integ.uidapi.com`<br/>See [environments](https://github.com/UnifiedID2/uid2docs/tree/main/api/v2#environments). |
+| `UID2_BASE_URL`      | string    | The base URL of the UID2 service. For example:</br>Testing environment: `https://operator-integ.uidapi.com`<br/>For other environments, see [Environments](https://github.com/UnifiedID2/uid2docs/tree/main/api/v2#environments). |
 | `UID2_API_KEY`       | string    | Your UID2 authentication key for the UID2 service specified in `UID2_BASE_URL`.                                                                                                                           |
 | `UID2_CLIENT_SECRET` | string    | Your UID2 client secret for the UID2 service specified in `UID2_BASE_URL`.                                                                                                                                |
 
