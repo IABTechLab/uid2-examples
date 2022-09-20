@@ -29,3 +29,13 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            JAR_VERSION=${{ steps.package.outputs.jar_version }}
+            IMAGE_VERSION=${{ steps.package.outputs.jar_version }}-${{ steps.package.outputs.git_commit }}
