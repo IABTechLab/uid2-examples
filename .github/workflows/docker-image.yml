@@ -2,10 +2,9 @@ name: Docker Image CI
 
 on:
   workflow_dispatch:
-  push:
-#   branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+#  push:
+# uncomment the above line to test this action on every push
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
