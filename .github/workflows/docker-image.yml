@@ -32,6 +32,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=sha,prefix=server_only-,format=short
+            type=raw,prefix=server_only-,value=latest
       - name: Build and push Docker server_only image
         uses: docker/build-push-action@v2
         with:
@@ -60,6 +61,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=sha,prefix=standard-,format=short
+            type=raw,prefix=standard-,value=latest
       - name: Build and push Docker standard image
         uses: docker/build-push-action@v2
         with:
