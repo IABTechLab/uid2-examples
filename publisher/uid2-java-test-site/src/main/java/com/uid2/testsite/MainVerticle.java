@@ -63,28 +63,32 @@ public class MainVerticle extends AbstractVerticle {
 
   private void generateToken(RoutingContext ctx, String email)
   {
-    Envelope envelope = publisherUid2Helper.createEnvelope(IdentityInput.fromEmail(email));
+    try {
+      Envelope envelope = publisherUid2Helper.createEnvelope(IdentityInput.fromEmail(email));
 
-    webClient
-      .postAbs(UID2_BASE_URL + "/v2/token/generate")
-      .putHeader("Authorization", "Bearer " + UID2_API_KEY)
-      .sendBuffer(Buffer.buffer(envelope.getEnvelope()))
-      .onSuccess(response -> {
-        if (response.statusCode() != 200) {
-          renderError(response, "HTTP status code is not 200", ctx);
-          return;
-        }
+      webClient
+        .postAbs(UID2_BASE_URL + "/v2/token/generate")
+        .putHeader("Authorization", "Bearer " + UID2_API_KEY)
+        .sendBuffer(Buffer.buffer(envelope.getEnvelope()))
+        .onSuccess(response -> {
+          if (response.statusCode() != 200) {
+            renderError(response, "HTTP status code is not 200", ctx);
+            return;
+          }
 
-        try {
-          IdentityTokens identity = publisherUid2Helper.createIdentityfromTokenGenerateResponse(response.bodyAsString(), envelope.getNonce());
+          try {
+            IdentityTokens identity = publisherUid2Helper.createIdentityfromTokenGenerateResponse(response.bodyAsString(), envelope.getNonce());
 
-          setIdentity(ctx, identity.getJsonString());
-          ctx.redirect("/");
-        } catch (RuntimeException e) {
-          renderError(null, e.getMessage(), ctx);
-        }
-      })
-      .onFailure(err -> renderError(null, err.getMessage(), ctx));
+            setIdentity(ctx, identity.getJsonString());
+            ctx.redirect("/");
+          } catch (RuntimeException e) {
+            renderError(null, e.getMessage(), ctx);
+          }
+        })
+        .onFailure(err -> renderError(null, err.getMessage(), ctx));
+    } catch (RuntimeException e) {
+      renderError(null, e.getMessage(), ctx);
+    }
   }
 
   private IdentityTokens getIdentity(RoutingContext ctx) {
