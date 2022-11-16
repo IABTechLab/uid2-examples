@@ -1,3 +1,15 @@
+target*
+target/*
+.idea*
+.idea/*
+.idea/
+dependencies/
+conf/*.json
+uid2-operator.iml
+build/**
+.DS_Store
+*/node_modules/*
+
 ### Vert.x ###
 .vertx/
 

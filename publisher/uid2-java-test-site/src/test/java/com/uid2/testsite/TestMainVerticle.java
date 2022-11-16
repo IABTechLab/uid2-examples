@@ -1,4 +1,4 @@
-package com.uid2.uid2_java_test_site;
+package com.uid2.testsite;
 
 import io.vertx.core.Vertx;
 import io.vertx.junit5.VertxExtension;
