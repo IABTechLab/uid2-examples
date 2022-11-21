@@ -61,10 +61,10 @@ public class MainVerticle extends AbstractVerticle {
 
   private WebClient webClient;
 
-  private void generateToken(RoutingContext ctx, String email)
+  private void generateToken(RoutingContext ctx, String email, String redirect)
   {
     try {
-      Envelope envelope = publisherUid2Helper.createEnvelope(IdentityInput.fromEmail(email));
+      EnvelopeV2 envelope = publisherUid2Helper.createEnvelopeForTokenGenerateRequest(TokenGenerateInput.fromEmail(email));
 
       webClient
         .postAbs(UID2_BASE_URL + "/v2/token/generate")
@@ -77,10 +77,10 @@ public class MainVerticle extends AbstractVerticle {
           }
 
           try {
-            IdentityTokens identity = publisherUid2Helper.createIdentityfromTokenGenerateResponse(response.bodyAsString(), envelope.getNonce());
+            IdentityTokens identity = publisherUid2Helper.createIdentityfromTokenGenerateResponse(response.bodyAsString(), envelope);
 
             setIdentity(ctx, identity.getJsonString());
-            ctx.redirect("/");
+            ctx.redirect(redirect);
           } catch (RuntimeException e) {
             renderError(null, e.getMessage(), ctx);
           }
@@ -185,7 +185,7 @@ public class MainVerticle extends AbstractVerticle {
 
   private TemplateEngine engine;
 
-  private Router createRoutesSetup() {
+  private Router createRoutesSetupForServerOnlyIntegration() {
     engine = FreeMarkerTemplateEngine.create(vertx);
     final Router router = Router.router(vertx);
 
@@ -203,7 +203,7 @@ public class MainVerticle extends AbstractVerticle {
     );
 
     router.post("/login").handler(ctx ->
-      generateToken(ctx, ctx.request().getFormAttribute("email"))
+      generateToken(ctx, ctx.request().getFormAttribute("email"), "/")
     );
 
     router.get("/logout").handler(ctx -> {
@@ -233,14 +233,34 @@ public class MainVerticle extends AbstractVerticle {
     return router;
   }
 
+  private Router createRoutesSetupForStandardIntegration() {
+    Router standardIntegration = Router.router(vertx);
 
-    @Override
+    standardIntegration.get("/").handler(ctx ->
+      render(ctx, "templates-standard-integration/index.ftl", new JsonObject().put("uid2BaseUrl", UID2_BASE_URL)));
+
+    standardIntegration.post("/login").handler(ctx ->
+      generateToken(ctx, ctx.request().getFormAttribute("email"), "/standard/login"));
+
+    standardIntegration.get("/login").handler(ctx ->
+      render(ctx, "templates-standard-integration/login.ftl", getIdentityForTemplate(ctx).put("uid2BaseUrl", UID2_BASE_URL)));
+
+    return standardIntegration;
+  }
+
+  @Override
   public void start(Promise<Void> startPromise) {
     webClient = WebClient.create(vertx);
 
-    Router router = createRoutesSetup();
+    Router serverOnlyRouter = createRoutesSetupForServerOnlyIntegration();
+    Router standardIntegrationRouter = createRoutesSetupForStandardIntegration();
 
-    vertx.createHttpServer().requestHandler(router).listen(GetPort())
+    Router parentRouter = Router.router(vertx);
+    parentRouter.route("/*").subRouter(serverOnlyRouter);
+    parentRouter.route("/standard/*").subRouter(standardIntegrationRouter);
+
+
+    vertx.createHttpServer().requestHandler(parentRouter).listen(GetPort())
       .onSuccess(server -> System.out.println("HTTP server started on http://localhost:" + server.actualPort()))
       .onFailure(failure -> System.out.println("Error: " + failure.getMessage()));
   }
