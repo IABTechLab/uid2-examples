@@ -33,9 +33,9 @@ public class MainVerticle extends AbstractVerticle {
   }
 
 
-  private final String UID2_BASE_URL = System.getenv("UID2_BASE_URL");
-  private final String UID2_API_KEY = System.getenv("UID2_API_KEY");
-  private final String UID2_SECRET_KEY = System.getenv("UID2_SECRET_KEY");
+  private static final String UID2_BASE_URL = System.getenv("UID2_BASE_URL");
+  private static final String UID2_API_KEY = System.getenv("UID2_API_KEY");
+  private static final String UID2_SECRET_KEY = System.getenv("UID2_SECRET_KEY");
   private final PublisherUid2Helper publisherUid2Helper = new PublisherUid2Helper(UID2_SECRET_KEY);
 
 
@@ -61,8 +61,7 @@ public class MainVerticle extends AbstractVerticle {
 
   private WebClient webClient;
 
-  private void generateToken(RoutingContext ctx, String email, String redirect)
-  {
+  private void generateToken(RoutingContext ctx, String email, String redirect) {
     try {
       EnvelopeV2 envelope = publisherUid2Helper.createEnvelopeForTokenGenerateRequest(TokenGenerateInput.fromEmail(email));
 
