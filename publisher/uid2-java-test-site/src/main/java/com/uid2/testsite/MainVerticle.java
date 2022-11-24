@@ -114,8 +114,8 @@ public class MainVerticle extends AbstractVerticle {
     }
 
     try {
-      IdentityTokens refreshedIdentity = PublisherUid2Helper.createIdentityFromTokenRefreshResponse(encryptedResponse.bodyAsString(), identity); //returns null if user has opted out
-      setIdentity(ctx, refreshedIdentity == null ? null : refreshedIdentity.getJsonString());
+      TokenRefreshResponse tokenRefreshResponse = PublisherUid2Helper.createTokenRefreshResponse(encryptedResponse.bodyAsString(), identity);
+      setIdentity(ctx, tokenRefreshResponse.getIdentityJsonString());
     } catch (RuntimeException e) {
       renderError(null, e.getMessage(), ctx);
     }
