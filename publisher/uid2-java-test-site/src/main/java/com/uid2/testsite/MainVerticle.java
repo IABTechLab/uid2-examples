@@ -36,7 +36,8 @@ public class MainVerticle extends AbstractVerticle {
   private static final String UID2_BASE_URL = System.getenv("UID2_BASE_URL");
   private static final String UID2_API_KEY = System.getenv("UID2_API_KEY");
   private static final String UID2_SECRET_KEY = System.getenv("UID2_SECRET_KEY");
-  private final PublisherUid2Helper publisherUid2Helper = new PublisherUid2Helper(UID2_SECRET_KEY);
+  private final PublisherUid2Helper publisherUid2Helper = new PublisherUid2Helper(UID2_SECRET_KEY); //for advanced usage (Do your own HTTP)
+  private final PublisherUid2Client publisherUid2Client = new PublisherUid2Client(UID2_BASE_URL, UID2_API_KEY, UID2_SECRET_KEY); //for basic usage (SDK does HTTP)
 
 
   private int GetPort() {
@@ -61,13 +62,26 @@ public class MainVerticle extends AbstractVerticle {
 
   private WebClient webClient;
 
-  private void generateToken(RoutingContext ctx, String email, String redirect) {
+  private void generateTokenBasicUsage(RoutingContext ctx, String email) {
+    try {
+      IdentityTokens identity = publisherUid2Client.generateToken(TokenGenerateInput.fromEmail(email));
+
+      setIdentity(ctx, identity.getJsonString());
+      ctx.redirect("/basic/");
+    } catch (RuntimeException e) {
+      renderError(null, e.getMessage(), ctx);
+    }
+  }
+
+
+  private void generateTokenAdvancedUsage(RoutingContext ctx, String email, String redirect) {
     try {
       EnvelopeV2 envelope = publisherUid2Helper.createEnvelopeForTokenGenerateRequest(TokenGenerateInput.fromEmail(email));
 
       webClient
         .postAbs(UID2_BASE_URL + "/v2/token/generate")
         .putHeader("Authorization", "Bearer " + UID2_API_KEY)
+        .putHeader("X-UID2-Client-Version", PublisherUid2Helper.getVersionHttpHeader())
         .sendBuffer(Buffer.buffer(envelope.getEnvelope()))
         .onSuccess(response -> {
           if (response.statusCode() != 200) {
@@ -121,33 +135,50 @@ public class MainVerticle extends AbstractVerticle {
     }
   }
 
-  private Future<Void> refreshIdentity(RoutingContext ctx) {
+  private Future<Void> refreshIdentity(RoutingContext ctx, boolean basicUsage) {
     Promise<Void> promise = Promise.promise();
 
     final IdentityTokens identity = getIdentity(ctx);
-    String refreshToken = identity.getRefreshToken();
 
-    webClient
-      .postAbs(UID2_BASE_URL + "/v2/token/refresh")
-      .putHeader("Authorization", "Bearer " + UID2_API_KEY)
-      .sendBuffer(Buffer.buffer(refreshToken))
-      .onSuccess(encryptedResponse -> {
-        processRefreshIdentityResponse(encryptedResponse, ctx, identity);
-        if (getIdentity(ctx) == null)
+    if (basicUsage) {
+      try {
+        TokenRefreshResponse tokenRefreshResponse = publisherUid2Client.refreshToken(identity);
+        String identityJsonString = tokenRefreshResponse.getIdentityJsonString();
+        setIdentity(ctx, identityJsonString);
+
+        if (identityJsonString == null)
           promise.fail("no identity"); //eg opt out
         else
           promise.complete();
-      })
-      .onFailure(err -> {
-        renderError(null, err.getMessage(), ctx);
-        promise.fail("something went wrong" + err.getMessage());
-      });
+      } catch (RuntimeException e) {
+        renderError(null, e.getMessage(), ctx);
+      }
+    } else { //advanced usage
+      String refreshToken = identity.getRefreshToken();
+
+      webClient
+        .postAbs(UID2_BASE_URL + "/v2/token/refresh")
+        .putHeader("Authorization", "Bearer " + UID2_API_KEY)
+        .putHeader("X-UID2-Client-Version", PublisherUid2Helper.getVersionHttpHeader())
+        .sendBuffer(Buffer.buffer(refreshToken))
+        .onSuccess(encryptedResponse -> {
+          processRefreshIdentityResponse(encryptedResponse, ctx, identity);
+          if (getIdentity(ctx) == null)
+            promise.fail("no identity"); //eg opt out
+          else
+            promise.complete();
+        })
+        .onFailure(err -> {
+          renderError(null, err.getMessage(), ctx);
+          promise.fail("something went wrong" + err.getMessage());
+        });
+    }
 
     return promise.future();
   }
 
 
-  private Future<Void> verifyIdentity(RoutingContext ctx) {
+  private Future<Void> verifyIdentity(RoutingContext ctx, boolean basicUsage) {
     Promise<Void> promise = Promise.promise();
 
     IdentityTokens identity = getIdentity(ctx);
@@ -157,7 +188,7 @@ public class MainVerticle extends AbstractVerticle {
     }
 
     if (identity.isDueForRefresh()) {
-      return refreshIdentity(ctx);
+      return refreshIdentity(ctx, basicUsage);
     }
 
     if (getIdentity(ctx) != null)
@@ -168,24 +199,25 @@ public class MainVerticle extends AbstractVerticle {
     return promise.future();
   }
 
-  void protect(RoutingContext ctx) {
-    verifyIdentity(ctx)
+  void protect(RoutingContext ctx, boolean basicUsage) {
+    final String redirect = basicUsage ? "/basic/login" : "/login";
+
+    verifyIdentity(ctx, basicUsage)
       .onSuccess(v ->  ctx.next())
       .onFailure(err -> {
         setIdentity(ctx, null);
-        ctx.redirect("/login");
+        ctx.redirect(redirect);
       });
   }
 
-  private JsonObject getIdentityForTemplate(RoutingContext ctx) {
+  private JsonObject getIdentityForTemplate(RoutingContext ctx, String prefix) {
     IdentityTokens identity = getIdentity(ctx);
-    return new JsonObject().put("identity", new JsonObject(identity.getJsonString()).encodePrettily());
+    return new JsonObject().put("prefix", prefix).put("identity", new JsonObject(identity.getJsonString()).encodePrettily());
   }
 
   private TemplateEngine engine;
 
-  private Router createRoutesSetupForServerOnlyIntegration() {
-    engine = FreeMarkerTemplateEngine.create(vertx);
+  private Router createRoutesSetupForAdvancedUsageServerOnly() {
     final Router router = Router.router(vertx);
 
     router.route().handler(BodyHandler.create());
@@ -193,16 +225,16 @@ public class MainVerticle extends AbstractVerticle {
     router.route().handler(StaticHandler.create("webroot"));
 
     router.get("/login").handler(ctx ->
-      verifyIdentity(ctx)
+      verifyIdentity(ctx, false)
         .onSuccess(v -> ctx.redirect("/"))
         .onFailure(v -> {
           setIdentity(ctx, null);
-          render(ctx, "templates/login.ftl", new JsonObject());
+          render(ctx, "templates/login.ftl", new JsonObject().put("redirect", "/login"));
         })
     );
 
     router.post("/login").handler(ctx ->
-      generateToken(ctx, ctx.request().getFormAttribute("email"), "/")
+      generateTokenAdvancedUsage(ctx, ctx.request().getFormAttribute("email"), "/")
     );
 
     router.get("/logout").handler(ctx -> {
@@ -210,54 +242,102 @@ public class MainVerticle extends AbstractVerticle {
       ctx.redirect("/login");
     });
 
-    router.get("/").handler(this::protect);
-    router.get("/content1").handler(this::protect);
-    router.get("/content2").handler(this::protect);
+    router.get("/").handler(ctx -> protect(ctx, false));
+    router.get("/content1").handler(ctx -> protect(ctx, false));
+    router.get("/content2").handler(ctx -> protect(ctx, false));
 
     router.get("/").handler(ctx -> {
-      JsonObject jsonObject = getIdentityForTemplate(ctx);
+      JsonObject jsonObject = getIdentityForTemplate(ctx, "");
       render(ctx, "templates/index.ftl", jsonObject);
     });
 
     router.get("/content1").handler(ctx -> {
-      JsonObject jsonObject = getIdentityForTemplate(ctx).put("content", "First Sample Content");
+      JsonObject jsonObject = getIdentityForTemplate(ctx, "").put("content", "First Sample Content");
       render(ctx, "templates/content.ftl", jsonObject);
     });
 
     router.get("/content2").handler(ctx -> {
-      JsonObject jsonObject = getIdentityForTemplate(ctx).put("content", "Second Sample Content");
+      JsonObject jsonObject = getIdentityForTemplate(ctx, "").put("content", "Second Sample Content");
       render(ctx, "templates/content.ftl", jsonObject);
     });
 
     return router;
   }
 
-  private Router createRoutesSetupForStandardIntegration() {
+  private Router createRoutesSetupForAdvancedUsageStandardIntegration() {
     Router standardIntegration = Router.router(vertx);
 
     standardIntegration.get("/").handler(ctx ->
       render(ctx, "templates-standard-integration/index.ftl", new JsonObject().put("uid2BaseUrl", UID2_BASE_URL)));
 
     standardIntegration.post("/login").handler(ctx ->
-      generateToken(ctx, ctx.request().getFormAttribute("email"), "/standard/login"));
+      generateTokenAdvancedUsage(ctx, ctx.request().getFormAttribute("email"), "/standard/login"));
 
     standardIntegration.get("/login").handler(ctx ->
-      render(ctx, "templates-standard-integration/login.ftl", getIdentityForTemplate(ctx).put("uid2BaseUrl", UID2_BASE_URL)));
+      render(ctx, "templates-standard-integration/login.ftl", getIdentityForTemplate(ctx, "/standard").put("uid2BaseUrl", UID2_BASE_URL)));
 
     return standardIntegration;
+  }
+
+  private Router createRouteSetupForBasicUsageServerOnly() {
+    final Router router = Router.router(vertx);
+
+    router.route().handler(BodyHandler.create());
+    router.route().handler(SessionHandler.create(CookieSessionStore.create(vertx, "my-secret")));
+    router.route().handler(StaticHandler.create("webroot"));
+
+    router.get("/login").handler(ctx ->
+      verifyIdentity(ctx, true)
+        .onSuccess(v -> ctx.redirect("/"))
+        .onFailure(v -> {
+          setIdentity(ctx, null);
+          render(ctx, "templates/login.ftl", new JsonObject().put("redirect", "/basic/login"));
+        })
+    );
+
+    router.post("/login").handler(ctx -> generateTokenBasicUsage(ctx, ctx.request().getFormAttribute("email")));
+
+    router.get("/logout").handler(ctx -> {
+      setIdentity(ctx, null);
+      ctx.redirect("/basic/login");
+    });
+
+    router.get("/").handler(ctx -> protect(ctx, true));
+    router.get("/content1").handler(ctx -> protect(ctx, true));
+    router.get("/content2").handler(ctx -> protect(ctx, true));
+
+    router.get("/").handler(ctx -> {
+      JsonObject jsonObject = getIdentityForTemplate(ctx, "/basic");
+      render(ctx, "templates/index.ftl", jsonObject);
+    });
+
+    router.get("/content1").handler(ctx -> {
+      JsonObject jsonObject = getIdentityForTemplate(ctx, "/basic").put("content", "First Sample Content");
+      render(ctx, "templates/content.ftl", jsonObject);
+    });
+
+    router.get("/content2").handler(ctx -> {
+      JsonObject jsonObject = getIdentityForTemplate(ctx, "/basic").put("content", "Second Sample Content");
+      render(ctx, "templates/content.ftl", jsonObject);
+    });
+
+    return router;
+
   }
 
   @Override
   public void start(Promise<Void> startPromise) {
     webClient = WebClient.create(vertx);
+    engine = FreeMarkerTemplateEngine.create(vertx);
 
-    Router serverOnlyRouter = createRoutesSetupForServerOnlyIntegration();
-    Router standardIntegrationRouter = createRoutesSetupForStandardIntegration();
+    Router serverOnlyRouter = createRoutesSetupForAdvancedUsageServerOnly();
+    Router standardIntegrationRouter = createRoutesSetupForAdvancedUsageStandardIntegration();
+    Router serverOnlyWithBasicUsage = createRouteSetupForBasicUsageServerOnly();
 
     Router parentRouter = Router.router(vertx);
     parentRouter.route("/*").subRouter(serverOnlyRouter);
     parentRouter.route("/standard/*").subRouter(standardIntegrationRouter);
-
+    parentRouter.route("/basic/*").subRouter(serverOnlyWithBasicUsage);
 
     vertx.createHttpServer().requestHandler(parentRouter).listen(GetPort())
       .onSuccess(server -> System.out.println("HTTP server started on http://localhost:" + server.actualPort()))

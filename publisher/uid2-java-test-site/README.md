@@ -1,6 +1,6 @@
 # Java UID2 Integration Example
 
-This example demonstrates how a content publisher can use the [UID2 services](https://github.com/UnifiedID2/uid2docs/tree/main) to implement the [custom UID2 integration workflow](https://github.com/UnifiedID2/uid2docs/blob/main/api/v2/guides/custom-publisher-integration.md).
+This example demonstrates how a content publisher can use the [UID2 Java SDK](https://github.com/IABTechLab/uid2-client-java) to implement [UID2 Publisher integrations](https://github.com/UnifiedID2/uid2docs/blob/main/api/v2/guides/README.md).
 
 
 >NOTE: While the server side of this example application is implemented in Java using Vert.x, it is not a requirement. You can use any technology of your choice and refer to the example application for illustration of the functionality that needs to be implemented.

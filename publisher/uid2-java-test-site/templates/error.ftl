@@ -5,5 +5,5 @@
 <pre>${response}</pre>
 <p>HTTP error:</p>
 <pre>${responseStatus}</pre>
-<p><a href="/">Back to the main page</a></p>
+<p><a href="${prefix}/">Back to the main page</a></p>
 <#include "footer.html">
