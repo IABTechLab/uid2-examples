@@ -36,6 +36,8 @@ public class MainVerticle extends AbstractVerticle {
   private static final String UID2_BASE_URL = System.getenv("UID2_BASE_URL");
   private static final String UID2_API_KEY = System.getenv("UID2_API_KEY");
   private static final String UID2_SECRET_KEY = System.getenv("UID2_SECRET_KEY");
+  private static final String PREFIX_STANDARD = "/standard";
+  private static final String PREFIX_BASIC = "/basic";
   private final PublisherUid2Helper publisherUid2Helper = new PublisherUid2Helper(UID2_SECRET_KEY); //for advanced usage (Do your own HTTP)
   private final PublisherUid2Client publisherUid2Client = new PublisherUid2Client(UID2_BASE_URL, UID2_API_KEY, UID2_SECRET_KEY); //for basic usage (SDK does HTTP)
 
@@ -49,12 +51,12 @@ public class MainVerticle extends AbstractVerticle {
     }
   }
 
-  private void renderError(HttpResponse<Buffer> response, String errorMessage, RoutingContext ctx) {
+  private void renderError(HttpResponse<Buffer> response, String errorMessage, RoutingContext ctx, String prefix) {
     JsonObject json = new JsonObject().put("error", errorMessage);
     if (response != null) {
-      json.put("responseStatus", response.statusCode()).put("response", response.bodyAsString());
+      json.put("prefix", prefix).put("responseStatus", response.statusCode()).put("response", response.bodyAsString());
     } else {
-      json.put("responseStatus", "<null>").put("response", "<null>");
+      json.put("prefix", prefix).put("responseStatus", "<null>").put("response", "<null>");
     }
 
     render(ctx, "templates/error.ftl", json);
@@ -67,14 +69,14 @@ public class MainVerticle extends AbstractVerticle {
       IdentityTokens identity = publisherUid2Client.generateToken(TokenGenerateInput.fromEmail(email));
 
       setIdentity(ctx, identity.getJsonString());
-      ctx.redirect("/basic/");
+      ctx.redirect(PREFIX_BASIC + "/");
     } catch (RuntimeException e) {
-      renderError(null, e.getMessage(), ctx);
+      renderError(null, e.getMessage(), ctx, PREFIX_BASIC);
     }
   }
 
 
-  private void generateTokenAdvancedUsage(RoutingContext ctx, String email, String redirect) {
+  private void generateTokenAdvancedUsage(RoutingContext ctx, String email, String redirect, String prefix) {
     try {
       EnvelopeV2 envelope = publisherUid2Helper.createEnvelopeForTokenGenerateRequest(TokenGenerateInput.fromEmail(email));
 
@@ -85,7 +87,7 @@ public class MainVerticle extends AbstractVerticle {
         .sendBuffer(Buffer.buffer(envelope.getEnvelope()))
         .onSuccess(response -> {
           if (response.statusCode() != 200) {
-            renderError(response, "HTTP status code is not 200", ctx);
+            renderError(response, "HTTP status code is not 200", ctx, "");
             return;
           }
 
@@ -95,12 +97,12 @@ public class MainVerticle extends AbstractVerticle {
             setIdentity(ctx, identity.getJsonString());
             ctx.redirect(redirect);
           } catch (RuntimeException e) {
-            renderError(null, e.getMessage(), ctx);
+            renderError(null, e.getMessage(), ctx, "");
           }
         })
-        .onFailure(err -> renderError(null, err.getMessage(), ctx));
+        .onFailure(err -> renderError(null, err.getMessage(), ctx, prefix));
     } catch (RuntimeException e) {
-      renderError(null, e.getMessage(), ctx);
+      renderError(null, e.getMessage(), ctx, prefix);
     }
   }
 
@@ -121,9 +123,9 @@ public class MainVerticle extends AbstractVerticle {
   }
 
 
-  private void processRefreshIdentityResponse(HttpResponse<Buffer> encryptedResponse, RoutingContext ctx, IdentityTokens identity) {
+  private void processRefreshIdentityResponse(HttpResponse<Buffer> encryptedResponse, RoutingContext ctx, IdentityTokens identity, String prefix) {
     if (encryptedResponse.statusCode() != 200) {
-        renderError(encryptedResponse, "HTTP status code is not 200", ctx);
+        renderError(encryptedResponse, "HTTP status code is not 200", ctx, prefix);
         return;
     }
 
@@ -131,7 +133,7 @@ public class MainVerticle extends AbstractVerticle {
       TokenRefreshResponse tokenRefreshResponse = PublisherUid2Helper.createTokenRefreshResponse(encryptedResponse.bodyAsString(), identity);
       setIdentity(ctx, tokenRefreshResponse.getIdentityJsonString());
     } catch (RuntimeException e) {
-      renderError(null, e.getMessage(), ctx);
+      renderError(null, e.getMessage(), ctx, prefix);
     }
   }
 
@@ -139,6 +141,7 @@ public class MainVerticle extends AbstractVerticle {
     Promise<Void> promise = Promise.promise();
 
     final IdentityTokens identity = getIdentity(ctx);
+    final String prefix = basicUsage ? PREFIX_BASIC : "";
 
     if (basicUsage) {
       try {
@@ -151,7 +154,7 @@ public class MainVerticle extends AbstractVerticle {
         else
           promise.complete();
       } catch (RuntimeException e) {
-        renderError(null, e.getMessage(), ctx);
+        renderError(null, e.getMessage(), ctx, prefix);
       }
     } else { //advanced usage
       String refreshToken = identity.getRefreshToken();
@@ -162,14 +165,14 @@ public class MainVerticle extends AbstractVerticle {
         .putHeader("X-UID2-Client-Version", PublisherUid2Helper.getVersionHttpHeader())
         .sendBuffer(Buffer.buffer(refreshToken))
         .onSuccess(encryptedResponse -> {
-          processRefreshIdentityResponse(encryptedResponse, ctx, identity);
+          processRefreshIdentityResponse(encryptedResponse, ctx, identity, prefix);
           if (getIdentity(ctx) == null)
             promise.fail("no identity"); //eg opt out
           else
             promise.complete();
         })
         .onFailure(err -> {
-          renderError(null, err.getMessage(), ctx);
+          renderError(null, err.getMessage(), ctx, prefix);
           promise.fail("something went wrong" + err.getMessage());
         });
     }
@@ -200,7 +203,7 @@ public class MainVerticle extends AbstractVerticle {
   }
 
   void protect(RoutingContext ctx, boolean basicUsage) {
-    final String redirect = basicUsage ? "/basic/login" : "/login";
+    final String redirect = basicUsage ? PREFIX_BASIC + "/login" : "/login";
 
     verifyIdentity(ctx, basicUsage)
       .onSuccess(v ->  ctx.next())
@@ -234,7 +237,7 @@ public class MainVerticle extends AbstractVerticle {
     );
 
     router.post("/login").handler(ctx ->
-      generateTokenAdvancedUsage(ctx, ctx.request().getFormAttribute("email"), "/")
+      generateTokenAdvancedUsage(ctx, ctx.request().getFormAttribute("email"), "/", "")
     );
 
     router.get("/logout").handler(ctx -> {
@@ -264,17 +267,17 @@ public class MainVerticle extends AbstractVerticle {
     return router;
   }
 
-  private Router createRoutesSetupForAdvancedUsageStandardIntegration() {
+    private Router createRoutesSetupForAdvancedUsageStandardIntegration() {
     Router standardIntegration = Router.router(vertx);
 
     standardIntegration.get("/").handler(ctx ->
       render(ctx, "templates-standard-integration/index.ftl", new JsonObject().put("uid2BaseUrl", UID2_BASE_URL)));
 
     standardIntegration.post("/login").handler(ctx ->
-      generateTokenAdvancedUsage(ctx, ctx.request().getFormAttribute("email"), "/standard/login"));
+      generateTokenAdvancedUsage(ctx, ctx.request().getFormAttribute("email"), PREFIX_STANDARD + "/login", PREFIX_STANDARD));
 
     standardIntegration.get("/login").handler(ctx ->
-      render(ctx, "templates-standard-integration/login.ftl", getIdentityForTemplate(ctx, "/standard").put("uid2BaseUrl", UID2_BASE_URL)));
+      render(ctx, "templates-standard-integration/login.ftl", getIdentityForTemplate(ctx, PREFIX_STANDARD).put("uid2BaseUrl", UID2_BASE_URL)));
 
     return standardIntegration;
   }
@@ -291,7 +294,7 @@ public class MainVerticle extends AbstractVerticle {
         .onSuccess(v -> ctx.redirect("/"))
         .onFailure(v -> {
           setIdentity(ctx, null);
-          render(ctx, "templates/login.ftl", new JsonObject().put("redirect", "/basic/login"));
+          render(ctx, "templates/login.ftl", new JsonObject().put("redirect", PREFIX_BASIC + "/login"));
         })
     );
 
@@ -299,7 +302,7 @@ public class MainVerticle extends AbstractVerticle {
 
     router.get("/logout").handler(ctx -> {
       setIdentity(ctx, null);
-      ctx.redirect("/basic/login");
+      ctx.redirect(PREFIX_BASIC + "/login");
     });
 
     router.get("/").handler(ctx -> protect(ctx, true));
@@ -307,17 +310,17 @@ public class MainVerticle extends AbstractVerticle {
     router.get("/content2").handler(ctx -> protect(ctx, true));
 
     router.get("/").handler(ctx -> {
-      JsonObject jsonObject = getIdentityForTemplate(ctx, "/basic");
+      JsonObject jsonObject = getIdentityForTemplate(ctx, PREFIX_BASIC);
       render(ctx, "templates/index.ftl", jsonObject);
     });
 
     router.get("/content1").handler(ctx -> {
-      JsonObject jsonObject = getIdentityForTemplate(ctx, "/basic").put("content", "First Sample Content");
+      JsonObject jsonObject = getIdentityForTemplate(ctx, PREFIX_BASIC).put("content", "First Sample Content");
       render(ctx, "templates/content.ftl", jsonObject);
     });
 
     router.get("/content2").handler(ctx -> {
-      JsonObject jsonObject = getIdentityForTemplate(ctx, "/basic").put("content", "Second Sample Content");
+      JsonObject jsonObject = getIdentityForTemplate(ctx, PREFIX_BASIC).put("content", "Second Sample Content");
       render(ctx, "templates/content.ftl", jsonObject);
     });
 
@@ -336,8 +339,8 @@ public class MainVerticle extends AbstractVerticle {
 
     Router parentRouter = Router.router(vertx);
     parentRouter.route("/*").subRouter(serverOnlyRouter);
-    parentRouter.route("/standard/*").subRouter(standardIntegrationRouter);
-    parentRouter.route("/basic/*").subRouter(serverOnlyWithBasicUsage);
+    parentRouter.route(PREFIX_STANDARD + "/*").subRouter(standardIntegrationRouter);
+    parentRouter.route(PREFIX_BASIC +"/*").subRouter(serverOnlyWithBasicUsage);
 
     vertx.createHttpServer().requestHandler(parentRouter).listen(GetPort())
       .onSuccess(server -> System.out.println("HTTP server started on http://localhost:" + server.actualPort()))
