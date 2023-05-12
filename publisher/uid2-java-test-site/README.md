@@ -31,7 +31,7 @@ HTTP server started on http://localhost:3000
 
 ## Test the Example Application
 
-The example application illustrates the steps documented in the [Server-Only UID2 Integration Guide](https://github.com/UnifiedID2/uid2docs/blob/main/api/v2/guides/custom-publisher-integration.md).
+The example application illustrates the steps documented in the [Server-Only UID2 Integration Guide](https://unifiedid.com/docs/guides/custom-publisher-integration).
 
 The application provides three main pages: index (main), example content 1, and example content 2. Access to these pages is possible only after the user completes the login process. If the user is not logged in, they will be redirected to the login page.
 
