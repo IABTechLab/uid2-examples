@@ -1,6 +1,6 @@
 # UID2 SDK Integration Example
 
-[This example](https://example-jssdk-integ.uidapi.com/) demonstrates how a content publisher can use the [UID2 services](https://github.com/UnifiedID2/uid2docs/tree/main) and the [Client-Side Identity JavaScript SDK](https://github.com/UnifiedID2/uid2docs/blob/main/api/v2/sdks/client-side-identity.md) (also known as the UID2 SDK) to implement the [standard UID2 integration workflow](https://github.com/UnifiedID2/uid2docs/blob/main/api/v2/guides/publisher-client-side.md).
+[This example](https://example-jssdk-integ.uidapi.com/) demonstrates how a content publisher can use the [UID2 services](https://github.com/UnifiedID2/uid2docs/tree/main) and the [Client-Side Identity JavaScript SDK](https://github.com/UnifiedID2/uid2docs/blob/main/api/v2/sdks/client-side-identity.md) (also known as the UID2 SDK) to implement the [standard UID2 integration workflow](https://unifiedid.com/docs/guides/publisher-client-side).
 
 For an example application without using the UID2 SDK, see [Server-Only UID2 Integration Example](../server_only/README.md).
 
@@ -40,7 +40,7 @@ If needed, to close the application, terminate the docker container or use the `
 
 ## Test the Example Application
 
-The example application illustrates the steps documented in the [UID2 SDK Integration Guide](https://github.com/UnifiedID2/uid2docs/blob/main/api/v2/guides/publisher-client-side.md). For an overview of the high-level workflow for establishing UID2 identity, API reference, and explanation of the UID2 cookie format, see [Client-Side Identity JavaScript SDK](https://github.com/UnifiedID2/uid2docs/blob/main/api/v2/sdks/client-side-identity.md).
+The example application illustrates the steps documented in the [UID2 SDK Integration Guide](https://unifiedid.com/docs/guides/publisher-client-side). For an overview of the high-level workflow for establishing UID2 identity, API reference, and explanation of the UID2 cookie format, see [Client-Side Identity JavaScript SDK](https://github.com/UnifiedID2/uid2docs/blob/main/api/v2/sdks/client-side-identity.md).
 
 The following table outlines and annotates the steps you may take to test and explore the example application.
 
