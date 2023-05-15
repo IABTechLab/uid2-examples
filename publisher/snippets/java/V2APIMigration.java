@@ -26,7 +26,7 @@ public class V2APIMigration {
     }
 
     public static void ExampleTokenGeneration(String apiKey, String secretKey) throws Exception {
-        // documentation: https://unifiedid.com/docs/endpoints/post-token-generat
+        // documentation: https://unifiedid.com/docs/endpoints/post-token-generate
         String rawData = "{\"email\": \"username@example.com\"}";
         V2Request request = makeV2Request(Instant.now(), rawData.getBytes(StandardCharsets.UTF_8), Base64.getDecoder().decode(secretKey));
         final URL endpoint = new URL("https://operator-integ.uidapi.com/v2/token/generate");

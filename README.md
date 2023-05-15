@@ -2,7 +2,7 @@
 
 The [UID2 framework](https://unifiedid.com/docs/intro) enables publishers to integrate in either of the following ways:
 
-- Via the standard integration workflow, using the [Client-Side Identity JavaScript SDK](https://unifiedid.com/docs/sdks/client-side-identity) (also known as the UID2 SDK).
+- Via the standard integration workflow, using the [Client-Side JavaScript SDK](https://unifiedid.com/docs/sdks/client-side-identity) (also known as the UID2 SDK).
 - Via the server-only (custom) integration workflow, by building a direct integration without using the UID2 SDK.
 
 If you are a content publisher interested in generating UID2 tokens for the real-time bidding (RTB) bid stream and want to see how you can use the UID2 services and which integration fits your needs best, you can build and run an example application for each integration.
