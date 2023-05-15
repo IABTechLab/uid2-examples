@@ -26,7 +26,7 @@ public class V2APIMigration {
     }
 
     public static void ExampleTokenGeneration(String apiKey, String secretKey) throws Exception {
-        // documentation: https://github.com/UnifiedID2/uid2docs/blob/main/api/v2/endpoints/post-token-generate.md
+        // documentation: https://unifiedid.com/docs/endpoints/post-token-generat
         String rawData = "{\"email\": \"username@example.com\"}";
         V2Request request = makeV2Request(Instant.now(), rawData.getBytes(StandardCharsets.UTF_8), Base64.getDecoder().decode(secretKey));
         final URL endpoint = new URL("https://operator-integ.uidapi.com/v2/token/generate");
@@ -34,7 +34,7 @@ public class V2APIMigration {
     }
 
     public static void ExampleIdentityMap(String apiKey, String secretKey) throws Exception {
-        // documentation: https://github.com/UnifiedID2/uid2docs/blob/main/api/v2/endpoints/post-identity-map.md
+        // documentation: https://unifiedid.com/docs/endpoints/post-identity-map
         String rawData = "{\"email\": [\"username1@example.com\", \"username2@example.com\", \"username3@example.com\"]}";
         V2Request request = makeV2Request(Instant.now(), rawData.getBytes(StandardCharsets.UTF_8), Base64.getDecoder().decode(secretKey));
         final URL endpoint = new URL("https://operator-integ.uidapi.com/v2/identity/map");
