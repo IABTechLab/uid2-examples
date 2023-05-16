@@ -2,7 +2,7 @@
 
 [This example](https://example-srvonly-integ.uidapi.com/) demonstrates how a content publisher can use the [UID2 services](https://unifiedid.com/docs/intro) to implement the [custom UID2 integration workflow](https://unifiedid.com/docs/guides/custom-publisher-integration).
 
-For an example application using the [Client-Side JavaScript SDK](https://unifiedid.com/docs/sdks/client-side-identity), see [UID2 SDK Integration Example](../standard/README.md).
+For an example application using the [UID2 SDK for Javascript](https://unifiedid.com/docs/sdks/client-side-identity), see [UID2 SDK Integration Example](../standard/README.md).
 
 >NOTE: While the server side of the example application is implemented in JavaScript using node.js, it is not a requirement. You can use any technology of your choice and refer to the example application for illustration of the functionality that needs to be implemented.
 
