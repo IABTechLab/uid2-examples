@@ -1,6 +1,6 @@
 # UID2 SDK Integration Example
 
-[This example](https://example-jssdk-integ.uidapi.com/) demonstrates how a content publisher can use the [UID2 services](https://unifiedid.com/docs/intro) and the [UID2 SDK for Javascript](https://unifiedid.com/docs/sdks/client-side-identity) to implement the [standard UID2 integration workflow](https://unifiedid.com/docs/guides/publisher-client-side).
+[This example](https://example-jssdk-integ.uidapi.com/) demonstrates how a content publisher can use the [UID2 services](https://unifiedid.com/docs/intro) and the [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/client-side-identity) to implement the [standard UID2 integration workflow](https://unifiedid.com/docs/guides/publisher-client-side).
 
 For an example application without using the UID2 SDK, see [Server-Only UID2 Integration Example](../server_only/README.md).
 
@@ -40,7 +40,7 @@ If needed, to close the application, terminate the docker container or use the `
 
 ## Test the Example Application
 
-The example application illustrates the steps documented in the [UID2 SDK Integration Guide](https://unifiedid.com/docs/guides/publisher-client-side). For an overview of the high-level workflow for establishing UID2 identity, API reference, and explanation of the UID2 cookie format, see [UID2 SDK for Javascript](https://unifiedid.com/docs/sdks/client-side-identity).
+The example application illustrates the steps documented in the [UID2 SDK Integration Guide](https://unifiedid.com/docs/guides/publisher-client-side). For an overview of the high-level workflow for establishing UID2 identity, API reference, and explanation of the UID2 cookie format, see [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/client-side-identity).
 
 The following table outlines and annotates the steps you may take to test and explore the example application.
 
