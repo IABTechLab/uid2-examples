@@ -66,9 +66,11 @@ public class MainVerticle extends AbstractVerticle {
 
   private void generateTokenBasicUsage(RoutingContext ctx, String email) {
     try {
-      IdentityTokens identity = publisherUid2Client.generateToken(TokenGenerateInput.fromEmail(email));
+      TokenGenerateResponse tokenGenerateResponse = publisherUid2Client.generateTokenResponse(TokenGenerateInput.fromEmail(email).doNotGenerateTokensForOptedOut()); //UID2
+      // EUID's input would look like this:
+      // TokenGenerateInput.fromEmail(email).withTransparencyAndConsentString("CPhJRpMPhJRpMABAMBFRACBoALAAAEJAAIYgAKwAQAKgArABAAqAAA").doNotGenerateTokensForOptedOut();
 
-      setIdentity(ctx, identity.getJsonString());
+      setIdentity(ctx, tokenGenerateResponse.getIdentityJsonString());
       ctx.redirect(PREFIX_BASIC + "/");
     } catch (RuntimeException e) {
       renderError(null, e.getMessage(), ctx, PREFIX_BASIC);
@@ -78,7 +80,9 @@ public class MainVerticle extends AbstractVerticle {
 
   private void generateTokenAdvancedUsage(RoutingContext ctx, String email, String redirect, String prefix) {
     try {
-      EnvelopeV2 envelope = publisherUid2Helper.createEnvelopeForTokenGenerateRequest(TokenGenerateInput.fromEmail(email));
+      EnvelopeV2 envelope = publisherUid2Helper.createEnvelopeForTokenGenerateRequest(TokenGenerateInput.fromEmail(email).doNotGenerateTokensForOptedOut()); //UID2
+      // EUID's input would look like this:
+      // TokenGenerateInput.fromEmail(email).withTransparencyAndConsentString("CPhJRpMPhJRpMABAMBFRACBoALAAAEJAAIYgAKwAQAKgArABAAqAAA").doNotGenerateTokensForOptedOut();
 
       webClient
         .postAbs(UID2_BASE_URL + "/v2/token/generate")
@@ -92,10 +96,13 @@ public class MainVerticle extends AbstractVerticle {
           }
 
           try {
-            IdentityTokens identity = publisherUid2Helper.createIdentityfromTokenGenerateResponse(response.bodyAsString(), envelope);
+            TokenGenerateResponse tokenGenerateResponse = publisherUid2Helper.createTokenGenerateResponse(response.bodyAsString(), envelope);
 
-            setIdentity(ctx, identity.getJsonString());
-            ctx.redirect(redirect);
+            setIdentity(ctx, tokenGenerateResponse.getIdentityJsonString());
+            if (tokenGenerateResponse.getIdentityJsonString() != null)
+              ctx.redirect(redirect);
+            else
+              renderError(null, "User has opted out", ctx, "");
           } catch (RuntimeException e) {
             renderError(null, e.getMessage(), ctx, "");
           }
