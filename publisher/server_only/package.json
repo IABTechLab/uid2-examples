@@ -14,7 +14,7 @@
   "dependencies": {
     "axios": "^0.23.0",
     "cookie-session": "^1.4.0",
-    "ejs": "^3.1.6",
+    "ejs": "^3.1.7",
     "express": "~4.16.1",
     "nocache": "^3.0.1"
   },
