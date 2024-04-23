@@ -17,7 +17,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Log in to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
@@ -33,7 +33,7 @@ jobs:
             type=sha,prefix=server_only-,format=short
             type=raw,prefix=server_only-,value=latest
       - name: Build and push Docker server_only image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v5
         with:
           context: publisher/server_only
           push: true
@@ -46,7 +46,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Log in to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
@@ -62,7 +62,7 @@ jobs:
             type=sha,prefix=standard-,format=short
             type=raw,prefix=standard-,value=latest
       - name: Build and push Docker standard image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v5
         with:
           context: publisher/standard
           push: true
