@@ -19,7 +19,7 @@
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
     <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
 
-    <vertx.version>4.3.4</vertx.version>
+    <vertx.version>4.5.3</vertx.version>
     <junit-jupiter.version>5.9.0</junit-jupiter.version>
 
     <main.verticle>com.uid2.testsite.MainVerticle</main.verticle>
@@ -47,18 +47,18 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-web-templ-freemarker</artifactId>
-      <version>4.3.4</version>
+      <version>${vertx.version}</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/io.vertx/vertx-web-sstore-cookie -->
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-web-sstore-cookie</artifactId>
-      <version>4.3.4</version>
+      <version>${vertx.version}</version>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-web-client</artifactId>
-      <version>4.3.4</version>
+      <version>${vertx.version}</version>
     </dependency>
 
     <dependency>
@@ -82,7 +82,7 @@
     <dependency>
       <groupId>com.uid2</groupId>
       <artifactId>uid2-client</artifactId>
-      <version>4.2.4-dcf7ac1ce6</version>
+      <version>4.3.22</version>
     </dependency>
   </dependencies>
 
