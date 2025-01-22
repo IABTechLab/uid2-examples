@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "path-to-regexp": "^8.2.0"
+  }
+}
