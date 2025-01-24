@@ -20,13 +20,6 @@ docker run -it --rm -p 3000:3000 \
     uid2-publisher-standard
 ```
 
-
-If this command does not work in Powershell because of the `-e` variable, try running in Command Prompt with quotes around each variable like so:
-```
-docker build . -t uid2-publisher-server
-docker run -it --rm -p 3000:3000 -e "UID2_BASE_URL=https://operator-integ.uidapi.com" -e "UID2_API_KEY={INTEG_API_KEY}" -e "UID2_CLIENT_SECRET={CLIENT_SECRET}" uid2-publisher-server
-```
-
 The following table lists the environment variables that you must specify to start the application.
 
 | Parameter            | Data Type | Description                                                                                                                                                                                               |
