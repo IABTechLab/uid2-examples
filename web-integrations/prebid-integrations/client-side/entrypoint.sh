@@ -11,7 +11,6 @@ export SUBSCRIPTION_ID=${SUBSCRIPTION_ID:-"DMr7uHxqLU"}
 # Copy static files
 cp /usr/share/nginx/html/app.css /usr/share/nginx/html/
 cp /usr/share/nginx/html/prebid.js /usr/share/nginx/html/
-cp /usr/share/nginx/html/config.js /usr/share/nginx/html/
 
 # Process index.html template with environment variables
 envsubst < /usr/share/nginx/html/index.template.html > /usr/share/nginx/html/index.html
