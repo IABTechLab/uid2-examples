@@ -22,17 +22,16 @@ Then navigate to [http://localhost:3031](http://localhost:3031) to view the appl
 
 ### Local Development with Custom Settings
 
-For local development, you can override the default settings by editing the `config.js` file:
+The application automatically reads configuration from the `.env` file in the sample directory and substitutes the values into the HTML:
 
-1. **Edit `config.js`** - Uncomment and modify the lines for your local environment:
-   ```javascript
-   // Uncomment these lines in config.js:
-   window.UID2_BASE_URL = 'https://your-local-uid2-operator.com';
-   window.SERVER_PUBLIC_KEY = 'your-local-public-key';
-   window.SUBSCRIPTION_ID = 'your-local-subscription-id';
+1. **Edit the `env` file** in the sample directory (`.env`) to set your local values:
+   ```
+   UID2_BASE_URL="http://localhost:8080"
+   SERVER_PUBLIC_KEY="your-local-public-key"
+   SUBSCRIPTION_ID="your-local-subscription-id"
    ```
 
-2. **Rebuild and run the Docker container:**
+2. **Build and run the Docker container:**
    ```bash
    docker build -t prebid-client-side .
    docker run -p 3031:3031 prebid-client-side
@@ -41,10 +40,10 @@ For local development, you can override the default settings by editing the `con
 3. **Alternative: Use browser dev tools** (for quick testing):
    ```javascript
    // In browser console before page load
-   window.UID2_BASE_URL = 'https://your-local-uid2-operator.com';
+   window.uid2_example_settings.UID2_BASE_URL = 'https://your-local-uid2-operator.com';
    ```
 
-The `config.js` file includes example configurations for different environments (local, test, staging).
+The Docker build process automatically reads the `.env` file and substitutes the values into the HTML using `envsubst`. If a variable is not set in the `env` file, it uses the default values (after the `:-` in the substitution syntax).
 
 
 ## Prebid.js
