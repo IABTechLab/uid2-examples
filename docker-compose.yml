@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  prebid-client:
+    build:
+      context: .
+      dockerfile: web-integrations/prebid-integrations/client-side/Dockerfile
+    ports:
+      - "3031:3031"
+    container_name: prebid-client-side
+
+  # Add more services here as needed
+  # google-secure-signals-client:
+  #   build:
+  #     context: .
+  #     dockerfile: web-integrations/google-secure-signals/client-side/Dockerfile
+  #   ports:
+  #     - "3032:3032"
+  #   container_name: google-secure-signals-client
+
+  # javascript-sdk-client:
+  #   build:
+  #     context: .
+  #     dockerfile: web-integrations/javascript-sdk/client-side/Dockerfile
+  #   ports:
+  #     - "3033:3033"
+  #   container_name: javascript-sdk-client

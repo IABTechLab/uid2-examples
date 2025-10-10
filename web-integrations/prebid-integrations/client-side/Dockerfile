@@ -1,23 +1,21 @@
-# Use nginx as the base image
 FROM nginx:alpine
 
-# Copy the static files to nginx html directory
-COPY index.html /usr/share/nginx/html/
-COPY app.css /usr/share/nginx/html/
-COPY prebid.js /usr/share/nginx/html/
-COPY config.js /usr/share/nginx/html/
+# Install gettext for envsubst
+RUN apk add --no-cache gettext
 
-# Create custom nginx config to listen on port 3031
-RUN echo 'server {' > /etc/nginx/conf.d/default.conf && \
-    echo '    listen 3031;' >> /etc/nginx/conf.d/default.conf && \
-    echo '    location / {' >> /etc/nginx/conf.d/default.conf && \
-    echo '        root /usr/share/nginx/html;' >> /etc/nginx/conf.d/default.conf && \
-    echo '        index index.html;' >> /etc/nginx/conf.d/default.conf && \
-    echo '    }' >> /etc/nginx/conf.d/default.conf && \
-    echo '}' >> /etc/nginx/conf.d/default.conf
+# Copy the env file
+COPY .env /tmp/env
 
-# Expose port 3031
-EXPOSE 3031
+# Copy static files from client-side directory
+COPY web-integrations/prebid-integrations/client-side/app.css /usr/share/nginx/html/
+COPY web-integrations/prebid-integrations/client-side/prebid.js /usr/share/nginx/html/
 
-# Start nginx
+# Copy config and HTML
+COPY web-integrations/prebid-integrations/client-side/default.conf /etc/nginx/conf.d/default.conf
+COPY web-integrations/prebid-integrations/client-side/index.html /usr/share/nginx/html/index.template.html
+COPY web-integrations/prebid-integrations/client-side/entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
