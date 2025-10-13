@@ -72,14 +72,20 @@ docker-compose up -d --build prebid-client
 ### Available Services
 
 - **`prebid-client`** - Prebid.js client-side integration (Port: 3031)
+- **`javascript-sdk-client`** - JavaScript SDK client-server integration (Port: 3051)
 - *More services will be added as they are containerized*
 
 ### Environment Configuration
 
 Edit the `.env` file in the base directory to configure your UID2 settings:
 ```
+# UID2 Configuration for all services
 UID2_BASE_URL="http://localhost:8080"
 SERVER_PUBLIC_KEY="your-public-key"
 SUBSCRIPTION_ID="your-subscription-id"
+
+# Additional variables for client-server example
+UID2_API_KEY="your-api-key"
+UID2_CLIENT_SECRET="your-client-secret"
 ```
 
