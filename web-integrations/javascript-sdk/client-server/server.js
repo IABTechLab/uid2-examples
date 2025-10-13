@@ -25,9 +25,6 @@ app.engine('.html', ejs.__express);
 app.set('view engine', 'html');
 
 app.get('/', (req, res) => {
-    console.log('uid2ApiKey', uid2ApiKey);
-    console.log('uid2ClientSecret', uid2ClientSecret);
-    console.log('uid2BaseUrl', uid2BaseUrl);
     res.render('index', { uid2BaseUrl: uid2BaseUrl });
 });
 
