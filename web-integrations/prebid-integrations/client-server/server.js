@@ -11,6 +11,9 @@
 // 4. Return the token to the front-end for use with Prebid.js
 // ============================================================================
 
+// Load environment variables from .env file (for local development)
+require('dotenv').config({path: '../../../.env'});
+
 const axios = require('axios');
 const express = require('express');
 const crypto = require('crypto');
@@ -160,15 +163,19 @@ function createEnvelope(payload) {
  * Response: { identity: { advertising_token: "...", refresh_token: "...", ... } }
  */
 app.post('/login', async (req, res) => {
-    const jsonEmail = JSON.stringify({ 'email': req.body.email });
+    const jsonEmail = JSON.stringify({ email: req.body.email });
     const { envelope, nonce } = createEnvelope(jsonEmail);
 
     const headers = {
-        headers: { 'Authorization': 'Bearer ' + uid2ApiKey  }
+        headers: { Authorization: 'Bearer ' + uid2ApiKey },
     };
 
     try {
-        const encryptedResponse = await axios.post(uid2BaseUrl + '/v2/token/generate', envelope, headers);
+        const encryptedResponse = await axios.post(
+            uid2BaseUrl + '/v2/token/generate',
+            envelope,
+            headers
+        );
         const response = decrypt(encryptedResponse.data, uid2ClientSecret, nonce);
 
         if (response.status !== 'success') {
