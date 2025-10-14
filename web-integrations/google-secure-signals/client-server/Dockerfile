@@ -1,10 +1,15 @@
-FROM node:20.11-alpine3.18
+FROM node:20.11.0-alpine3.18
+
 WORKDIR /usr/src/app
-COPY . .
+
+# Copy package files first for better caching
+COPY web-integrations/google-secure-signals/client-server/package*.json ./
 RUN npm install
 
-RUN apk add --no-cache gettext
-RUN mv public/ads.js public/ads.js.template
-CMD /bin/sh -c "envsubst < public/ads.js.template > public/ads.js && npm start"
+# Copy application files
+COPY web-integrations/google-secure-signals/client-server/server.js ./
+COPY web-integrations/google-secure-signals/client-server/public ./public/
+COPY web-integrations/google-secure-signals/client-server/views ./views/
 
-EXPOSE 3000
+EXPOSE 3041
+CMD ["npm", "start"]
