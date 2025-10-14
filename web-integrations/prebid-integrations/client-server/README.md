@@ -2,8 +2,6 @@
 
 This example demonstrates how to integrate [UID2 with Prebid.js using client-server integration](https://unifiedid.com/docs/guides/integration-prebid-client-server), where UID2 tokens are generated on the server side and passed to Prebid for use in header bidding auctions.
 
-For the client-side Prebid.js integration example, see [../client-side](../client-side).
-
 > **NOTE:** While the server side of this example is implemented in JavaScript using Node.js, it is not a requirement. You can use any technology of your choice and refer to this example for illustration of the functionality that needs to be implemented.
 
 ## Run with Docker (Recommended)
@@ -205,7 +203,7 @@ This example implements the [UID2 Client-Server Integration Guide for Prebid.js]
 ### "Request failed with status code 500"
 
 **For local operator:**
-- Verify the operator is running at `localhost:8080`
+- Verify the operator is running at `localhost:8080`; the output should indicate 'OK'.
 - Check `enable_v2_encryption: true` is set in `local-config.json`
 - Review operator logs for errors
 
