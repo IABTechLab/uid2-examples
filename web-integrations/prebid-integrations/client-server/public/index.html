@@ -9,7 +9,6 @@
     <script>
       console.log('Initializing example.');
 
-      // Store the UID2 identity in localStorage
       const UID2_STORAGE_KEY = '__uid2_advertising_token';
       let currentIdentity = null;
 
@@ -35,7 +34,6 @@
                 value: {
                   uid2: {
                     id: currentIdentity.advertising_token,
-                    // Include additional fields for token refresh if available
                     ...(currentIdentity.refresh_token && {
                       refresh_token: currentIdentity.refresh_token,
                       refresh_from: currentIdentity.refresh_from,
@@ -53,13 +51,9 @@
         });
       }
 
-      /**
-       * Update the UI elements based on current identity state
-       */
       function updateGuiElements() {
         console.log('Updating displayed values.');
         
-        // Check if user has opted out
         const storedToken = localStorage.getItem(UID2_STORAGE_KEY);
         let isOptedOut = false;
         
@@ -90,9 +84,6 @@
         }
       }
 
-      /**
-       * Handle login button click - call server to generate UID2 token
-       */
       async function handleLogin() {
         const email = $('#email').val();
         
@@ -103,7 +94,6 @@
         console.log('Generating UID2 token for email:', email);
 
         try {
-          // Call the server's /login endpoint
           const response = await fetch('/login', {
             method: 'POST',
             headers: {
@@ -114,7 +104,6 @@
 
           const data = await response.json();
 
-          // Check for opt-out (server returns 200 with status: 'optout')
           if (data.status === 'optout') {
             console.log('UID2 status: optout');
             localStorage.setItem(UID2_STORAGE_KEY, JSON.stringify({ status: 'optout' }));
@@ -123,7 +112,6 @@
             return;
           }
 
-          // Check for other errors
           if (!response.ok) {
             console.error('Token generation failed:', data);
             return;
@@ -132,15 +120,12 @@
           console.log('UID2 token received:', data);
 
           if (data.identity) {
-            // Store the identity
             currentIdentity = data.identity;
             localStorage.setItem(UID2_STORAGE_KEY, JSON.stringify(currentIdentity));
             
-            // Configure Prebid with the new token
             setPrebidConfig();
           }
 
-          // Update the UI
           updateGuiElements();
 
         } catch (error) {
@@ -148,9 +133,6 @@
         }
       }
 
-      /**
-       * Handle clear storage button - clear UID2 token and refresh page
-       */
       function handleClearStorage() {
         console.log('Clearing UID2 storage.');
         localStorage.removeItem(UID2_STORAGE_KEY);
@@ -158,9 +140,6 @@
         location.reload();
       }
 
-      /**
-       * Load identity from localStorage on page load
-       */
       function loadStoredIdentity() {
         const storedToken = localStorage.getItem(UID2_STORAGE_KEY);
         if (storedToken) {
@@ -178,27 +157,14 @@
         }
       }
 
-      /**
-       * Initialize the page
-       */
       function onDocumentReady() {
         console.log('Setting up interface handlers.');
         
-        // Set up event handlers
         $('#login').click(handleLogin);
         $('#clear_storage').click(handleClearStorage);
         
-        // Allow Enter key to submit
-        $('#email').keypress(function(e) {
-          if (e.which === 13) {
-            handleLogin();
-          }
-        });
-        
-        // Load any stored identity
         loadStoredIdentity();
         
-        // Update UI
         updateGuiElements();
       }
 
