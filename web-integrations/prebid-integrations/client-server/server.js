@@ -19,7 +19,7 @@ const express = require('express');
 const crypto = require('crypto');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3052;
 
 // UID2 API Configuration
 // These values should be set via environment variables for security
@@ -178,7 +178,10 @@ app.post('/login', async (req, res) => {
         );
         const response = decrypt(encryptedResponse.data, uid2ClientSecret, nonce);
 
-        if (response.status !== 'success') {
+        if (response.status === 'optout') {
+            // Opt-out is a valid state, return 200 with status
+            res.json({ status: 'optout' });
+        } else if (response.status !== 'success') {
             res.status(400).json({ error: 'Token generation failed', status: response.status });
         } else if (typeof response.body !== 'object') {
             res.status(400).json({ error: 'Unexpected response format' });

@@ -6,6 +6,45 @@ For the client-side Prebid.js integration example, see [../client-side](../clien
 
 > **NOTE:** While the server side of this example is implemented in JavaScript using Node.js, it is not a requirement. You can use any technology of your choice and refer to this example for illustration of the functionality that needs to be implemented.
 
+## Prerequisites
+
+- **For local testing:** Node.js (version 20.x or later recommended)
+- **For Docker:** Docker and Docker Compose installed
+- UID2 API credentials (API Key and Client Secret)
+- A local UID2 Operator instance **OR** access to the UID2 integration environment
+
+## Run with Docker (Recommended)
+
+### 1. Set Up Environment Variables
+
+Create a `.env` file in the **root of the uid2-examples repository** with the following:
+
+```bash
+# UID2 Operator configuration
+UID2_BASE_URL=http://localhost:8080
+UID2_API_KEY=your-api-key-here
+UID2_CLIENT_SECRET=your-client-secret-here
+```
+
+**For local operator:** Use `UID2_BASE_URL=http://localhost:8080` and your local operator credentials.
+
+**For integration environment:** Use `UID2_BASE_URL=https://operator-integ.uidapi.com` and your portal credentials.
+
+### 2. Build and Run with Docker Compose
+
+From the **root of the uid2-examples repository**, run:
+
+```bash
+docker-compose up prebid-client-server
+```
+
+The application will be available at **`http://localhost:3052`**
+
+To stop the container, press `Ctrl+C` or run:
+
+```bash
+docker-compose down
+```
 
 ## Run Locally for Testing
 
@@ -37,7 +76,7 @@ npm start
 You should see:
 
 ```
-UID2 Prebid Client-Server example listening at http://localhost:3005
+UID2 Prebid Client-Server example listening at http://localhost:3052
 Make sure you have set the following environment variables:
   - UID2_API_KEY
   - UID2_CLIENT_SECRET
@@ -46,7 +85,7 @@ Make sure you have set the following environment variables:
 
 ### 4. Test the Application
 
-1. Open your browser to `http://localhost:3005`
+1. Open your browser to `http://localhost:3052`
 2. Enter an email address in the input field
 3. Click **"Generate UID2"**
 4. You should see:
@@ -89,7 +128,8 @@ Refresh the page - the UID2 token should persist (loaded from localStorage) and 
 | `UID2_BASE_URL`      | Yes      | The base URL of the UID2 service. For local testing: `http://localhost:8080`. For integration: `https://operator-integ.uidapi.com`.                  |
 | `UID2_API_KEY`       | Yes      | Your UID2 API key. Must have the GENERATOR role.                                                                                                     |
 | `UID2_CLIENT_SECRET` | Yes      | Your UID2 client secret corresponding to the API key.                                                                                                 |
-| `PORT`               | No       | Port for the Express server (default: 3000). Set to 3005 to avoid conflicts with other examples.                                                     |
+
+**Note:** This application runs on port **3052** by default.
 
 ## How It Works
 

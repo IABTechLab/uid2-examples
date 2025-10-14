@@ -97,7 +97,6 @@
         const email = $('#email').val();
         
         if (!email) {
-          alert('Please enter an email address');
           return;
         }
 
@@ -115,18 +114,18 @@
 
           const data = await response.json();
 
-          // Check for opt-out (server returns 400 with status: 'optout')
+          // Check for opt-out (server returns 200 with status: 'optout')
+          if (data.status === 'optout') {
+            console.log('UID2 status: optout');
+            localStorage.setItem(UID2_STORAGE_KEY, JSON.stringify({ status: 'optout' }));
+            currentIdentity = null;
+            updateGuiElements();
+            return;
+          }
+
+          // Check for other errors
           if (!response.ok) {
-            if (data.status === 'optout') {
-              console.log('User has opted out');
-              localStorage.setItem(UID2_STORAGE_KEY, JSON.stringify({ status: 'optout' }));
-              currentIdentity = null;
-              updateGuiElements();
-              return;
-            }
-            // Other errors
             console.error('Token generation failed:', data);
-            alert('Failed to generate UID2 token: ' + (data.error || 'Unknown error'));
             return;
           }
 
@@ -146,7 +145,6 @@
 
         } catch (error) {
           console.error('Error calling login endpoint:', error);
-          alert('Failed to generate UID2 token: ' + error.message);
         }
       }
 
