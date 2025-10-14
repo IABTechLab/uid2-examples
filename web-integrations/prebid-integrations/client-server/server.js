@@ -38,7 +38,6 @@ function base64ToBuffer(base64) {
     return Buffer.from(base64, 'base64');
 }
 
-// Encrypts data using AES-256-GCM
 function encryptRequest(message, base64Key) {
     const iv = crypto.randomBytes(ivLength);
     const cipher = crypto.createCipheriv(encryptionAlgo, base64ToBuffer(base64Key), iv);
@@ -46,7 +45,6 @@ function encryptRequest(message, base64Key) {
     return { ciphertext, iv };
 }
 
-// Compares two byte arrays
 function isEqual(array1, array2) {
     for (let i = 0; i < array1.byteLength; i++) {
         if (array1[i] !== array2[i]) return false;
@@ -54,7 +52,6 @@ function isEqual(array1, array2) {
     return true;
 }
 
-// Decrypts UID2 API response and verifies nonce
 function decrypt(base64Response, base64Key, nonceInRequest) {
     const responseBytes = base64ToBuffer(base64Response);
     const iv = responseBytes.subarray(0, ivLength);
@@ -70,7 +67,6 @@ function decrypt(base64Response, base64Key, nonceInRequest) {
         decipher.final()
     ]);
 
-    // Verify nonce matches
     const nonceInResponse = decrypted.subarray(timestampLength, timestampLength + nonceLength);
     if (!isEqual(nonceInRequest, new Uint8Array(nonceInResponse))) {
         throw new Error('Nonce mismatch');
