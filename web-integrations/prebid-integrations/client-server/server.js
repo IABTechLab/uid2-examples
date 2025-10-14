@@ -11,7 +11,7 @@
 // 4. Return the token to the front-end for use with Prebid.js
 // ============================================================================
 
-// Load environment variables from .env file (for local development)
+
 require('dotenv').config({path: '../../../.env'});
 
 const axios = require('axios');
@@ -28,15 +28,15 @@ const uid2ApiKey = process.env.UID2_API_KEY;           // Your API Key from UID2
 const uid2ClientSecret = process.env.UID2_CLIENT_SECRET; // Your Client Secret from UID2 Portal
 
 // Encryption constants required by UID2 API
-const ivLength = 12;                    // Initialization vector length
-const nonceLength = 8;                  // Nonce (random number) length
-const timestampLength = 8;              // Timestamp length
-const encryptionAlgo = 'aes-256-gcm';   // AES-256-GCM encryption algorithm
+const ivLength = 12;                  
+const nonceLength = 8;                 
+const timestampLength = 8;              
+const encryptionAlgo = 'aes-256-gcm';  
 
 // Middleware setup
-app.use(express.static('public'));      // Serve static files (HTML, CSS, JS) from 'public' folder
-app.use(express.json());                // Parse JSON request bodies
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded form data
+app.use(express.static('public'));     
+app.use(express.json());               
+app.use(express.urlencoded({ extended: true })); 
 
 // ============================================================================
 // HELPER FUNCTIONS FOR ENCRYPTION/DECRYPTION
@@ -200,9 +200,5 @@ app.post('/login', async (req, res) => {
 // ============================================================================
 app.listen(port, () => {
   console.log(`UID2 Prebid Client-Server example listening at http://localhost:${port}`);
-  console.log(`Make sure you have set the following environment variables:`);
-  console.log(`  - UID2_API_KEY`);
-  console.log(`  - UID2_CLIENT_SECRET`);
-  console.log(`  - UID2_BASE_URL (optional, defaults to integration environment)`);
 });
 
