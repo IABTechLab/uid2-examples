@@ -2,6 +2,8 @@
 
 This example demonstrates how to integrate [UID2 with Prebid.js using client-server integration](https://unifiedid.com/docs/guides/integration-prebid-client-server), where UID2 tokens are generated on the server side and passed to Prebid for use in header bidding auctions.
 
+> **NOTE:** This example uses Prebid.js v8.
+
 > **NOTE:** While the server side of this example is implemented in JavaScript using Node.js, it is not a requirement. You can use any technology of your choice and refer to this example for illustration of the functionality that needs to be implemented.
 
 ## Run with Docker (Recommended)
