@@ -113,22 +113,26 @@
             body: JSON.stringify({ email: email })
           });
 
+          const data = await response.json();
+
+          // Check for opt-out (server returns 400 with status: 'optout')
           if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Token generation failed:', errorData);
-            alert('Failed to generate UID2 token: ' + (errorData.error || 'Unknown error'));
+            if (data.status === 'optout') {
+              console.log('User has opted out');
+              localStorage.setItem(UID2_STORAGE_KEY, JSON.stringify({ status: 'optout' }));
+              currentIdentity = null;
+              updateGuiElements();
+              return;
+            }
+            // Other errors
+            console.error('Token generation failed:', data);
+            alert('Failed to generate UID2 token: ' + (data.error || 'Unknown error'));
             return;
           }
 
-          const data = await response.json();
           console.log('UID2 token received:', data);
 
-          // Check for opt-out
-          if (data.identity && data.identity.advertising_token === 'optout') {
-            console.log('User has opted out');
-            localStorage.setItem(UID2_STORAGE_KEY, JSON.stringify({ status: 'optout' }));
-            currentIdentity = null;
-          } else if (data.identity) {
+          if (data.identity) {
             // Store the identity
             currentIdentity = data.identity;
             localStorage.setItem(UID2_STORAGE_KEY, JSON.stringify(currentIdentity));

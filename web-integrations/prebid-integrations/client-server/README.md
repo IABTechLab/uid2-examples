@@ -6,27 +6,12 @@ For the client-side Prebid.js integration example, see [../client-side](../clien
 
 > **NOTE:** While the server side of this example is implemented in JavaScript using Node.js, it is not a requirement. You can use any technology of your choice and refer to this example for illustration of the functionality that needs to be implemented.
 
-## Prerequisites
-
-- Node.js (version 20.x or later recommended)
-- UID2 API credentials (API Key and Client Secret)
-- A local UID2 Operator instance **OR** access to the UID2 integration environment
 
 ## Run Locally for Testing
 
 ### 1. Set Up Environment Variables
 
 Create a `.env` file in the **root of the uid2-examples repository** (not in this folder) with the following variables:
-
-```bash
-# UID2 Operator configuration
-UID2_BASE_URL=http://localhost:8080
-UID2_API_KEY=your-api-key-here
-UID2_CLIENT_SECRET=your-client-secret-here
-
-# Port for this example (optional, defaults to 3000)
-PORT=3005
-```
 
 **For local operator testing:**
 - Use `UID2_BASE_URL=http://localhost:8080`
