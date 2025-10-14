@@ -1,10 +1,13 @@
+// Load environment variables from .env file (for local development)
+require('dotenv').config({path: '../../../.env'});
+
 const axios = require('axios');
 const ejs = require('ejs');
 const express = require('express');
 const crypto = require('crypto');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3051;
 
 const uid2BaseUrl = process.env.UID2_BASE_URL;
 const uid2ApiKey = process.env.UID2_API_KEY;
@@ -22,7 +25,7 @@ app.engine('.html', ejs.__express);
 app.set('view engine', 'html');
 
 app.get('/', (req, res) => {
-  res.render('index', { uid2BaseUrl: uid2BaseUrl });
+    res.render('index', { uid2BaseUrl: uid2BaseUrl });
 });
 
 function bufferToBase64(arrayBuffer) {

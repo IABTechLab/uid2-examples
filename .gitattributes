@@ -1,0 +1,13 @@
+# Set default behavior to automatically normalize line endings
+* text=auto
+
+# Shell scripts should use LF
+*.sh text eol=lf
+
+# Docker files should use LF
+Dockerfile text eol=lf
+docker-compose.yml text eol=lf
+
+# Environment files can use CRLF on Windows
+*.env text
+env text

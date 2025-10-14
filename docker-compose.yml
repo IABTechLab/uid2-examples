@@ -1,0 +1,39 @@
+services:
+  prebid-client:
+    build:
+      context: .
+      dockerfile: web-integrations/prebid-integrations/client-side/Dockerfile
+    ports:
+      - "3031:3031"
+    container_name: prebid-client-side
+    env_file:
+      - .env
+
+  # Add more services here as needed
+  javascript-sdk-client-side:
+    build:
+      context: .
+      dockerfile: web-integrations/javascript-sdk/client-side/Dockerfile
+    ports:
+      - "3032:3032"
+    container_name: javascript-sdk-client-side
+    env_file:
+      - .env
+
+  # google-secure-signals-client:
+  #   build:
+  #     context: .
+  #     dockerfile: web-integrations/google-secure-signals/client-side/Dockerfile
+  #   ports:
+  #     - "3033:3033"
+  #   container_name: google-secure-signals-client
+
+  javascript-sdk-client:
+    build:
+      context: .
+      dockerfile: web-integrations/javascript-sdk/client-server/Dockerfile
+    ports:
+      - "3051:3051"
+    container_name: javascript-sdk-client-server
+    env_file:
+      - .env

@@ -22,3 +22,70 @@ The example applications illustrate the basic steps that you need to consider fo
 - Deal with missing identities.
 - Handle user opt-outs.
 
+## Docker Compose Setup
+
+This repository includes Docker Compose configuration for easy development and testing of multiple UID2 integration examples.
+
+### Quick Start
+
+**Start all services:**
+```bash
+docker-compose up -d
+```
+
+**Start a single service:**
+```bash
+# Start only the Prebid.js client-side integration
+docker-compose up -d prebid-client
+
+# Start with live logs (foreground)
+docker-compose up prebid-client
+```
+
+**Stop services:**
+```bash
+# Stop all services
+docker-compose down
+
+# Stop a single service
+docker-compose stop prebid-client
+```
+
+**View logs:**
+```bash
+# View all logs
+docker-compose logs -f
+
+# View logs for a specific service
+docker-compose logs -f prebid-client
+```
+
+**Rebuild and restart:**
+```bash
+# Rebuild and restart all services
+docker-compose up -d --build
+
+# Rebuild and restart a single service
+docker-compose up -d --build prebid-client
+```
+
+### Available Services
+
+- **`prebid-client`** - Prebid.js client-side integration (Port: 3031)
+- **`javascript-sdk-client`** - JavaScript SDK client-server integration (Port: 3051)
+- *More services will be added as they are containerized*
+
+### Environment Configuration
+
+Edit the `.env` file in the base directory to configure your UID2 settings:
+```
+# UID2 Configuration for all services
+UID2_BASE_URL="http://localhost:8080"
+SERVER_PUBLIC_KEY="your-public-key"
+SUBSCRIPTION_ID="your-subscription-id"
+
+# Additional variables for client-server example
+UID2_API_KEY="your-api-key"
+UID2_CLIENT_SECRET="your-client-secret"
+```
+
