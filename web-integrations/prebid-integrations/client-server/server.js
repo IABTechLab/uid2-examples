@@ -24,6 +24,7 @@ const encryptionAlgo = 'aes-256-gcm';
 
 // Middleware
 app.use(express.static('public'));
+app.use('/prebid.js', express.static('../prebid.js')); // Serve shared prebid.js
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

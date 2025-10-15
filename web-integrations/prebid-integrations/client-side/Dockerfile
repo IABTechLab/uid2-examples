@@ -5,7 +5,7 @@ RUN apk add --no-cache gettext
 
 # Copy static files from client-side directory
 COPY web-integrations/prebid-integrations/client-side/app.css /usr/share/nginx/html/
-COPY web-integrations/prebid-integrations/client-side/prebid.js /usr/share/nginx/html/
+COPY web-integrations/prebid-integrations/prebid.js /usr/share/nginx/html/
 
 # Copy config and HTML
 COPY web-integrations/prebid-integrations/client-side/default.conf /etc/nginx/conf.d/default.conf

@@ -9,6 +9,7 @@ RUN npm install
 # Copy application files
 COPY web-integrations/prebid-integrations/client-server/server.js ./
 COPY web-integrations/prebid-integrations/client-server/public ./public/
+COPY web-integrations/prebid-integrations/prebid.js ../prebid.js
 
 EXPOSE 3052
 CMD ["npm", "start"]
