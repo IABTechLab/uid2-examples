@@ -42,3 +42,13 @@ services:
     env_file:
       - .env
 
+  prebid-client-server:
+    build:
+      context: .
+      dockerfile: web-integrations/prebid-integrations/client-server/Dockerfile
+    ports:
+      - "3052:3052"
+    container_name: prebid-client-server
+    env_file:
+      - .env
+

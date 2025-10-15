@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>UID2 Prebid.js Client-Server Integration Example</title>
+    <link rel="stylesheet" type="text/css" href="./app.css" />
+    <script async src="./prebid.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      console.log('Initializing example.');
+
+      const UID2_STORAGE_KEY = '<%= UID2_STORAGE_KEY %>';
+      let currentIdentity = null;
+
+      window.pbjs = window.pbjs || {};
+      window.pbjs.que = window.pbjs.que || [];
+
+      function setPrebidConfig() {
+        if (!currentIdentity) {
+          console.log('No UID2 identity available for Prebid configuration');
+          return;
+        }
+
+        window.pbjs.que.push(function() {
+          console.log('Configuring Prebid.js with UID2 token');
+          window.pbjs.setConfig({
+            userSync: {
+              userIds: [{
+                name: "uid2",
+                value: {
+                  uid2: {
+                    id: currentIdentity.advertising_token,
+                    ...(currentIdentity.refresh_token && {
+                      refresh_token: currentIdentity.refresh_token,
+                      refresh_from: currentIdentity.refresh_from,
+                      refresh_expires: currentIdentity.refresh_expires,
+                      identity_expires: currentIdentity.identity_expires,
+                      refresh_response_key: currentIdentity.refresh_response_key
+                    })
+                  }
+                }
+              }]
+            }
+          });
+          
+          console.log('Prebid UID2 configuration set:', window.pbjs.getUserIds());
+        });
+      }
+
+      function updateGuiElements() {
+        console.log('Updating displayed values.');
+        
+        const storedToken = localStorage.getItem(UID2_STORAGE_KEY);
+        let isOptedOut = false;
+        
+        if (storedToken) {
+          try {
+            const tokenData = JSON.parse(storedToken);
+            isOptedOut = tokenData.status === 'optout';
+          } catch (e) {
+            console.log('Could not parse stored token');
+          }
+        }
+
+        if (isOptedOut) {
+          $('#targeted_advertising_ready').text('no');
+          $('#advertising_token').text('This email has opted out.');
+          $('#login_form').hide();
+          $('#clear_storage_form').show();
+        } else if (currentIdentity && currentIdentity.advertising_token) {
+          $('#targeted_advertising_ready').text('yes');
+          $('#advertising_token').text(currentIdentity.advertising_token);
+          $('#login_form').hide();
+          $('#clear_storage_form').show();
+        } else {
+          $('#targeted_advertising_ready').text('no');
+          $('#advertising_token').text('');
+          $('#login_form').show();
+          $('#clear_storage_form').hide();
+        }
+      }
+
+      async function handleLogin() {
+        const email = $('#email').val();
+        
+        if (!email) {
+          return;
+        }
+
+        console.log('Generating UID2 token for email:', email);
+
+        try {
+          const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email })
+          });
+
+          const data = await response.json();
+
+          if (data.status === 'optout') {
+            console.log('UID2 status: optout');
+            localStorage.setItem(UID2_STORAGE_KEY, JSON.stringify({ status: 'optout' }));
+            currentIdentity = null;
+            updateGuiElements();
+            return;
+          }
+
+          if (!response.ok) {
+            console.error('Token generation failed:', data);
+            return;
+          }
+
+          console.log('UID2 token received:', data);
+
+          if (data.identity) {
+            currentIdentity = data.identity;
+            localStorage.setItem(UID2_STORAGE_KEY, JSON.stringify(currentIdentity));
+            
+            setPrebidConfig();
+          }
+
+          updateGuiElements();
+
+        } catch (error) {
+          console.error('Error calling login endpoint:', error);
+        }
+      }
+
+      function handleClearStorage() {
+        console.log('Clearing UID2 storage.');
+        localStorage.removeItem(UID2_STORAGE_KEY);
+        currentIdentity = null;
+        location.reload();
+      }
+
+      function loadStoredIdentity() {
+        const storedToken = localStorage.getItem(UID2_STORAGE_KEY);
+        if (storedToken) {
+          try {
+            const tokenData = JSON.parse(storedToken);
+            if (tokenData.status !== 'optout' && tokenData.advertising_token) {
+              currentIdentity = tokenData;
+              console.log('Loaded stored UID2 identity');
+              setPrebidConfig();
+            }
+          } catch (e) {
+            console.error('Failed to parse stored identity:', e);
+            localStorage.removeItem(UID2_STORAGE_KEY);
+          }
+        }
+      }
+
+      function onDocumentReady() {
+        console.log('Setting up interface handlers.');
+        
+        $('#login').click(handleLogin);
+        $('#clear_storage').click(handleClearStorage);
+        
+        loadStoredIdentity();
+        
+        updateGuiElements();
+      }
+
+      $(document).ready(onDocumentReady);
+    </script>
+  </head>
+  <body>
+    <h1>UID2 Prebid.js Client-Server Integration Example</h1>
+    <p class="intro">
+      This example demonstrates how a content publisher can integrate with UID2 and Prebid.js using the <a href="https://unifiedid.com/docs/guides/integration-prebid-client-server">UID2 Client-Server Integration Guide for Prebid.js</a>, where tokens are generated on the server and passed to Prebid.js on the client side.
+      <strong>Note:</strong> This is a <em>test-only</em> integration environment—not for production use.
+      It does not perform real user authentication or generate production-level tokens.
+      Do not use real user data on this page.
+    </p>
+    <table id="uid2_state">
+      <tr>
+        <td class="label">Ready for Targeted Advertising:</td>
+        <td class="value"><pre id="targeted_advertising_ready"></pre></td>
+      </tr>
+      <tr>
+        <td class="label">UID2 Advertising Token:</td>
+        <td class="value"><pre id="advertising_token"></pre></td>
+      </tr>
+    </table>
+    <div id="test-div">
+    </div>
+    <div id="login_form" style="display: none" class="form">
+      <div class="email_prompt">
+        <input
+          type="text"
+          id="email"
+          name="email"
+          placeholder="Enter an email address"
+          style="border-style: none"
+        />
+      </div>
+      <div><button type="button" class="button" id="login">Generate UID2</button></div>
+    </div>
+    <div id="clear_storage_form" style="display: none" class="form">
+      <form>
+        <button type="button" class="button" id="clear_storage">Clear UID2</button>
+      </form>
+    </div>
+  </body>
+</html>
+
