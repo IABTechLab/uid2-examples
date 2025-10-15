@@ -9,7 +9,7 @@
     <script>
       console.log('Initializing example.');
 
-      let UID2_STORAGE_KEY = '__uid2_advertising_token'; // Default, will be loaded from server config
+      const UID2_STORAGE_KEY = '<%= UID2_STORAGE_KEY %>';
       let currentIdentity = null;
 
       window.pbjs = window.pbjs || {};
@@ -136,17 +136,6 @@
         location.reload();
       }
 
-      async function loadConfig() {
-        try {
-          const response = await fetch('/config');
-          const config = await response.json();
-          UID2_STORAGE_KEY = config.storageKey;
-          console.log('Loaded config from server, storage key:', UID2_STORAGE_KEY);
-        } catch (error) {
-          console.log('Failed to load config from server, using default storage key');
-        }
-      }
-
       function loadStoredIdentity() {
         const storedToken = localStorage.getItem(UID2_STORAGE_KEY);
         if (storedToken) {
@@ -164,10 +153,8 @@
         }
       }
 
-      async function onDocumentReady() {
+      function onDocumentReady() {
         console.log('Setting up interface handlers.');
-        
-        await loadConfig();
         
         $('#login').click(handleLogin);
         $('#clear_storage').click(handleClearStorage);

@@ -6,6 +6,7 @@ require('dotenv').config({path: '../../../.env'});
 const axios = require('axios');
 const express = require('express');
 const crypto = require('crypto');
+const ejs = require('ejs');
 
 const app = express();
 const port = 3052;
@@ -14,7 +15,7 @@ const port = 3052;
 const uid2BaseUrl = process.env.UID2_BASE_URL || 'https://operator-integ.uidapi.com';
 const uid2ApiKey = process.env.UID2_API_KEY;
 const uid2ClientSecret = process.env.UID2_CLIENT_SECRET;
-const uid2StorageKey = process.env.UID2_STORAGE_KEY || '__uid2_advertising_token';
+const UID2_STORAGE_KEY = process.env.UID2_STORAGE_KEY || '__uid2_advertising_token';
 
 // Encryption constants
 const ivLength = 12;
@@ -27,6 +28,11 @@ app.use(express.static('public'));
 app.use('/prebid.js', express.static('../prebid.js')); // Serve shared prebid.js
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Set up EJS templating
+app.engine('.html', ejs.__express);
+app.set('views', './public'); // Use public directory for views
+app.set('view engine', 'html');
 
 // ============================================================================
 // Encryption/Decryption Helpers
@@ -100,9 +106,9 @@ function createEnvelope(payload) {
 // API Endpoints
 // ============================================================================
 
-// GET /config - Returns client configuration
-app.get('/config', (req, res) => {
-    res.json({ storageKey: uid2StorageKey });
+// GET / - Render the main page
+app.get('/', (req, res) => {
+    res.render('index', { UID2_STORAGE_KEY: UID2_STORAGE_KEY });
 });
 
 // POST /login - Generates UID2 token for email address
