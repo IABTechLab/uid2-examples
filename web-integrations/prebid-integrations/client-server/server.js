@@ -14,6 +14,7 @@ const port = 3052;
 const uid2BaseUrl = process.env.UID2_BASE_URL || 'https://operator-integ.uidapi.com';
 const uid2ApiKey = process.env.UID2_API_KEY;
 const uid2ClientSecret = process.env.UID2_CLIENT_SECRET;
+const uid2StorageKey = process.env.UID2_STORAGE_KEY || '__uid2_advertising_token';
 
 // Encryption constants
 const ivLength = 12;
@@ -95,8 +96,13 @@ function createEnvelope(payload) {
 }
 
 // ============================================================================
-// API Endpoint
+// API Endpoints
 // ============================================================================
+
+// GET /config - Returns client configuration
+app.get('/config', (req, res) => {
+    res.json({ storageKey: uid2StorageKey });
+});
 
 // POST /login - Generates UID2 token for email address
 app.post('/login', async (req, res) => {

@@ -172,6 +172,7 @@ Enter an opted-out email and click "Generate UID2".
 | `UID2_BASE_URL`      | The UID2 Operator endpoint. Use `http://localhost:8080` for local or the integration URL.       | `http://localhost:8080`                  |
 | `UID2_API_KEY`       | Your UID2 API key with GENERATOR role.                                                           | `UID2-C-L-124-H8VwqX...`                 |
 | `UID2_CLIENT_SECRET` | Your UID2 client secret.                                                                         | `NcMgi6Y8C80SlxvV7pYlfcvEIo+2b0508...` |
+| `UID2_STORAGE_KEY`   | Your localStorage key for storing UID2 tokens.         | `__uid2_advertising_token`               |
 
 **Note:** For Docker, use `http://host.docker.internal:8080` instead of `http://localhost:8080` to access services on your host machine.
 
