@@ -115,7 +115,12 @@ app.post('/login', async (req, res) => {
     ); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
     const response = decrypt(encryptedResponse.data, uid2ClientSecret, nonce);
 
-    if (response.status !== 'success') {
+    if (response.status === 'optout') {
+      res.render('optout', {
+        uid2BaseUrl: uid2BaseUrl,
+        uid2JsSdkUrl: uid2JsSdkUrl,
+      });
+    } else if (response.status !== 'success') {
       res.render('error', {
         error: 'Got unexpected token generate status in decrypted response: ' + response.status,
         response: response,

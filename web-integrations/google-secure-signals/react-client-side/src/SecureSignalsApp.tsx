@@ -24,10 +24,11 @@ const SecureSignalsApp = () => {
   const [advertisingToken, setAdvertisingToken] = useState<string>('undefined');
   const [loginRequired, setLoginRequired] = useState<boolean>(true);
   const [identityState, setIdentityState] = useState('');
-  const [email, setEmail] = useState<string>('validate@example.com');
+  const [email, setEmail] = useState<string>('');
   const [identity, setIdentity] = useState(null);
   const [isUid2Enabled, setIsUid2Enabled] = useState<boolean>(true);
   const [adsLoaded, setAdsLoaded] = useState<boolean>(false);
+  const [isOptedOut, setIsOptedOut] = useState<boolean>(false);
 
   // useRef hook to directly access DOM elements on the page
   const videoElementRef = useRef<HTMLVideoElement | null>(null);
@@ -37,6 +38,10 @@ const SecureSignalsApp = () => {
   const adsManagerRef = useRef<google.ima.AdsManager | null>(null);
 
   const updateElements = useCallback((status) => {
+    // Check for opt-out status
+    const optedOut = status?.status === 'optout';
+    setIsOptedOut(optedOut);
+
     if (window.__uid2.getAdvertisingToken()) {
       setTargetedAdvertisingReady(true);
     } else {
@@ -257,6 +262,16 @@ const SecureSignalsApp = () => {
     if (isEnabled('uid2')) {
       window.__uid2.disconnect();
     }
+    setIsOptedOut(false);
+  };
+
+  const handleTryAnother = () => {
+    window.googletag.secureSignalProviders.clearAllCache();
+    if (isEnabled('uid2')) {
+      window.__uid2.disconnect();
+    }
+    setEmail('');
+    setIsOptedOut(false);
   };
 
   const handlePlay = () => {
@@ -368,7 +383,15 @@ const SecureSignalsApp = () => {
         </table>
       </div>
 
-      {!isLoggedIn ? (
+      {isOptedOut ? (
+        <div id='optout_message' className='form'>
+          <p className='message'>This email has opted out</p>
+          <p>The email address you entered has opted out of UID2. No UID2 token can be generated for this email.</p>
+          <button type='button' className='button' onClick={handleTryAnother}>
+            Try Another Email
+          </button>
+        </div>
+      ) : !isLoggedIn ? (
         <div id='login_form' className='form'>
           <div className='email_prompt'>
             <input
