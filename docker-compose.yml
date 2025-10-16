@@ -21,15 +21,6 @@ services:
       - .env
 
   # secure signals integrations
-  google-secure-signals-client-side:
-    build:
-      context: .
-      dockerfile: web-integrations/google-secure-signals/client-side/Dockerfile
-    ports:
-      - "3040:3040"
-    container_name: google-secure-signals-client-side
-    env_file:
-      - .env
 
   google-secure-signals-client-server:
     build:
@@ -41,23 +32,13 @@ services:
     env_file:
       - .env
 
-  google-secure-signals-server-side:
+  google-secure-signals-client-side:
     build:
       context: .
-      dockerfile: web-integrations/google-secure-signals/server-side/Dockerfile
+      dockerfile: web-integrations/google-secure-signals/client-side/Dockerfile
     ports:
       - "3042:3042"
-    container_name: google-secure-signals-server-side
-    env_file:
-      - .env
-
-  google-secure-signals-react-client-side:
-    build:
-      context: .
-      dockerfile: web-integrations/google-secure-signals/react-client-side/Dockerfile
-    ports:
-      - "3043:3043"
-    container_name: google-secure-signals-react-client-side
+    container_name: google-secure-signals-client-side
     env_file:
       - .env
 

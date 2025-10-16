@@ -1,7 +1,6 @@
 const clientSideIdentityOptions = {
-  subscriptionId: 'toPh8vgJgt',
-  serverPublicKey:
-    'UID2-X-I-MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEKAbPfOz7u25g1fL6riU7p2eeqhjmpALPeYoyjvZmZ1xM2NM8UeOmDZmCIBnKyRZ97pz5bMCjrs38WM22O7LJuw==',
+  subscriptionId: '${SUBSCRIPTION_ID}',
+  serverPublicKey: '${SERVER_PUBLIC_KEY}',
 };
 
 function updateGuiElements(state) {
@@ -46,10 +45,6 @@ function updateGuiElements(state) {
   }
 }
 
-function isEnabled(product) {
-  return $(`#${product}_state th input`)[0].checked;
-}
-
 function onUid2IdentityUpdated(eventType, payload) {
   console.log('UID2 Callback', payload);
   // allow secure signals time to load
@@ -59,9 +54,7 @@ function onUid2IdentityUpdated(eventType, payload) {
 function onDocumentReady() {
   $('#logout').click(() => {
     window.googletag.secureSignalProviders.clearAllCache();
-    if (isEnabled('uid2')) {
-      __uid2.disconnect();
-    }
+    __uid2.disconnect();
   });
 
   $('#login').click(async () => {
@@ -69,9 +62,7 @@ function onDocumentReady() {
     const email = $('#email').val();
 
     try {
-      if (isEnabled('uid2')) {
         await __uid2.setIdentityFromEmail(email, clientSideIdentityOptions);
-      }
     } catch (e) {
       console.error('setIdentityFromEmail failed', e);
     }
@@ -93,7 +84,7 @@ window.__uid2.callbacks.push(onUid2IdentityUpdated);
 window.__uid2.callbacks.push((eventType, payload) => {
   if (eventType === 'SdkLoaded') {
     window.__uid2.init({
-      baseUrl: 'https://operator-integ.uidapi.com',
+      baseUrl: '${UID_BASE_URL}',
     });
     $(document).ready(onDocumentReady);
   }
