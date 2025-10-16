@@ -1,9 +1,16 @@
-FROM node:20.11.0-alpine3.18
+FROM nginx:alpine
 
-WORKDIR /usr/src/app
+# Install gettext for envsubst
+RUN apk add --no-cache gettext
 
-COPY . .
-RUN npm install
+# Copy static files from client-side directory
+COPY web-integrations/google-secure-signals/client-side/html /usr/share/nginx/html/
 
-EXPOSE 3000
-CMD [ "npm", "start" ]
+# Copy config and entrypoint
+COPY web-integrations/google-secure-signals/client-side/default.conf /etc/nginx/conf.d/default.conf
+COPY web-integrations/google-secure-signals/client-side/entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
