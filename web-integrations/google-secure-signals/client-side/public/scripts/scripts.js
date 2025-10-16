@@ -13,13 +13,22 @@ function updateGuiElements(state) {
   );
   $('#identity_state').text(String(JSON.stringify(state, null, 2)));
 
+  // Check for opt-out status
+  const isOptedOut = state?.status === 'optout';
+  
   const uid2LoginRequired = __uid2.isLoginRequired();
-  if (uid2LoginRequired) {
+  if (isOptedOut) {
+    $('#login_form').hide();
+    $('#logout_form').hide();
+    $('#optout_message').show();
+  } else if (uid2LoginRequired) {
     $('#login_form').show();
     $('#logout_form').hide();
+    $('#optout_message').hide();
   } else {
     $('#login_form').hide();
     $('#logout_form').show();
+    $('#optout_message').hide();
   }
 
   const secureSignalsStorage = localStorage['_GESPSK-uidapi.com'];
@@ -66,6 +75,14 @@ function onDocumentReady() {
     } catch (e) {
       console.error('setIdentityFromEmail failed', e);
     }
+  });
+
+  $('#try_another').click(() => {
+    window.googletag.secureSignalProviders.clearAllCache();
+    if (isEnabled('uid2')) {
+      __uid2.disconnect();
+    }
+    $('#email').val('');
   });
 }
 

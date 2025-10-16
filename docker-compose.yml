@@ -21,6 +21,16 @@ services:
       - .env
 
   # secure signals integrations
+  google-secure-signals-client-side:
+    build:
+      context: .
+      dockerfile: web-integrations/google-secure-signals/client-side/Dockerfile
+    ports:
+      - "3040:3040"
+    container_name: google-secure-signals-client-side
+    env_file:
+      - .env
+
   google-secure-signals-client-server:
     build:
       context: .

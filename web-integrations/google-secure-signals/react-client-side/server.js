@@ -4,7 +4,7 @@ const express = require('express');
 
 const app = express();
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3043;
 
 app.engine('.html', ejs.__express);
 app.set('view engine', 'html');
