@@ -6,6 +6,7 @@ declare global {
   interface Window {
     __uid2: any;
     getAdvertisingToken: any;
+    google: any;
     googletag: any;
   }
 }
@@ -18,23 +19,23 @@ const clientSideIdentityOptions = {
 
 const SecureSignalsApp = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [secureSignalsLoaded, setSecureSignalsLoaded] = useState<boolean>(false);
+  const [secureSignalsLoaded, setSecureSignalsLoaded] = useState(false);
   const [secureSignalsValue, setSecureSignalsValue] = useState('undefined');
-  const [targetedAdvertisingReady, setTargetedAdvertisingReady] = useState<boolean>(false);
-  const [advertisingToken, setAdvertisingToken] = useState<string>('undefined');
-  const [loginRequired, setLoginRequired] = useState<boolean>(true);
+  const [targetedAdvertisingReady, setTargetedAdvertisingReady] = useState(false);
+  const [advertisingToken, setAdvertisingToken] = useState('undefined');
+  const [loginRequired, setLoginRequired] = useState(true);
   const [identityState, setIdentityState] = useState('');
-  const [email, setEmail] = useState<string>('validate@example.com');
+  const [email, setEmail] = useState('validate@example.com');
   const [identity, setIdentity] = useState(null);
-  const [isUid2Enabled, setIsUid2Enabled] = useState<boolean>(true);
-  const [adsLoaded, setAdsLoaded] = useState<boolean>(false);
+  const [isUid2Enabled, setIsUid2Enabled] = useState(true);
+  const [adsLoaded, setAdsLoaded] = useState(false);
 
   // useRef hook to directly access DOM elements on the page
-  const videoElementRef = useRef<HTMLVideoElement | null>(null);
-  const adContainerRef = useRef<HTMLDivElement | null>(null);
-  const adDisplayContainerRef = useRef<google.ima.AdDisplayContainer | null>(null);
-  const adsLoaderRef = useRef<google.ima.AdsLoader | null>(null);
-  const adsManagerRef = useRef<google.ima.AdsManager | null>(null);
+  const videoElementRef = useRef(null);
+  const adContainerRef = useRef(null);
+  const adDisplayContainerRef = useRef(null);
+  const adsLoaderRef = useRef(null);
+  const adsManagerRef = useRef(null);
 
 
   const updateElements = useCallback((status) => {
@@ -265,7 +266,7 @@ const SecureSignalsApp = () => {
     videoElementRef.current!.play();
   };
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEmailChange = (e: any) => {
     setEmail(e.target.value);
   };
 
@@ -281,7 +282,7 @@ const SecureSignalsApp = () => {
     }
   };
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxChange = (e: any) => {
     setIsUid2Enabled(e.target.checked);
   };
 
