@@ -36,10 +36,14 @@ const SecureSignalsApp = () => {
   const adDisplayContainerRef = useRef<google.ima.AdDisplayContainer | null>(null);
   const adsLoaderRef = useRef<google.ima.AdsLoader | null>(null);
   const adsManagerRef = useRef<google.ima.AdsManager | null>(null);
+  // Track whether user has attempted to generate a token
+  const loginAttemptedRef = useRef<boolean>(false);
 
   const updateElements = useCallback((status) => {
-    // Check for opt-out status
-    const optedOut = status?.status === 'optout';
+    const token = window.__uid2.getAdvertisingToken();
+    
+    // Check for opt-out: only if user attempted login, and we got identity null with no token
+    const optedOut = loginAttemptedRef.current && !token && status?.identity === null;
     setIsOptedOut(optedOut);
 
     if (window.__uid2.getAdvertisingToken()) {
@@ -246,6 +250,7 @@ const SecureSignalsApp = () => {
 
   const handleLogin = async () => {
     window.googletag.secureSignalProviders.clearAllCache();
+    loginAttemptedRef.current = true; // Mark that user attempted to generate a token
 
     try {
       if (isEnabled('uid2')) {
@@ -262,6 +267,7 @@ const SecureSignalsApp = () => {
     if (isEnabled('uid2')) {
       window.__uid2.disconnect();
     }
+    loginAttemptedRef.current = false; // Reset flag
     setIsOptedOut(false);
   };
 
@@ -271,6 +277,7 @@ const SecureSignalsApp = () => {
       window.__uid2.disconnect();
     }
     setEmail('');
+    loginAttemptedRef.current = false; // Reset flag
     setIsOptedOut(false);
   };
 
@@ -384,13 +391,16 @@ const SecureSignalsApp = () => {
       </div>
 
       {isOptedOut ? (
-        <div id='optout_message' className='form'>
-          <p className='message'>This email has opted out</p>
-          <p>The email address you entered has opted out of UID2. No UID2 token can be generated for this email.</p>
-          <button type='button' className='button' onClick={handleTryAnother}>
-            Try Another Email
-          </button>
-        </div>
+        <>
+          <div id='optout_banner' style={{ border: '3px solid #ffc107', padding: '15px', margin: '20px 0' }}>
+            <p style={{ margin: 0 }}>The email address you entered has opted out of UID2.</p>
+          </div>
+          <div id='optout_message' className='form'>
+            <button type='button' className='button' onClick={handleTryAnother}>
+              Try Another Email
+            </button>
+          </div>
+        </>
       ) : !isLoggedIn ? (
         <div id='login_form' className='form'>
           <div className='email_prompt'>
