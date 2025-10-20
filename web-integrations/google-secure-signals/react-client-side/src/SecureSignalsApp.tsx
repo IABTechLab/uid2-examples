@@ -36,6 +36,7 @@ const SecureSignalsApp = () => {
   const adsLoaderRef = useRef<google.ima.AdsLoader | null>(null);
   const adsManagerRef = useRef<google.ima.AdsManager | null>(null);
 
+
   const updateElements = useCallback((status) => {
     if (window.__uid2.getAdvertisingToken()) {
       setTargetedAdvertisingReady(true);

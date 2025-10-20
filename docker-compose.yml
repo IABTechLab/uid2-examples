@@ -51,6 +51,16 @@ services:
     env_file:
       - .env
 
+  google-secure-signals-react-client-side:
+    build:
+      context: .
+      dockerfile: web-integrations/google-secure-signals/react-client-side/Dockerfile
+    ports:
+      - "3044:3044"
+    container_name: google-secure-signals-react-client-side
+    env_file:
+      - .env
+
   # prebid integrations
   prebid-client:
     build:
