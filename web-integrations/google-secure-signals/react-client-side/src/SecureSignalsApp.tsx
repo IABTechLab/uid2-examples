@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './styles/app.css';
 import './styles/ads.css';
-
 declare global {
   interface Window {
     __uid2: any;
@@ -12,8 +11,8 @@ declare global {
 }
 
 const clientSideIdentityOptions = {
-  subscriptionId: 'toPh8vgJgt',
-  serverPublicKey:
+  subscriptionId: process.env.REACT_APP_UID2_CSTG_SUBSCRIPTION_ID || 'toPh8vgJgt',
+  serverPublicKey: process.env.REACT_APP_UID2_CSTG_SERVER_PUBLIC_KEY ||
     'UID2-X-I-MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEKAbPfOz7u25g1fL6riU7p2eeqhjmpALPeYoyjvZmZ1xM2NM8UeOmDZmCIBnKyRZ97pz5bMCjrs38WM22O7LJuw==',
 };
 
@@ -36,7 +35,6 @@ const SecureSignalsApp = () => {
   const adDisplayContainerRef = useRef(null);
   const adsLoaderRef = useRef(null);
   const adsManagerRef = useRef(null);
-
 
   const updateElements = useCallback((status) => {
     if (window.__uid2.getAdvertisingToken()) {
@@ -169,7 +167,7 @@ const SecureSignalsApp = () => {
       let __uid2 = window.__uid2;
       if (eventType === 'SdkLoaded') {
         __uid2.init({
-          baseUrl: 'https://operator-integ.uidapi.com',
+          baseUrl: process.env.REACT_APP_UID2_BASE_URL ||'https://operator-integ.uidapi.com',
         });
       }
       if (eventType === 'InitCompleted') {

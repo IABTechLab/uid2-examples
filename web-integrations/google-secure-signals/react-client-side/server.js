@@ -1,3 +1,7 @@
+require('dotenv').config({ path: '../../../.env' });
+
+console.log('process.env', process.env);
+
 const ejs = require('ejs');
 
 const express = require('express');
@@ -12,7 +16,11 @@ app.set('view engine', 'html');
 app.use(express.static('public', { type: 'application/javascript' }));
 
 app.get('/', (req, res) => {
-  res.render('index');
+  res.render('index', {
+    uid2SubscriptionId: process.env.UID2_CSTG_SUBSCRIPTION_ID,
+    uid2ServerPublicKey: process.env.UID2_CSTG_SERVER_PUBLIC_KEY,
+    uid2BaseUrl: process.env.UID2_BASE_URL,
+  });
 });
 
 app.listen(port, () => {
