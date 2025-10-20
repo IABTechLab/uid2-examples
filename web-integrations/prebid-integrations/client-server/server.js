@@ -24,15 +24,16 @@ const timestampLength = 8;
 const encryptionAlgo = 'aes-256-gcm';
 
 // Middleware
-app.use(express.static('public'));
 app.use('/prebid.js', express.static('../prebid.js'));
+app.use('/app.css', express.static('public/app.css'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 app.engine('.html', ejs.__express);
 app.set('views', './public');
 app.set('view engine', 'html');
+
+
 
 // ============================================================================
 // Encryption/Decryption Helpers

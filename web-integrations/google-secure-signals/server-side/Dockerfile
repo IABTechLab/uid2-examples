@@ -11,5 +11,5 @@ COPY web-integrations/google-secure-signals/server-side/server.js ./
 COPY web-integrations/google-secure-signals/server-side/public ./public/
 COPY web-integrations/google-secure-signals/server-side/views ./views/
 
-EXPOSE 3042
+EXPOSE 3043
 CMD ["npm", "start"]

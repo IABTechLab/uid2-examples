@@ -8,7 +8,7 @@ const nocache = require('nocache');
 const crypto = require('crypto');
 
 const app = express();
-const port = process.env.PORT || 3042;
+const port = process.env.PORT || 3043;
 
 const uid2BaseUrl = process.env.UID2_BASE_URL;
 const uid2ApiKey = process.env.UID2_API_KEY;
