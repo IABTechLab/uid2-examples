@@ -4,14 +4,42 @@ This example demonstrates how a content publisher who is working with [Google In
 
 ## Build and Run the Example Application
 
-The easiest way to try the example is to use the following docker build command:
+You can run this example in two ways:
+
+### Option 1: Running Locally with npm (Recommended)
+
+The fastest way to try the example is to run it locally:
+
+1. Ensure you have a local UID2 operator running at `http://localhost:8080`
+
+2. Add the following environment variables to the `.env` file at the root of the repository (`uid2-examples/.env`):
+   ```
+   REACT_APP_UID2_BASE_URL="http://localhost:8080"
+   REACT_APP_UID2_CSTG_SUBSCRIPTION_ID="<your_subscription_id>"
+   REACT_APP_UID2_CSTG_SERVER_PUBLIC_KEY="<your_server_public_key>"
+   ```
+
+3. Run the application:
+   ```bash
+   cd web-integrations/google-secure-signals/react-client-side
+   npm install
+   npm start
+   ```
+
+The example app will be up and running at `http://localhost:3044`
+
+**Note:** The React app uses `dotenv-cli` to load environment variables from the parent `.env` file. Environment variables for React must be prefixed with `REACT_APP_` to be accessible in the browser.
+
+### Option 2: Build and Run with Docker
+
+Alternatively, you can build and run the example using Docker (note: this may take several minutes):
 
 ```
 docker build . -t uid2-secure-signals-react
-docker run -it --rm -p 3000:3000 uid2-secure-signals-react
+docker run -it --rm -p 3044:3044 uid2-secure-signals-react
 ```
 
-The example app will be up and running at localhost:3000
+The example app will be up and running at localhost:3044
 
 If needed, to close the application, terminate the docker container or use the `Ctrl+C` keyboard shortcut.
 
@@ -23,7 +51,7 @@ The following table outlines and annotates the steps you may take to test and ex
 
 | Step | Description                                                                                                                                                                                                                                                     | Comments                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | :--: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|  1   | In your browser, navigate to the application main page at `http://localhost:3000`.                                                                                                                                                                              | The displayed main [page](src/SecureSignalsApp.tsx) of the example application provides a login form for the user to complete the UID2 login process.</br>IMPORTANT: A real-life application must also display a form for the user to express their consent to targeted advertising.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|  1   | In your browser, navigate to the application main page at `http://localhost:3044`.                                                                                                                                                                              | The displayed main [page](src/SecureSignalsApp.tsx) of the example application provides a login form for the user to complete the UID2 login process.</br>IMPORTANT: A real-life application must also display a form for the user to express their consent to targeted advertising.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 |  2   | In the text field at the bottom, enter the user email address that you want to use for testing and click **Generate UID2**. Note: The button may be labeled different here as it is a testing environment; in a real production environment, labels may differ. | The click calls the Secure Signal [`clearAllCache()`](https://developers.google.com/publisher-tag/reference#googletag.secureSignals.SecureSignalProvidersArray_clearAllCache) function, to clear all cached signals from local storage. Then, it makes a call on the client side to the `setIdentityFromEmail` function of the JS SDK ([Configuring the SDK for Javascript](https://unifiedid.com/docs/guides/integration-javascript-client-side#configure-the-sdk-for-javascript)).                                                                                                                                                                                                                                                                                                                         |
 |  3   | A confirmation message appears with the established UID2 identity information.                                                                                                                                                                                  | The displayed identity information is the `body` property of the [JSON response payload](https://unifiedid.com/docs/endpoints/post-token-generate#decrypted-json-response-format) from the `client-generate` response. Next, the identity information is passed to the UID2 SDK [`setIdentity()`](https://unifiedid.com/docs/sdks/sdk-ref-javascript#setidentityidentity-identity-void) function. If the identity is valid, the SDK stores it either in local storage or a first-party UID2 cookie (see [UID2 Storage Format](https://unifiedid.com/docs/sdks/sdk-ref-javascript#uid2-storage-format) for use on subsequent page loads.)                                                                                                                                                                     |
 |  4   | Click the **Back to the main page** link.                                                                                                                                                                                                                       | On the updated application main page, note the newly populated **UID2 Advertising Token** value and a video player. While the [page](src/SecureSignalsApp.tsx) is loading, [GPT](https://developers.google.com/publisher-tag/reference#googletag) auto-loads the Secure Signal UID2 script which pushes the advertising token to GPT local storage, and the [IMA](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) makes an ad request which transmits the encoded signal in the request. The [page](src/SecureSignalsApp.tsx) calls the [init()](https://unifiedid.com/docs/sdks/sdk-ref-javascript#initopts-object-void) function again, but this time without passing an explicit identity. Instead, the identity is loaded from the first-party cookie or local storage. |

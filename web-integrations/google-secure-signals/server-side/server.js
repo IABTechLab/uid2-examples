@@ -207,7 +207,9 @@ function _GenerateTokenV1(req, res) {
       headers: { Authorization: 'Bearer ' + uid2ApiKey },
     })
     .then((response) => {
-      if (response.data.status !== 'success') {
+      if (response.data.status === 'optout') {
+        res.render('optout');
+      } else if (response.data.status !== 'success') {
         res.render('error', {
           error: 'Got unexpected token generate status: ' + response.data.status,
           response: response,
@@ -246,7 +248,9 @@ app.post('/login', async (req, res) => {
     ); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
     const response = decrypt(encryptedResponse.data, uid2ClientSecret, false, nonce);
 
-    if (response.status !== 'success') {
+    if (response.status === 'optout') {
+      res.render('optout');
+    } else if (response.status !== 'success') {
       res.render('error', {
         error: 'Got unexpected token generate status in decrypted response: ' + response.status,
         response: response,

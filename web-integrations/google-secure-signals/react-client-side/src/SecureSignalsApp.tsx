@@ -10,6 +10,9 @@ declare global {
   }
 }
 
+// Declare global variables
+declare const google: any;
+
 const clientSideIdentityOptions = {
   subscriptionId: process.env.REACT_APP_UID2_CSTG_SUBSCRIPTION_ID || 'toPh8vgJgt',
   serverPublicKey: process.env.REACT_APP_UID2_CSTG_SERVER_PUBLIC_KEY ||
@@ -24,10 +27,11 @@ const SecureSignalsApp = () => {
   const [advertisingToken, setAdvertisingToken] = useState('undefined');
   const [loginRequired, setLoginRequired] = useState(true);
   const [identityState, setIdentityState] = useState('');
-  const [email, setEmail] = useState('validate@example.com');
+  const [email, setEmail] = useState('');
   const [identity, setIdentity] = useState(null);
   const [isUid2Enabled, setIsUid2Enabled] = useState(true);
   const [adsLoaded, setAdsLoaded] = useState(false);
+  const [isOptedOut, setIsOptedOut] = useState(false);
 
   // useRef hook to directly access DOM elements on the page
   const videoElementRef = useRef(null);
@@ -35,8 +39,16 @@ const SecureSignalsApp = () => {
   const adDisplayContainerRef = useRef(null);
   const adsLoaderRef = useRef(null);
   const adsManagerRef = useRef(null);
+  // Track whether user has attempted to generate a token
+  const loginAttemptedRef = useRef(false);
 
   const updateElements = useCallback((status) => {
+    const token = window.__uid2.getAdvertisingToken();
+    
+    // Check for opt-out: only if user attempted login, and we got identity null with no token
+    const optedOut = loginAttemptedRef.current && !token && status?.identity === null;
+    setIsOptedOut(optedOut);
+
     if (window.__uid2.getAdvertisingToken()) {
       setTargetedAdvertisingReady(true);
     } else {
@@ -241,6 +253,7 @@ const SecureSignalsApp = () => {
 
   const handleLogin = async () => {
     window.googletag.secureSignalProviders.clearAllCache();
+    loginAttemptedRef.current = true; // Mark that user attempted to generate a token
 
     try {
       if (isEnabled('uid2')) {
@@ -257,6 +270,18 @@ const SecureSignalsApp = () => {
     if (isEnabled('uid2')) {
       window.__uid2.disconnect();
     }
+    loginAttemptedRef.current = false; // Reset flag
+    setIsOptedOut(false);
+  };
+
+  const handleTryAnother = () => {
+    window.googletag.secureSignalProviders.clearAllCache();
+    if (isEnabled('uid2')) {
+      window.__uid2.disconnect();
+    }
+    setEmail('');
+    loginAttemptedRef.current = false; // Reset flag
+    setIsOptedOut(false);
   };
 
   const handlePlay = () => {
@@ -368,7 +393,18 @@ const SecureSignalsApp = () => {
         </table>
       </div>
 
-      {!isLoggedIn ? (
+      {isOptedOut ? (
+        <>
+          <div id='optout_banner' style={{ border: '3px solid #ffc107', padding: '15px', margin: '20px 0' }}>
+            <p style={{ margin: 0 }}>The email address you entered has opted out of UID2.</p>
+          </div>
+          <div id='optout_message' className='form'>
+            <button type='button' className='button' onClick={handleTryAnother}>
+              Try Another Email
+            </button>
+          </div>
+        </>
+      ) : !isLoggedIn ? (
         <div id='login_form' className='form'>
           <div className='email_prompt'>
             <input
