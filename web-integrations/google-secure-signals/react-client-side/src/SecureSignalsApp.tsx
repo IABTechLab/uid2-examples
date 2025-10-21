@@ -10,6 +10,9 @@ declare global {
   }
 }
 
+// Declare global variables
+declare const google: any;
+
 const clientSideIdentityOptions = {
   subscriptionId: process.env.REACT_APP_UID2_CSTG_SUBSCRIPTION_ID || 'toPh8vgJgt',
   serverPublicKey: process.env.REACT_APP_UID2_CSTG_SERVER_PUBLIC_KEY ||
