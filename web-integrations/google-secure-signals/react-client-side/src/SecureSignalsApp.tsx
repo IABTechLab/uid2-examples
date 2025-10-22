@@ -312,8 +312,7 @@ const SecureSignalsApp = () => {
   return (
     <div>
       <h1>
-        UID2 Publisher Client-Side Integration Example using React, UID2 JavaScript SDK, Secure
-        Signals
+        React Client-Side UID2 SDK Integration Example with Google Secure Signals
       </h1>
       <p>
         This example demonstrates how a content publisher can follow the{' '}
