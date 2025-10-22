@@ -1,4 +1,4 @@
-# UID2 Prebid.js Client-Server Integration Example
+# Client-Server UID2 SDK Integration Example with Prebid.js
 
 This example demonstrates how to integrate [UID2 with Prebid.js using client-server integration](https://unifiedid.com/docs/guides/integration-prebid-client-server), where UID2 tokens are generated on the server side and passed to Prebid for use in header bidding auctions.
 
