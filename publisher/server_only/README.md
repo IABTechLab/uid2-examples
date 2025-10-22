@@ -1,4 +1,4 @@
-# Server-Only UID2 Integration Example
+# Server-Side UID2 Integration Example
 
 [This example](https://example-srvonly-integ.uidapi.com/) demonstrates how a content publisher can use the [UID2 services](https://unifiedid.com/docs/intro) to implement the [custom UID2 integration workflow](https://unifiedid.com/docs/guides/custom-publisher-integration).
 
