@@ -1,6 +1,6 @@
 # Client-Server UID2 Integration Example using JavaScript SDK
 
-[This example](https://example-jssdk-integ.uidapi.com/) demonstrates how a content publisher can use the [UID2 services](https://unifiedid.com/docs/intro) and the [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript) to implement the [client-side UID2 integration workflow](https://unifiedid.com/docs/guides/publisher-client-side).
+[This example](https://example-jssdk-integ.uidapi.com/) demonstrates how a content publisher can use the [UID2 services](https://unifiedid.com/docs/intro) and the [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript) to implement the [client-server UID2 integration workflow](https://unifiedid.com/docs/guides/integration-javascript-client-server).
 
 For an example application without using the UID2 SDK, see [Server-Side UID2 Integration Example](https://github.com/IABTechLab/uid2-examples/tree/main/web-integrations/server-side).
 
