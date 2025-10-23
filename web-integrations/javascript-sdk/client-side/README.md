@@ -1,4 +1,4 @@
-# UID2 JavaScript SDK Client-Side Integration Example
+# Client-Side UID2 Integration Example using JavaScript SDK
 
 This example demonstrates how a content publisher can follow the [Client-Side Integration Guide for JavaScript](https://unifiedid.com/docs/guides/integration-javascript-client-side) to implement UID2 integration and generate UID2 tokens.
 

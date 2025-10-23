@@ -1,4 +1,4 @@
-# Example Prebid.js UID2 Integration
+# Client-Side UID2 SDK Integration Example with Prebid.js
 
 ## Viewing live site
 
