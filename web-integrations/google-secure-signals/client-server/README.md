@@ -32,7 +32,7 @@ From the base directory:
 docker build -f web-integrations/google-secure-signals/client-server/Dockerfile -t google-secure-signals-client .
 
 # Run the container
-docker run -p 3052:3052 --env-file .env google-secure-signals-client-server
+docker run -p 3052:3052 --env-file .env google-secure-signals-client
 ```
 
 ### Using the VS Code Debugger
