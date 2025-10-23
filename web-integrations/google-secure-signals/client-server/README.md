@@ -2,7 +2,7 @@
 
 This example demonstrates how a content publisher who is working with [Google Interactive Media Ads(IMA) SDKs](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) can use [Google Secure Signal](https://support.google.com/admanager/answer/10488752) and the [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript) to share UID2 directly with bidders, in an implementation that uses this SDK.
 
-For an example application without using the UID2 SDK, see [Server-Side UID2 Integration Example with Google Secure Signals](https://github.com/IABTechLab/uid2-examples/tree/main/web-integrations/google-secure-signals/server-side).
+For an example application without using the UID2 SDK, see [Server-Side UID2 Integration Example with Google Secure Signals](../server-side/README.md).
 
 > NOTE: Although the server side of the example application is implemented in JavaScript using node.js, it is not a requirement. You can use any technology of your choice and refer to the example application for an illustration of the functionality that needs to be implemented.
 
