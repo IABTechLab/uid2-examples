@@ -2,7 +2,7 @@
 
 This example demonstrates how a content publisher who is working with [Google Interactive Media Ads(IMA) SDKs](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) can use [Google Secure Signal](https://support.google.com/admanager/answer/10488752) and the [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript) to share UID2 directly with bidders, in an implementation that uses this SDK.
 
-For an example application without using the UID2 SDK, see [Server-Side UID2 Integration Example](../server_side/README.md).
+For an example application without using the UID2 SDK for client-server integration, see [Server-Side UID2 Integration Example with Google Secure Signals](../server-side/README.md).
 
 > NOTE: Although the server side of the example application is implemented in JavaScript using node.js, it is not a requirement. You can use any technology of your choice and refer to the example application for an illustration of the functionality that needs to be implemented.
 
@@ -14,13 +14,13 @@ From the base directory:
 
 ```bash
 # Start the service
-docker-compose up -d google-secure-signals-client
+docker-compose up -d google-secure-signals-client-server
 
 # View logs
-docker-compose logs google-secure-signals-client
+docker-compose logs google-secure-signals-client-server
 
 # Stop the service
-docker-compose down google-secure-signals-client
+docker-compose down google-secure-signals-client-server
 ```
 
 ### Using Docker directly
@@ -29,10 +29,10 @@ From the base directory:
 
 ```bash
 # Build the image
-docker build -f web-integrations/google-secure-signals/client-server/Dockerfile -t google-secure-signals-client .
+docker build -f web-integrations/google-secure-signals/client-server/Dockerfile -t google-secure-signals-client-server .
 
 # Run the container
-docker run -p 3052:3052 --env-file .env google-secure-signals-client
+docker run -p 3041:3041 --env-file .env google-secure-signals-client-server
 ```
 
 ### Using the VS Code Debugger
@@ -47,7 +47,7 @@ The easiest way to try the example is to do the following:
    UID2_CLIENT_SECRET=<your-integ-client-secret>
    AD_TAG_URL=https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/extrernal/adx-test-tag&tfcd=0&npa=0&sz=640x480&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=
    UID2_JS_SDK_URL=http://localhost:9091/uid2-sdk.js
-   PORT=3052
+   PORT=3041
    ```
 1. Click the Run and Debug tab or hit `Crtl+Shift+D`
 1. Select `Launch Secure Signals (Chrome)` from the configuration dropdown
@@ -69,7 +69,7 @@ Output similar to the following indicates that the example application is up and
 > uid2-publisher@1.0.0 start /usr/src/app
 > node server.js
 
-Example app listening at http://localhost:3052
+Example app listening at http://localhost:3041
 ```
 
 If needed, to close the application, terminate the Docker container or use the `Ctrl+C` keyboard shortcut.
@@ -80,7 +80,7 @@ The following table outlines and annotates the steps you can take to test and ex
 
 | Step | Description                                                                                                                                                                                                                                                | Comments                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | :--: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-|  1   | In your browser, navigate to the application main page at `http://localhost:3052`.                                                                                                                                                                         | The displayed main ([index](views/index.html)) page of the example application provides a login form for the user to complete the UID2 login process.</br>IMPORTANT: A real-life application must also display a form for the user to consent to targeted advertising.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+|  1   | In your browser, navigate to the application main page at `http://localhost:3041`.                                                                                                                                                                         | The displayed main ([index](views/index.html)) page of the example application provides a login form for the user to complete the UID2 login process.</br>IMPORTANT: A real-life application must also display a form for the user to consent to targeted advertising.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 |  2   | In the text field at the bottom, enter the email address that you want to use for testing and click **Generate UID2**. Note: The button may be labeled different here as it is a testing environment; in a real production environment, labels may differ. | The click calls the Secure Signal [`clearAllCache()`](https://developers.google.com/publisher-tag/reference#googletag.secureSignals.SecureSignalProvidersArray_clearAllCache) function, to clear all cached signals from local storage, and then calls the `/login` endpoint ([server.js](server.js)). The login initiated on the server side then calls the [POST /token/generate](https://unifiedid.com/docs/endpoints/post-token-generate#decrypted-json-response-format) endpoint and processes the received response.                                                                                                                                                                                                                                                            |
 |      | A confirmation message appears with the established UID2 identity information.                                                                                                                                                                             | The displayed identity information is the `body` property of the [JSON response payload](https://unifiedid.com/docs/endpoints/post-token-generate#decrypted-json-response-format) from the `POST /token/generate` response. It has been passed to the `login` [view](views/login.html) for rendering client-side JavaScript. Next, the identity information is passed to the UID2 SDK [`init()`](https://unifiedid.com/docs/sdks/sdk-ref-javascript#initopts-object-void) function. If the identity is valid, the SDK stores it either in local storage or a first-party UID2 cookie (see [UID2 Storage Format](https://unifiedid.com/docs/sdks/sdk-ref-javascript#uid2-storage-format) for use on subsequent page loads.                                                             |
 |  3   | Click the **Back to the main page** link.                                                                                                                                                                                                                  | On the updated application main page, note the newly populated **UID2 Advertising Token** value and a video player. While the [page view](views/index.html) is loading, [GPT](https://developers.google.com/publisher-tag/reference#googletag) auto-loads the Secure Signal UID2 script which pushes the advertising token to GPT local storage, and the [IMA](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) makes an ad request which transmits the encoded signal in the request. The [page view](views/index.html) calls the [init()](https://unifiedid.com/docs/sdks/sdk-ref-javascript#initopts-object-void) function again, but this time without passing an explicit identity. Instead, the identity is loaded from the first-party cookie. |

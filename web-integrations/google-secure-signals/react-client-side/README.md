@@ -35,8 +35,8 @@ The example app will be up and running at `http://localhost:3044`
 Alternatively, you can build and run the example using Docker (note: this may take several minutes):
 
 ```
-docker build . -t uid2-secure-signals-react
-docker run -it --rm -p 3044:3044 uid2-secure-signals-react
+docker build -f web-integrations/google-secure-signals/react-client-side/Dockerfile -t google-secure-signals-react-client-side .
+docker run -it --rm -p 3044:3044 google-secure-signals-react-client-side
 ```
 
 The example app will be up and running at localhost:3044

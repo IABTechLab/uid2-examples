@@ -20,6 +20,17 @@ services:
     env_file:
       - .env
 
+  # server-side integration (no SDK)
+  server-side:
+    build:
+      context: .
+      dockerfile: web-integrations/server-side/Dockerfile
+    ports:
+      - "3033:3033"
+    container_name: server-side
+    env_file:
+      - .env
+
   # secure signals integrations
   google-secure-signals-client-server:
     build:
@@ -82,14 +93,5 @@ services:
     env_file:
       - .env
 
-  # server-side integration (no SDK)
-  server-side:
-    build:
-      context: .
-      dockerfile: web-integrations/server-side/Dockerfile
-    ports:
-      - "3033:3033"
-    container_name: server-side
-    env_file:
-      - .env
+
 
