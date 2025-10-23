@@ -12,19 +12,19 @@ For an example application without using the UID2 SDK, see [Server-Side UID2 Int
 The easiest way to try the example is to use the following docker build command:
 
 ```
-docker build -f web-integrations/javascript-sdk/client-server/Dockerfile -t javascript-sdk-client-server .
-docker run -it --rm -p 3032:3032 \
+docker build . -t uid2-publisher-standard
+docker run -it --rm -p 3000:3000 \
     -e UID2_BASE_URL="https://operator-integ.uidapi.com" \
     -e UID2_API_KEY="{INTEG_API_KEY}" \
     -e UID2_CLIENT_SECRET="{CLIENT_SECRET}" \
-    javascript-sdk-client-server
+    uid2-publisher-standard
 ```
 
 If this command does not work in Powershell because of the `-e` variable, try running in Command Prompt with quotes around each variable like so:
 
 ```
-docker build -f web-integrations/javascript-sdk/client-server/Dockerfile -t javascript-sdk-client-server .
-docker run -it --rm -p 3032:3032 -e "UID2_BASE_URL=https://operator-integ.uidapi.com" -e "UID2_API_KEY={INTEG_API_KEY}" -e "UID2_CLIENT_SECRET={CLIENT_SECRET}" javascript-sdk-client-server
+docker build . -t uid2-publisher-server
+docker run -it --rm -p 3000:3000 -e "UID2_BASE_URL=https://operator-integ.uidapi.com" -e "UID2_API_KEY={INTEG_API_KEY}" -e "UID2_CLIENT_SECRET={CLIENT_SECRET}" uid2-publisher-server
 ```
 
 The following table lists the environment variables that you must specify to start the application.
@@ -41,7 +41,7 @@ After you see output similar to the following, the example application is up and
 > uid2-publisher@1.0.0 start /usr/src/app
 > node server.js
 
-Example app listening at http://localhost:3032
+Example app listening at http://localhost:3000
 ```
 
 If needed, to close the application, terminate the docker container or use the `Ctrl+C` keyboard shortcut.
@@ -54,7 +54,7 @@ The following table outlines and annotates the steps you may take to test and ex
 
 | Step | Description                                                                                                                                                                                                                                              | Comments                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | :--: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|  1   | In your browser, navigate to the application main page at `http://localhost:3032`.                                                                                                                                                                       | The displayed main ([index](views/index.html)) page of the example application provides a login form for the user to complete the UID2 login process.</br>IMPORTANT: A real-life application must also display a form for the user to express their consent to targeted advertising.                                                                                                                                                                                                                                                                                                                                                                                        |
+|  1   | In your browser, navigate to the application main page at `http://localhost:3000`.                                                                                                                                                                       | The displayed main ([index](views/index.html)) page of the example application provides a login form for the user to complete the UID2 login process.</br>IMPORTANT: A real-life application must also display a form for the user to express their consent to targeted advertising.                                                                                                                                                                                                                                                                                                                                                                                        |
 |  2   | In the text field at the bottom, enter the user email address that you want to use for testing and click **Generate UID2**. Note: The button may be labeled different here as it is a testing environment; in a real production environment, labels may differ. | This is a call to the `/login` endpoint ([server.js](server.js)). The login initiated on the server side then calls the [POST /token/generate](https://unifiedid.com/docs/endpoints/post-token-generate) endpoint and processes the received response.                                                                                                                                                                                                                                                                                                                                                                                                                      |
 |      | A confirmation message appears with the established UID2 identity information.                                                                                                                                                                           | The displayed identity information is the `body` property of the [JSON response payload](https://unifiedid.com/docs/endpoints/post-token-generate#decrypted-json-response-format) from the `POST /token/generate` response. It has been passed to the `login` [view](views/login.html) for rendering client-side JavaScript. Next, the identity information is passed to the [UID2 SDK `init()` function](https://unifiedid.com/docs/sdks/client-side-identity#initopts-object-void). If the identity is valid, the SDK stores it in a [first-party UID2 cookie](https://unifiedid.com/docs/sdks/client-side-identity#uid2-cookie-format) for use on subsequent page loads. |
 |  3   | Click the **Back to the main page** link.                                                                                                                                                                                                                | On the updated application main page, note the newly populated **UID2 Advertising Token** value. The [page view](views/index.html) calls the [init() function](https://unifiedid.com/docs/sdks/client-side-identity#initopts-object-void) again, but this time without passing an explicit identity. Instead, the identity is loaded from the first-party cookie.                                                                                                                                                                                                                                                                                                           |
