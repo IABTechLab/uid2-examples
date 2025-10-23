@@ -92,6 +92,3 @@ services:
     container_name: prebid-client-server
     env_file:
       - .env
-
-
-
