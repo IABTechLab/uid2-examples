@@ -37,8 +37,8 @@ The following table lists the environment variables that you must specify to sta
 | Variable | Description | Example Values |
 |:---------|:------------|:---------------|
 | `UID_BASE_URL` | The base URL of the UID2/EUID service. For details, see [Environments](https://unifiedid.com/docs/getting-started/gs-environments) (UID2) or [Environments](https://euid.eu/docs/getting-started/gs-environments) (EUID). | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu/v2` |
-| `UID_API_KEY` | Your UID2/EUID authentication key for the service specified in `UID_BASE_URL` | Your API key from UID2/EUID portal |
-| `UID_CLIENT_SECRET` | Your UID2/EUID client secret for the service specified in `UID_BASE_URL` | Your client secret from UID2/EUID portal |
+| `UID_API_KEY` | Authentication key for accessing UID2/EUID services. Provided via the UID2 Partner Portal or your integration representative. | Your assigned API key |
+| `UID_CLIENT_SECRET` | Private key used with your API key to authenticate your app with UID2/EUID services. Provided via the UID2 Partner Portal or your integration representative. | Your assigned client secret |
 | `UID_JS_SDK_URL` | URL to the JavaScript SDK | UID2: `https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js`<br/>EUID: `https://cdn.integ.euid.eu/euid-sdk-4.0.1.js` |
 | `UID_JS_SDK_NAME` | Global variable name for the SDK | UID2: `__uid2`<br/>EUID: `__euid` |
 
