@@ -187,9 +187,9 @@ async function protect(req, res, next) {
 app.get('/', protect, (req, res) => {
   res.render('index', {
     identity: req.session.identity,
-    secureSignalsSdkUrl: secureSignalsSdkUrl,
-    identityName: identityName,
-    docsBaseUrl: docsBaseUrl
+    secureSignalsSdkUrl,
+    identityName,
+    docsBaseUrl
   });
 });
 
@@ -210,9 +210,9 @@ app.get('/login', async (req, res) => {
   } else {
     req.session = null;
     res.render('login', {
-      secureSignalsSdkUrl: secureSignalsSdkUrl,
-      identityName: identityName,
-      docsBaseUrl: docsBaseUrl
+      secureSignalsSdkUrl,
+      identityName,
+      docsBaseUrl
     });
   }
 });
@@ -225,25 +225,25 @@ function _GenerateTokenV1(req, res) {
     .then((response) => {
       if (response.data.status === 'optout') {
         res.render('optout', {
-          secureSignalsSdkUrl: secureSignalsSdkUrl,
-          identityName: identityName,
-          docsBaseUrl: docsBaseUrl
+          secureSignalsSdkUrl,
+          identityName,
+          docsBaseUrl
         });
       } else if (response.data.status !== 'success') {
         res.render('error', {
           error: 'Got unexpected token generate status: ' + response.data.status,
-          response: response,
-          secureSignalsSdkUrl: secureSignalsSdkUrl,
-          identityName: identityName,
-          docsBaseUrl: docsBaseUrl
+          response,
+          secureSignalsSdkUrl,
+          identityName,
+          docsBaseUrl
         });
       } else if (typeof response.data.body !== 'object') {
         res.render('error', {
           error: 'Unexpected token generate response format: ' + response.data,
-          response: response,
-          secureSignalsSdkUrl: secureSignalsSdkUrl,
-          identityName: identityName,
-          docsBaseUrl: docsBaseUrl
+          response,
+          secureSignalsSdkUrl,
+          identityName,
+          docsBaseUrl
         });
       } else {
         req.session.identity = response.data.body;
@@ -252,11 +252,11 @@ function _GenerateTokenV1(req, res) {
     })
     .catch((error) => {
       res.render('error', {
-        error: error,
+        error,
         response: error.response,
-        secureSignalsSdkUrl: secureSignalsSdkUrl,
-        identityName: identityName,
-        docsBaseUrl: docsBaseUrl
+        secureSignalsSdkUrl,
+        identityName,
+        docsBaseUrl
       });
     });
 }
@@ -282,25 +282,25 @@ app.post('/login', async (req, res) => {
 
     if (response.status === 'optout') {
       res.render('optout', {
-        secureSignalsSdkUrl: secureSignalsSdkUrl,
-        identityName: identityName,
-        docsBaseUrl: docsBaseUrl
+        secureSignalsSdkUrl,
+        identityName,
+        docsBaseUrl
       });
     } else if (response.status !== 'success') {
       res.render('error', {
         error: 'Got unexpected token generate status in decrypted response: ' + response.status,
-        response: response,
-        secureSignalsSdkUrl: secureSignalsSdkUrl,
-        identityName: identityName,
-        docsBaseUrl: docsBaseUrl
+        response,
+        secureSignalsSdkUrl,
+        identityName,
+        docsBaseUrl
       });
     } else if (typeof response.body !== 'object') {
       res.render('error', {
         error: 'Unexpected token generate response format in decrypted response: ' + response,
-        response: response,
-        secureSignalsSdkUrl: secureSignalsSdkUrl,
-        identityName: identityName,
-        docsBaseUrl: docsBaseUrl
+        response,
+        secureSignalsSdkUrl,
+        identityName,
+        docsBaseUrl
       });
     } else {
       req.session.identity = response.body;
@@ -308,11 +308,11 @@ app.post('/login', async (req, res) => {
     }
   } catch (error) {
     res.render('error', {
-      error: error,
+      error,
       response: error.response,
-      secureSignalsSdkUrl: secureSignalsSdkUrl,
-      identityName: identityName,
-      docsBaseUrl: docsBaseUrl
+      secureSignalsSdkUrl,
+      identityName,
+      docsBaseUrl
     });
   }
 });

@@ -169,24 +169,24 @@ async function protect(req, res, next){
 app.get('/', protect, (req, res) => {
   res.render('index', { 
     identity: req.session.identity,
-    identityName: identityName,
-    docsBaseUrl: docsBaseUrl
+    identityName,
+    docsBaseUrl
   });
 });
 app.get('/content1', protect, (req, res) => {
   res.render('content', { 
     identity: req.session.identity, 
     content: 'First Sample Content',
-    identityName: identityName,
-    docsBaseUrl: docsBaseUrl
+    identityName,
+    docsBaseUrl
   });
 });
 app.get('/content2', protect, (req, res) => {
   res.render('content', { 
     identity: req.session.identity, 
     content: 'Second Sample Content',
-    identityName: identityName,
-    docsBaseUrl: docsBaseUrl
+    identityName,
+    docsBaseUrl
   });
 });
 app.get('/login', async (req, res) => {
@@ -195,8 +195,8 @@ app.get('/login', async (req, res) => {
   } else {
     req.session = null;
     res.render('login', {
-      identityName: identityName,
-      docsBaseUrl: docsBaseUrl
+      identityName,
+      docsBaseUrl
     });
   }
 });
@@ -208,16 +208,16 @@ function _GenerateTokenV1(req, res) {
         if (response.data.status !== 'success') {
           res.render('error', { 
             error: 'Got unexpected token generate status: ' + response.data.status, 
-            response: response,
-            identityName: identityName,
-            docsBaseUrl: docsBaseUrl
+            response,
+            identityName,
+            docsBaseUrl
           });
         } else if (typeof response.data.body !== 'object') {
           res.render('error', { 
             error: 'Unexpected token generate response format: ' + response.data, 
-            response: response,
-            identityName: identityName,
-            docsBaseUrl: docsBaseUrl
+            response,
+            identityName,
+            docsBaseUrl
           });
         } else {
           req.session.identity = response.data.body;
@@ -226,10 +226,10 @@ function _GenerateTokenV1(req, res) {
       })
       .catch((error) => {
         res.render('error', { 
-          error: error, 
+          error, 
           response: error.response,
-          identityName: identityName,
-          docsBaseUrl: docsBaseUrl
+          identityName,
+          docsBaseUrl
         });
       });
 }
@@ -249,19 +249,19 @@ app.post('/login', async (req, res) => {
     const encryptedResponse = await axios.post(uidBaseUrl + '/v2/token/generate', envelope, headers); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
     const response = decrypt(encryptedResponse.data, uidClientSecret, false, nonce);
 
-    if (response.status !== 'success') {
+        if (response.status !== 'success') {
       res.render('error', { 
         error: 'Got unexpected token generate status in decrypted response: ' + response.status, 
-        response: response,
-        identityName: identityName,
-        docsBaseUrl: docsBaseUrl
+        response,
+        identityName,
+        docsBaseUrl
       });
     } else if (typeof response.body !== 'object') {
       res.render('error', { 
         error: 'Unexpected token generate response format in decrypted response: ' + response, 
-        response: response,
-        identityName: identityName,
-        docsBaseUrl: docsBaseUrl
+        response,
+        identityName,
+        docsBaseUrl
       });
     } else {
       req.session.identity = response.body;
@@ -269,10 +269,10 @@ app.post('/login', async (req, res) => {
     }
   } catch (error) {
     res.render('error', { 
-      error: error, 
+      error, 
       response: error.response,
-      identityName: identityName,
-      docsBaseUrl: docsBaseUrl
+      identityName,
+      docsBaseUrl
     });
   }
 

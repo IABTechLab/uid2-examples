@@ -32,11 +32,11 @@ app.set('view engine', 'html');
 
 app.get('/', (req, res) => {
     res.render('index', { 
-        uidBaseUrl: uidBaseUrl,
-        identityName: identityName,
-        docsBaseUrl: docsBaseUrl,
-        uidJsSdkUrl: uidJsSdkUrl,
-        uidJsSdkName: uidJsSdkName
+        uidBaseUrl,
+        identityName,
+        docsBaseUrl,
+        uidJsSdkUrl,
+        uidJsSdkName
     });
 });
 
@@ -120,33 +120,33 @@ app.post('/login', async (req, res) => {
         if (response.status !== 'success') {
             res.render('error', { 
                 error: 'Got unexpected token generate status in decrypted response: ' + response.status, 
-                response: response,
-                identityName: identityName,
-                docsBaseUrl: docsBaseUrl
+                response,
+                identityName,
+                docsBaseUrl
             });
         } else if (typeof response.body !== 'object') {
             res.render('error', { 
                 error: 'Unexpected token generate response format in decrypted response: ' + response, 
-                response: response,
-                identityName: identityName,
-                docsBaseUrl: docsBaseUrl
+                response,
+                identityName,
+                docsBaseUrl
             });
         } else {
             res.render('login', { 
                 identity: response.body, 
-                uidBaseUrl: uidBaseUrl,
-                identityName: identityName,
-                docsBaseUrl: docsBaseUrl,
-                uidJsSdkUrl: uidJsSdkUrl,
-                uidJsSdkName: uidJsSdkName
+                uidBaseUrl,
+                identityName,
+                docsBaseUrl,
+                uidJsSdkUrl,
+                uidJsSdkName
             });
         }
     } catch (error) {
         res.render('error', { 
-            error: error, 
+            error, 
             response: error.response,
-            identityName: identityName,
-            docsBaseUrl: docsBaseUrl
+            identityName,
+            docsBaseUrl
         });
     }
 
