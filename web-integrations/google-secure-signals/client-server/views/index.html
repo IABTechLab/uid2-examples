@@ -53,8 +53,8 @@
           window.googletag.secureSignalProviders.clearAllCache();
           updateGuiElements(undefined);
         });
-        window[sdkName] = window[sdkName] || { callbacks: [] };
-        window[sdkName].callbacks.push((eventType, payload) => {
+        sdk.callbacks = sdk.callbacks || [];
+        sdk.callbacks.push((eventType, payload) => {
           if (eventType === "SdkLoaded") {
             sdk.init({
               baseUrl: "<%- uidBaseUrl %>",
@@ -62,7 +62,7 @@
             });
           }
         });
-        window[sdkName].callbacks.push(onUid2IdentityUpdated);
+        sdk.callbacks.push(onUid2IdentityUpdated);
       });
     </script>
   </head>

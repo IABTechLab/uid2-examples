@@ -11,10 +11,10 @@
 
     <script>
       const sdkName = '<%- uidJsSdkName %>';
-      window[sdkName] = window[sdkName] || { callbacks: [] };
-      window[sdkName].callbacks.push((eventType, payload) => {
-        const sdk = window[sdkName];
-        
+      const sdk = window[sdkName] || { callbacks: [] };
+      window[sdkName] = sdk;
+      
+      sdk.callbacks.push((eventType, payload) => {
         if (eventType === 'SdkLoaded') {
           sdk.init({
             baseUrl: "<%- uidBaseUrl %>",

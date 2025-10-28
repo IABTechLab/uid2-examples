@@ -15,8 +15,8 @@ const uidApiKey = process.env.UID_API_KEY;
 const uidClientSecret = process.env.UID_CLIENT_SECRET;
 
 // UI/Display configuration
-const identityName = process.env.IDENTITY_NAME || 'UID2';
-const docsBaseUrl = process.env.DOCS_BASE_URL || 'https://unifiedid.com/docs';
+const identityName = process.env.IDENTITY_NAME;
+const docsBaseUrl = process.env.DOCS_BASE_URL;
 
 const ivLength = 12;
 const nonceLength = 8;

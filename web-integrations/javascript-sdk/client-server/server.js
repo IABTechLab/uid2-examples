@@ -14,8 +14,8 @@ const uidApiKey = process.env.UID_API_KEY;
 const uidClientSecret = process.env.UID_CLIENT_SECRET;
 
 // UI/Display configuration
-const identityName = process.env.IDENTITY_NAME || 'UID2';
-const docsBaseUrl = process.env.DOCS_BASE_URL || 'https://unifiedid.com/docs';
+const identityName = process.env.IDENTITY_NAME;
+const docsBaseUrl = process.env.DOCS_BASE_URL;
 const uidJsSdkUrl = process.env.UID_JS_SDK_URL || 'https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js';
 const uidJsSdkName = process.env.UID_JS_SDK_NAME || '__uid2';
 
