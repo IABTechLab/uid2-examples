@@ -1,11 +1,13 @@
-# Server-Side UID2/EUID Integration Example with Google Secure Signals
+# Server-Side UID2 or EUID Integration Example with Google Secure Signals
 
-This example demonstrates how a content publisher who is working with [Google Interactive Media Ads(IMA) SDKs](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) can use [Google Secure Signal](https://support.google.com/admanager/answer/10488752) to share UID2 or EUID tokens directly with bidders, in a server-side implementation without using an SDK.
+This example demonstrates how a content publisher who is working with [Google Interactive Media Ads(IMA) SDKs](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) can use [Google Secure Signal](https://support.google.com/admanager/answer/10488752) with either UID2 or EUID to share tokens directly with bidders, in a server-side implementation without using an SDK.
 
 - For UID2: [Google Ad Manager Secure Signals Integration Guide](https://unifiedid.com/docs/guides/integration-google-ss#server-side-integration)
 - For EUID: [EUID Google Ad Manager Secure Signals Integration Guide](https://euid.eu/docs/guides/integration-google-ss#server-side-integration)
 
-For an example application using the SDK, see [Client-Server UID2/EUID SDK Integration Example with Google Secure Signals](../client-server/README.md) or [Client-Side UID2/EUID SDK Integration Example with Google Secure Signals](../client-side/README.md).
+This example supports both UID2 and EUID environments — the behavior depends on your configured environment variables.
+
+For an example application using the SDK, see [Client-Server UID2 or EUID SDK Integration Example with Google Secure Signals](../client-server/README.md) or [Client-Side UID2 or EUID SDK Integration Example with Google Secure Signals](../client-side/README.md).
 
 > NOTE: Although the server side of the example application is implemented in JavaScript using node.js, it is not a requirement. You can use any technology of your choice and refer to the example application for an illustration of the functionality that needs to be implemented.
 

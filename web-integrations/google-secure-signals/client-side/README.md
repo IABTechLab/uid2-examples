@@ -1,9 +1,11 @@
-# Client-Side UID2/EUID SDK Integration Example with Google Secure Signals
+# Client-Side UID2 or EUID SDK Integration Example with Google Secure Signals
 
-This example demonstrates how a content publisher who is working with [Google Interactive Media Ads(IMA) SDKs](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) can use [Google Secure Signal](https://support.google.com/admanager/answer/10488752) and the UID2/EUID SDK for JavaScript to share UID2 or EUID tokens directly with bidders, in an implementation that uses this SDK on the client side.
+This example demonstrates how a content publisher who is working with [Google Interactive Media Ads(IMA) SDKs](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) can use [Google Secure Signal](https://support.google.com/admanager/answer/10488752) and either the UID2 or EUID SDK for JavaScript to share tokens directly with bidders, in a client-side implementation that uses this SDK.
 
 - For UID2: [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript), [Google Ad Manager Secure Signals Integration Guide](https://unifiedid.com/docs/guides/integration-google-ss)
 - For EUID: [EUID SDK for JavaScript](https://euid.eu/docs/sdks/sdk-ref-javascript), [EUID Google Ad Manager Secure Signals Integration Guide](https://euid.eu/docs/guides/integration-google-ss)
+
+This example supports both UID2 and EUID environments — the behavior depends on your configured environment variables.
 
 ## Build and Run the Example Application
 

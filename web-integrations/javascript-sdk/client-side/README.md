@@ -1,6 +1,11 @@
-# Client-Side UID2/EUID Integration Example using JavaScript SDK
+# Client-Side UID2 or EUID Integration Example using JavaScript SDK
 
-This example demonstrates how a content publisher can follow the [Client-Side Integration Guide for JavaScript](https://unifiedid.com/docs/guides/integration-javascript-client-side) (UID2) or [EUID Client-Side Integration Guide for JavaScript](https://euid.eu/docs/guides/integration-javascript-client-side) (EUID) to implement UID2/EUID integration and generate UID2/EUID tokens.
+This example demonstrates how a content publisher can follow the Client-Side Integration Guide for JavaScript to implement either a UID2 or EUID integration and generate tokens on the client side.
+
+- For UID2: [Client-Side Integration Guide for JavaScript](https://unifiedid.com/docs/guides/integration-javascript-client-side), [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript)
+- For EUID: [EUID Client-Side Integration Guide for JavaScript](https://euid.eu/docs/guides/integration-javascript-client-side), [EUID SDK for JavaScript](https://euid.eu/docs/sdks/sdk-ref-javascript)
+
+This example supports both UID2 and EUID environments — the behavior depends on your configured environment variables.
 
 ## Running with Docker
 

@@ -1,11 +1,13 @@
-# Client-Server UID2/EUID Integration Example using JavaScript SDK
+# Client-Server UID2 or EUID Integration Example using JavaScript SDK
 
-[This example](https://example-jssdk-integ.uidapi.com/) demonstrates how a content publisher can use the UID2/EUID services and the UID2/EUID SDK for JavaScript to implement the client-server UID2/EUID integration workflow.
+[This example](https://example-jssdk-integ.uidapi.com/) demonstrates how a content publisher can use either the UID2 or EUID services and the corresponding SDK for JavaScript to implement the client-server integration workflow.
 
 - For UID2: [UID2 services](https://unifiedid.com/docs/intro), [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript), [client-server UID2 integration workflow](https://unifiedid.com/docs/guides/integration-javascript-client-server)
 - For EUID: [EUID services](https://euid.eu/docs/intro), [EUID SDK for JavaScript](https://euid.eu/docs/sdks/sdk-ref-javascript), [client-server EUID integration workflow](https://euid.eu/docs/guides/integration-javascript-client-server)
 
-For an example application without using the SDK, see [Server-Side UID2 Integration Example](../../server-side/README.md).
+This example supports both UID2 and EUID environments — the behavior depends on your configured environment variables.
+
+For an example application without using the SDK, see [Server-Side UID2 or EUID Integration Example](../../server-side/README.md).
 
 > NOTE: While the server side of the example application is implemented in JavaScript using node.js, it is not
 > a requirement. You can use any technology of your choice and refer to the example application for illustration of the functionality that needs to be implemented.

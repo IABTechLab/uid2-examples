@@ -1,11 +1,13 @@
-# Client-Server UID2/EUID SDK Integration Example with Google Secure Signals
+# Client-Server UID2 or EUID SDK Integration Example with Google Secure Signals
 
-This example demonstrates how a content publisher who is working with [Google Interactive Media Ads(IMA) SDKs](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) can use [Google Secure Signal](https://support.google.com/admanager/answer/10488752) and the UID2/EUID SDK for JavaScript to share UID2 or EUID tokens directly with bidders, in an implementation that uses this SDK.
+This example demonstrates how a content publisher who is working with [Google Interactive Media Ads(IMA) SDKs](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) can use [Google Secure Signal](https://support.google.com/admanager/answer/10488752) and either the UID2 or EUID SDK for JavaScript to share tokens directly with bidders, in a client-server implementation that uses this SDK.
 
 - For UID2: [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript), [Google Ad Manager Secure Signals Integration Guide](https://unifiedid.com/docs/guides/integration-google-ss#sdk-for-javascript-client-server-integration)
 - For EUID: [EUID SDK for JavaScript](https://euid.eu/docs/sdks/sdk-ref-javascript), [EUID Google Ad Manager Secure Signals Integration Guide](https://euid.eu/docs/guides/integration-google-ss#sdk-for-javascript-client-server-integration)
 
-For an example application without using the SDK, see [Server-Side UID2/EUID Integration Example with Google Secure Signals](../server-side/README.md).
+This example supports both UID2 and EUID environments — the behavior depends on your configured environment variables.
+
+For an example application without using the SDK, see [Server-Side UID2 or EUID Integration Example with Google Secure Signals](../server-side/README.md).
 
 > NOTE: Although the server side of the example application is implemented in JavaScript using node.js, it is not a requirement. You can use any technology of your choice and refer to the example application for an illustration of the functionality that needs to be implemented.
 
