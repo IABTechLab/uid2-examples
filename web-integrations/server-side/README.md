@@ -36,7 +36,7 @@ The following table lists the environment variables that you must specify to sta
 
 | Variable | Description | Example Values |
 |:---------|:------------|:---------------|
-| `UID_BASE_URL` | The base URL of the UID2/EUID service. For details, see [Environments](https://unifiedid.com/docs/getting-started/gs-environments) (UID2) or [Environments](https://euid.eu/docs/getting-started/gs-environments) (EUID). | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu/v2` |
+| `UID_SERVER_BASE_URL` | The base URL of the UID2/EUID service. For details, see [Environments](https://unifiedid.com/docs/getting-started/gs-environments) (UID2) or [Environments](https://euid.eu/docs/getting-started/gs-environments) (EUID). | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu/v2` |
 | `UID_API_KEY` | Authentication key for accessing UID2/EUID services. Provided via the UID2 Partner Portal or your integration representative. | Your assigned API key |
 | `UID_CLIENT_SECRET` | Private key used with your API key to authenticate your app with UID2/EUID services. Provided via the UID2 Partner Portal or your integration representative. | Your assigned client secret |
 | `SESSION_KEY` | The key to the encryption session data stored in the application session cookie. This can be any arbitrary string. | Any secure random string |

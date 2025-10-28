@@ -15,7 +15,7 @@ declare const google: any;
 
 // Set default to uid2 configuration 
 const UID_JS_SDK_NAME = process.env.REACT_APP_UID_JS_SDK_NAME || '__uid2';
-const UID_BASE_URL = process.env.REACT_APP_UID_CLIENT_BASE_URL || process.env.REACT_APP_UID_BASE_URL || 'https://operator-integ.uidapi.com';
+const UID_BASE_URL = process.env.REACT_APP_UID_CLIENT_BASE_URL || 'https://operator-integ.uidapi.com';
 const SECURE_SIGNALS_SDK_URL = process.env.REACT_APP_UID_SECURE_SIGNALS_SDK_URL || 'https://cdn.integ.uidapi.com/uid2SecureSignal.js';
 const SECURE_SIGNALS_STORAGE_KEY = process.env.REACT_APP_UID_SECURE_SIGNALS_STORAGE_KEY || '_GESPSK-uidapi.com';
 const IDENTITY_NAME = process.env.REACT_APP_IDENTITY_NAME;

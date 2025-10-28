@@ -10,7 +10,7 @@ const crypto = require('crypto');
 const app = express();
 const port = process.env.PORT || 3033;
 
-const uidBaseUrl = process.env.UID_BASE_URL;
+const uidBaseUrl = process.env.UID_SERVER_BASE_URL;
 const uidApiKey = process.env.UID_API_KEY;
 const uidClientSecret = process.env.UID_CLIENT_SECRET;
 
