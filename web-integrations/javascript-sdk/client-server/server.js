@@ -134,11 +134,11 @@ app.post('/login', async (req, res) => {
         } else {
             res.render('login', { 
                 identity: response.body, 
-                uid2BaseUrl: uid2BaseUrl,
+                uidBaseUrl: uidBaseUrl,
                 productName: productName,
                 docsBaseUrl: docsBaseUrl,
-                uid2JsSdkUrl: uid2JsSdkUrl,
-                uid2JsSdkName: uid2JsSdkName
+                uidJsSdkUrl: uidJsSdkUrl,
+                uidJsSdkName: uidJsSdkName
             });
         }
     } catch (error) {
