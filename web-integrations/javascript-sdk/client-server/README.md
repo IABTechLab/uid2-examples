@@ -1,8 +1,11 @@
-# Client-Server UID2 Integration Example using JavaScript SDK
+# Client-Server UID2/EUID Integration Example using JavaScript SDK
 
-[This example](https://example-jssdk-integ.uidapi.com/) demonstrates how a content publisher can use the [UID2 services](https://unifiedid.com/docs/intro) and the [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript) to implement the [client-server UID2 integration workflow](https://unifiedid.com/docs/guides/integration-javascript-client-server).
+[This example](https://example-jssdk-integ.uidapi.com/) demonstrates how a content publisher can use the UID2/EUID services and the UID2/EUID SDK for JavaScript to implement the client-server UID2/EUID integration workflow.
 
-For an example application without using the UID2 SDK, see [Server-Side UID2 Integration Example](../../server-side/README.md).
+- For UID2: [UID2 services](https://unifiedid.com/docs/intro), [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript), [client-server UID2 integration workflow](https://unifiedid.com/docs/guides/integration-javascript-client-server)
+- For EUID: [EUID services](https://euid.eu/docs/intro), [EUID SDK for JavaScript](https://euid.eu/docs/sdks/sdk-ref-javascript), [client-server EUID integration workflow](https://euid.eu/docs/guides/integration-javascript-client-server)
+
+For an example application without using the SDK, see [Server-Side UID2 Integration Example](../../server-side/README.md).
 
 > NOTE: While the server side of the example application is implemented in JavaScript using node.js, it is not
 > a requirement. You can use any technology of your choice and refer to the example application for illustration of the functionality that needs to be implemented.
@@ -29,11 +32,22 @@ docker run -it --rm -p 3000:3000 -e "UID2_BASE_URL=https://operator-integ.uidapi
 
 The following table lists the environment variables that you must specify to start the application.
 
+### Core Configuration
+
 | Parameter            | Data Type | Description                                                                                                                                                                                                  |
 | :------------------- | :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `UID2_BASE_URL`      | string    | The base URL of the UID2 service. For example:</br>Testing environment: `https://operator-integ.uidapi.com`<br/>For details, see [Environments](https://unifiedid.com/docs/getting-started/gs-environments). |
-| `UID2_API_KEY`       | string    | Your UID2 authentication key for the UID2 service specified in `UID2_BASE_URL`.                                                                                                                              |
-| `UID2_CLIENT_SECRET` | string    | Your UID2 client secret for the UID2 service specified in `UID2_BASE_URL`.                                                                                                                                   |
+| `UID2_BASE_URL`      | string    | The base URL of the UID2/EUID service. Examples:</br>UID2 Testing: `https://operator-integ.uidapi.com`<br/>EUID Testing: `https://integ.euid.eu/v2`<br/>For details, see [Environments](https://unifiedid.com/docs/getting-started/gs-environments) (UID2) or [Environments](https://euid.eu/docs/getting-started/gs-environments) (EUID). |
+| `UID2_API_KEY`       | string    | Your UID2/EUID authentication key for the service specified in `UID2_BASE_URL`.                                                                                                                              |
+| `UID2_CLIENT_SECRET` | string    | Your UID2/EUID client secret for the service specified in `UID2_BASE_URL`.                                                                                                                                   |
+| `UID2_JS_SDK_URL`    | string    | URL to the JavaScript SDK. Examples:</br>UID2: `https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js`<br/>EUID: `https://cdn.integ.euid.eu/euid-sdk-4.0.1.js` |
+| `UID2_JS_SDK_NAME`   | string    | Global variable name for the SDK. UID2: `__uid2`, EUID: `__euid` |
+
+### Display/UI Configuration
+
+| Parameter            | Data Type | Description                                                                                                                                                                                                  |
+| :------------------- | :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PRODUCT_NAME`       | string    | Product name for UI display (default: `UID2`, or `EUID`)                                                                                                                                                    |
+| `DOCS_BASE_URL`      | string    | Documentation base URL (default: `https://unifiedid.com/docs`, or `https://euid.eu/docs`)                                                                                                                   |
 
 After you see output similar to the following, the example application is up and running.
 
@@ -48,7 +62,9 @@ If needed, to close the application, terminate the docker container or use the `
 
 ## Test the Example Application
 
-The example application illustrates the steps documented in the [UID2 SDK Integration Guide](https://unifiedid.com/docs/guides/publisher-client-side). For an overview of the high-level workflow for establishing UID2 identity, API reference, and explanation of the UID2 cookie format, see [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/client-side-identity).
+The example application illustrates the steps documented in the integration guides. For an overview of the high-level workflow for establishing UID2/EUID identity, API reference, and cookie format details, see:
+- UID2: [UID2 SDK Integration Guide](https://unifiedid.com/docs/guides/publisher-client-side), [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/client-side-identity)
+- EUID: [EUID SDK Integration Guide](https://euid.eu/docs/guides/publisher-client-side), [EUID SDK for JavaScript](https://euid.eu/docs/sdks/client-side-identity)
 
 The following table outlines and annotates the steps you may take to test and explore the example application.
 

@@ -1,6 +1,6 @@
-# Client-Side UID2 Integration Example using JavaScript SDK
+# Client-Side UID2/EUID Integration Example using JavaScript SDK
 
-This example demonstrates how a content publisher can follow the [Client-Side Integration Guide for JavaScript](https://unifiedid.com/docs/guides/integration-javascript-client-side) to implement UID2 integration and generate UID2 tokens.
+This example demonstrates how a content publisher can follow the [Client-Side Integration Guide for JavaScript](https://unifiedid.com/docs/guides/integration-javascript-client-side) (UID2) or [EUID Client-Side Integration Guide for JavaScript](https://euid.eu/docs/guides/integration-javascript-client-side) (EUID) to implement UID2/EUID integration and generate UID2/EUID tokens.
 
 ## Running with Docker
 
@@ -35,11 +35,22 @@ docker run -p 3032:3032 --env-file .env javascript-sdk-client-side
 
 The application uses environment variables from the `.env` file in the base directory:
 
-- `UID_JS_SDK_URL` - URL to the UID2 JavaScript SDK (default: https://cdn.uidapi.com/sdk/uid2-sdk-3.3.0.js)
-- `UID_JS_SDK_NAME` - Global variable name for the SDK (default: __uid2)
-- `UID_BASE_URL` - UID2 base URL (default: https://operator-integ.uidapi.com)
-- `SERVER_PUBLIC_KEY` - Server public key for UID2
-- `SUBSCRIPTION_ID` - UID2 subscription ID
+### Core Configuration
+- `UID2_JS_SDK_URL` - URL to the UID2/EUID JavaScript SDK
+  - UID2 default: `https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js`
+  - EUID example: `https://cdn.integ.euid.eu/euid-sdk-4.0.1.js`
+- `UID2_JS_SDK_NAME` - Global variable name for the SDK
+  - UID2: `__uid2`
+  - EUID: `__euid`
+- `UID2_BASE_URL` - API base URL
+  - UID2 default: `https://operator-integ.uidapi.com`
+  - EUID example: `https://integ.euid.eu/v2`
+- `UID2_CSTG_SERVER_PUBLIC_KEY` - Server public key for client-side token generation
+- `UID2_CSTG_SUBSCRIPTION_ID` - Subscription ID for client-side token generation
+
+### Display/UI Configuration
+- `PRODUCT_NAME` - Product name for UI display (default: `UID2`, or `EUID`)
+- `DOCS_BASE_URL` - Documentation base URL (default: `https://unifiedid.com/docs`, or `https://euid.eu/docs`)
 
 ## Accessing the Application
 
@@ -47,8 +58,9 @@ Once running, access the application at: http://localhost:3032
 
 ## Features
 
-- **Client-side UID2 integration** using the UID2 JavaScript SDK
-- **Environment variable substitution** for configuration
+- **Client-side UID2/EUID integration** using the UID2/EUID JavaScript SDK
+- **Dynamic product configuration** - supports both UID2 and EUID via environment variables
+- **Environment variable substitution** for all configuration and UI text
 - **Nginx-based static file serving**
 - **Docker containerization** for easy deployment
 
