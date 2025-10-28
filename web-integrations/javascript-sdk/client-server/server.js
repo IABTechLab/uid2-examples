@@ -9,15 +9,15 @@ const crypto = require('crypto');
 const app = express();
 const port = process.env.PORT || 3032;
 
-const uid2BaseUrl = process.env.UID_BASE_URL;
-const uid2ApiKey = process.env.UID_API_KEY;
-const uid2ClientSecret = process.env.UID_CLIENT_SECRET;
+const uidBaseUrl = process.env.UID_BASE_URL;
+const uidApiKey = process.env.UID_API_KEY;
+const uidClientSecret = process.env.UID_CLIENT_SECRET;
 
 // UI/Display configuration
 const productName = process.env.PRODUCT_NAME || 'UID2';
 const docsBaseUrl = process.env.DOCS_BASE_URL || 'https://unifiedid.com/docs';
-const uid2JsSdkUrl = process.env.UID_JS_SDK_URL || 'https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js';
-const uid2JsSdkName = process.env.UID_JS_SDK_NAME || '__uid2';
+const uidJsSdkUrl = process.env.UID_JS_SDK_URL || 'https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js';
+const uidJsSdkName = process.env.UID_JS_SDK_NAME || '__uid2';
 
 const ivLength = 12;
 const nonceLength = 8;
@@ -32,11 +32,11 @@ app.set('view engine', 'html');
 
 app.get('/', (req, res) => {
     res.render('index', { 
-        uid2BaseUrl: uid2BaseUrl,
+        uidBaseUrl: uidBaseUrl,
         productName: productName,
         docsBaseUrl: docsBaseUrl,
-        uid2JsSdkUrl: uid2JsSdkUrl,
-        uid2JsSdkName: uid2JsSdkName
+        uidJsSdkUrl: uidJsSdkUrl,
+        uidJsSdkName: uidJsSdkName
     });
 });
 
@@ -98,7 +98,7 @@ function createEnvelope(payload) {
     const payloadEncoded = new TextEncoder().encode(payload);
     const body = Buffer.concat([Buffer.from(new Uint8Array(bufferMillisec)), nonce, payloadEncoded]);
 
-    const { ciphertext, iv } = encryptRequest(body, uid2ClientSecret);
+    const { ciphertext, iv } = encryptRequest(body, uidClientSecret);
 
     const envelopeVersion =  Buffer.alloc(1, 1);
     const envelope = bufferToBase64(Buffer.concat([envelopeVersion, iv, Buffer.from( new Uint8Array(ciphertext))]));
@@ -110,12 +110,12 @@ app.post('/login', async (req, res) => {
     const { envelope, nonce } = createEnvelope(jsonEmail);
 
     const headers = {
-        headers: { 'Authorization': 'Bearer ' + uid2ApiKey  }
+        headers: { 'Authorization': 'Bearer ' + uidApiKey  }
     };
 
     try {
-        const encryptedResponse = await axios.post(uid2BaseUrl + '/v2/token/generate', envelope, headers); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
-        const response = decrypt(encryptedResponse.data, uid2ClientSecret, nonce);
+        const encryptedResponse = await axios.post(uidBaseUrl + '/v2/token/generate', envelope, headers); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
+        const response = decrypt(encryptedResponse.data, uidClientSecret, nonce);
 
         if (response.status !== 'success') {
             res.render('error', { 

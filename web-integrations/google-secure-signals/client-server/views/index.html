@@ -59,7 +59,7 @@
           if (eventType === "SdkLoaded") {
             const sdk = window[sdkName];
             sdk.init({
-              baseUrl: "<%- uid2BaseUrl %>",
+              baseUrl: "<%- uidBaseUrl %>",
               enableSecureSignals: true,
             });
           }
@@ -81,7 +81,7 @@
       <button id="playButton">Play</button>
       <script type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
       <script async src="<%- secureSignalsSdkUrl %>"></script>
-      <script async src="<%- uid2JsSdkUrl %>"></script>
+      <script async src="<%- uidJsSdkUrl %>"></script>
       <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
       <script type="text/javascript" src="ads.js"></script>
     </div>

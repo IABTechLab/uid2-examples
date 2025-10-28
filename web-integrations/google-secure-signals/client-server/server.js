@@ -9,13 +9,13 @@ const crypto = require('crypto');
 const app = express();
 const port = process.env.PORT || 3041;
 
-const uid2BaseUrl = process.env.UID_BASE_URL;
-const uid2ApiKey = process.env.UID_API_KEY;
-const uid2ClientSecret = process.env.UID_CLIENT_SECRET;
+const uidBaseUrl = process.env.UID_BASE_URL;
+const uidApiKey = process.env.UID_API_KEY;
+const uidClientSecret = process.env.UID_CLIENT_SECRET;
 
 // JavaScript SDK configuration
-const uid2JsSdkUrl = process.env.UID_JS_SDK_URL || 'https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js';
-const uid2JsSdkName = process.env.UID_JS_SDK_NAME || '__uid2';
+const uidJsSdkUrl = process.env.UID_JS_SDK_URL || 'https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js';
+const uidJsSdkName = process.env.UID_JS_SDK_NAME || '__uid2';
 
 // Secure Signals configuration
 const secureSignalsSdkUrl = process.env.UID_SECURE_SIGNALS_SDK_URL || 'https://cdn.integ.uidapi.com/uid2SecureSignal.js';
@@ -37,9 +37,9 @@ app.set('view engine', 'html');
 
 app.get('/', (req, res) => {
   res.render('index', {
-    uid2BaseUrl: uid2BaseUrl,
-    uid2JsSdkUrl: uid2JsSdkUrl,
-    uid2JsSdkName: uid2JsSdkName,
+    uidBaseUrl: uidBaseUrl,
+    uidJsSdkUrl: uidJsSdkUrl,
+    uidJsSdkName: uidJsSdkName,
     secureSignalsSdkUrl: secureSignalsSdkUrl,
     productName: productName,
     docsBaseUrl: docsBaseUrl
@@ -106,7 +106,7 @@ function createEnvelope(payload) {
   const payloadEncoded = new TextEncoder().encode(payload);
   const body = Buffer.concat([Buffer.from(new Uint8Array(bufferMillisec)), nonce, payloadEncoded]);
 
-  const { ciphertext, iv } = encryptRequest(body, uid2ClientSecret);
+  const { ciphertext, iv } = encryptRequest(body, uidClientSecret);
 
   const envelopeVersion = Buffer.alloc(1, 1);
   const envelope = bufferToBase64(
@@ -120,22 +120,22 @@ app.post('/login', async (req, res) => {
   const { envelope, nonce } = createEnvelope(jsonEmail);
 
   const headers = {
-    headers: { Authorization: 'Bearer ' + uid2ApiKey },
+    headers: { Authorization: 'Bearer ' + uidApiKey },
   };
 
   try {
     const encryptedResponse = await axios.post(
-      uid2BaseUrl + '/v2/token/generate',
+      uidBaseUrl + '/v2/token/generate',
       envelope,
       headers
     ); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
-    const response = decrypt(encryptedResponse.data, uid2ClientSecret, nonce);
+    const response = decrypt(encryptedResponse.data, uidClientSecret, nonce);
 
     if (response.status === 'optout') {
       res.render('optout', {
-        uid2BaseUrl: uid2BaseUrl,
-        uid2JsSdkUrl: uid2JsSdkUrl,
-        uid2JsSdkName: uid2JsSdkName,
+        uidBaseUrl: uidBaseUrl,
+        uidJsSdkUrl: uidJsSdkUrl,
+        uidJsSdkName: uidJsSdkName,
         secureSignalsSdkUrl: secureSignalsSdkUrl,
         productName: productName,
         docsBaseUrl: docsBaseUrl
@@ -157,9 +157,9 @@ app.post('/login', async (req, res) => {
     } else {
       res.render('login', {
         identity: response.body,
-        uid2BaseUrl: uid2BaseUrl,
-        uid2JsSdkUrl: uid2JsSdkUrl,
-        uid2JsSdkName: uid2JsSdkName,
+        uidBaseUrl: uidBaseUrl,
+        uidJsSdkUrl: uidJsSdkUrl,
+        uidJsSdkName: uidJsSdkName,
         secureSignalsSdkUrl: secureSignalsSdkUrl,
         productName: productName,
         docsBaseUrl: docsBaseUrl

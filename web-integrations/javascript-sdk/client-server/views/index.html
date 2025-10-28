@@ -6,11 +6,11 @@
     <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
     <link rel="shortcut icon" href="/images/favicon.png" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="<%- uid2JsSdkUrl %>"></script>
+    <script src="<%- uidJsSdkUrl %>"></script>
     <script>
       $(document).ready(() => {
         let callbackCounter = 0;
-        const sdkName = '<%- uid2JsSdkName %>';
+        const sdkName = '<%- uidJsSdkName %>';
         const sdk = window[sdkName];
 
         function updateGuiElements(state) {
@@ -42,7 +42,7 @@
         updateGuiElements(undefined);
 
         sdk.init({
-          baseUrl: '<%- uid2BaseUrl %>',
+          baseUrl: '<%- uidBaseUrl %>',
         });
 
         sdk.callbacks.push(onUid2IdentityUpdated);

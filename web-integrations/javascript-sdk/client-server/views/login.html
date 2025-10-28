@@ -5,16 +5,16 @@
     <title>Login - Client-Server <%- productName %> Integration Example using JavaScript SDK</title>
     <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
     <link rel="shortcut icon" href="/images/favicon.png" />
-    <script src="<%- uid2JsSdkUrl %>"></script>
+    <script src="<%- uidJsSdkUrl %>"></script>
     <script>
       function onUid2IdentityUpdated(state) {
         // can automatically redirect user to index page here
       }
 
-      const sdkName = '<%- uid2JsSdkName %>';
+      const sdkName = '<%- uidJsSdkName %>';
       const sdk = window[sdkName];
       sdk.init({
-        baseUrl: "<%- uid2BaseUrl %>",
+        baseUrl: "<%- uidBaseUrl %>",
         identity: <%- JSON.stringify(identity) %>
       });
       sdk.callbacks.push(onUid2IdentityUpdated);

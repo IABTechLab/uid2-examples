@@ -10,9 +10,9 @@ const crypto = require('crypto');
 const app = express();
 const port = process.env.PORT || 3033;
 
-const uid2BaseUrl = process.env.UID_BASE_URL;
-const uid2ApiKey = process.env.UID_API_KEY;
-const uid2ClientSecret = process.env.UID_CLIENT_SECRET;
+const uidBaseUrl = process.env.UID_BASE_URL;
+const uidApiKey = process.env.UID_API_KEY;
+const uidClientSecret = process.env.UID_CLIENT_SECRET;
 
 // UI/Display configuration
 const productName = process.env.PRODUCT_NAME || 'UID2';
@@ -87,7 +87,7 @@ function createEnvelope(payload) {
   const payloadEncoded = new TextEncoder().encode(payload);
   const body = Buffer.concat([Buffer.from(new Uint8Array(bufferMillisec)), nonce, payloadEncoded]);
 
-  const { ciphertext, iv } = encryptRequest(body, uid2ClientSecret);
+  const { ciphertext, iv } = encryptRequest(body, uidClientSecret);
 
   const envelopeVersion =  Buffer.alloc(1, 1);
   const envelope = bufferToBase64(Buffer.concat([envelopeVersion, iv, Buffer.from( new Uint8Array(ciphertext))]));
@@ -120,11 +120,11 @@ function isRefreshableIdentity(identity){
 
 async function refreshIdentity(identity) {
   const headers = {
-    headers: { 'Authorization': 'Bearer ' + uid2ApiKey  }
+    headers: { 'Authorization': 'Bearer ' + uidApiKey  }
   };
 
   try {
-    const encryptedResponse = await axios.post(uid2BaseUrl + '/v2/token/refresh', identity.refresh_token, headers); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
+    const encryptedResponse = await axios.post(uidBaseUrl + '/v2/token/refresh', identity.refresh_token, headers); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
 
     let response;
     if (identity.refresh_response_key) {
@@ -203,7 +203,7 @@ app.get('/login', async (req, res) => {
 
 
 function _GenerateTokenV1(req, res) {
-  axios.get(uid2BaseUrl + '/v1/token/generate?email=' + encodeURIComponent(req.body.email), { headers: { 'Authorization': 'Bearer ' + uid2ApiKey } })
+  axios.get(uidBaseUrl + '/v1/token/generate?email=' + encodeURIComponent(req.body.email), { headers: { 'Authorization': 'Bearer ' + uidApiKey } })
       .then((response) => {
         if (response.data.status !== 'success') {
           res.render('error', { 
@@ -242,12 +242,12 @@ app.post('/login', async (req, res) => {
   const { envelope, nonce } = createEnvelope(jsonEmail);
 
   const headers = {
-    headers: { 'Authorization': 'Bearer ' + uid2ApiKey  }
+    headers: { 'Authorization': 'Bearer ' + uidApiKey  }
   };
 
   try {
-    const encryptedResponse = await axios.post(uid2BaseUrl + '/v2/token/generate', envelope, headers); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
-    const response = decrypt(encryptedResponse.data, uid2ClientSecret, false, nonce);
+    const encryptedResponse = await axios.post(uidBaseUrl + '/v2/token/generate', envelope, headers); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
+    const response = decrypt(encryptedResponse.data, uidClientSecret, false, nonce);
 
     if (response.status !== 'success') {
       res.render('error', { 

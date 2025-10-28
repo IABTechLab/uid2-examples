@@ -6,17 +6,17 @@
     <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
     <link rel="shortcut icon" href="/images/favicon.png" />
     <script async src="<%- secureSignalsSdkUrl %>"></script>
-    <script async src="<%- uid2JsSdkUrl %>"></script>
+    <script async src="<%- uidJsSdkUrl %>"></script>
     <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
 
     <script>
-      const sdkName = '<%- uid2JsSdkName %>';
+      const sdkName = '<%- uidJsSdkName %>';
       window[sdkName] = window[sdkName] || { callbacks: [] };
       window[sdkName].callbacks.push((eventType, payload) => {
         if (eventType === 'SdkLoaded') {
           const sdk = window[sdkName];
           sdk.init({
-            baseUrl: "<%- uid2BaseUrl %>",
+            baseUrl: "<%- uidBaseUrl %>",
           });
         }
         if (eventType === 'InitCompleted') {
