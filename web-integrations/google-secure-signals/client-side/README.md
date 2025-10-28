@@ -1,23 +1,57 @@
-# Client-Side UID2 SDK Integration Example with Google Secure Signals
+# Client-Side UID2/EUID SDK Integration Example with Google Secure Signals
 
-This example demonstrates how a content publisher who is working with [Google Interactive Media Ads(IMA) SDKs](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) can use [Google Secure Signal](https://support.google.com/admanager/answer/10488752) and the [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript) to share UID2 directly with bidders, in an implementation that uses this JS SDK on the client side.
+This example demonstrates how a content publisher who is working with [Google Interactive Media Ads(IMA) SDKs](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) can use [Google Secure Signal](https://support.google.com/admanager/answer/10488752) and the UID2/EUID SDK for JavaScript to share UID2 or EUID tokens directly with bidders, in an implementation that uses this SDK on the client side.
+
+- For UID2: [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript), [Google Ad Manager Secure Signals Integration Guide](https://unifiedid.com/docs/guides/integration-google-ss)
+- For EUID: [EUID SDK for JavaScript](https://euid.eu/docs/sdks/sdk-ref-javascript), [EUID Google Ad Manager Secure Signals Integration Guide](https://euid.eu/docs/guides/integration-google-ss)
 
 ## Build and Run the Example Application
 
-The easiest way to try the example is to use the following docker build command:
+### Environment Configuration
 
+Copy the appropriate sample environment file:
+
+```bash
+# For UID2
+cp .env.sample.uid2 .env
+
+# For EUID  
+cp .env.sample.euid .env
 ```
+
+Then update the `.env` file with your credentials.
+
+### Running with Docker
+
+```bash
 docker build . -t uid2-secure-signals-client-side
-docker run -it --rm -p 3000:3000 uid2-secure-signals-client-side
+docker run -it --rm -p 3000:3000 --env-file .env uid2-secure-signals-client-side
 ```
 
-The example app will be up and running at localhost:3000
+The example app will be up and running at `http://localhost:3000`
+
+### Environment Variables
+
+| Variable | Description | Example Values |
+|:---------|:------------|:---------------|
+| `UID_CLIENT_BASE_URL` | API base URL for client-side/browser calls | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu` |
+| `UID_BASE_URL` | Fallback API base URL (used if `UID_CLIENT_BASE_URL` not set) | Same as above |
+| `UID_CSTG_SERVER_PUBLIC_KEY` | Server public key for client-side token generation | Your public key from UID2/EUID portal |
+| `UID_CSTG_SUBSCRIPTION_ID` | Subscription ID for client-side token generation | Your subscription ID from UID2/EUID portal |
+| `UID_JS_SDK_URL` | URL to the JavaScript SDK | UID2: `https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js`<br/>EUID: `https://cdn.integ.euid.eu/euid-sdk-4.0.1.js` |
+| `UID_JS_SDK_NAME` | Global variable name for the SDK | UID2: `__uid2`<br/>EUID: `__euid` |
+| `UID_SECURE_SIGNALS_SDK_URL` | URL to the Secure Signals SDK | UID2: `https://cdn.integ.uidapi.com/uid2SecureSignal.js`<br/>EUID: `https://cdn.integ.euid.eu/euidSecureSignal.js` |
+| `UID_SECURE_SIGNALS_STORAGE_KEY` | Local storage key for Secure Signals | UID2: `_GESPSK-uidapi.com`<br/>EUID: `_GESPSK-euid.eu` |
+| `PRODUCT_NAME` | Product name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
+| `DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
 
 If needed, to close the application, terminate the docker container or use the `Ctrl+C` keyboard shortcut.
 
 ## Test the Example Application
 
-The example application illustrates the steps documented in the [Google Ad Manager Secure Signals Integration Guide](https://unifiedid.com/docs/guides/integration-google-ss). For an overview of the high-level workflow for establishing UID2 identity, API reference, and explanation of the UID2 cookie format, see [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript).
+The example application illustrates the steps documented in the Google Ad Manager Secure Signals Integration guides:
+- UID2: [Google Ad Manager Secure Signals Integration Guide](https://unifiedid.com/docs/guides/integration-google-ss), [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript)
+- EUID: [EUID Google Ad Manager Secure Signals Integration Guide](https://euid.eu/docs/guides/integration-google-ss), [EUID SDK for JavaScript](https://euid.eu/docs/sdks/sdk-ref-javascript)
 
 The following table outlines and annotates the steps you may take to test and explore the example application.
 

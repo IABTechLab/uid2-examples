@@ -1,35 +1,48 @@
-# Server-Side UID2 Integration Example with Google Secure Signals
+# Server-Side UID2/EUID Integration Example with Google Secure Signals
 
-This example demonstrates how a content publisher who is working with [Google Interactive Media Ads(IMA) SDKs](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) can use [Google Secure Signal](https://support.google.com/admanager/answer/10488752) to share UID2 directly with bidders, in a server-side implementation of UID2.
+This example demonstrates how a content publisher who is working with [Google Interactive Media Ads(IMA) SDKs](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) can use [Google Secure Signal](https://support.google.com/admanager/answer/10488752) to share UID2 or EUID tokens directly with bidders, in a server-side implementation without using an SDK.
 
-For an example application using the [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript), see [Client-Server UID2 SDK Integration Example with Google Secure Signals](../client-server/README.md) or [Client-Side UID2 SDK Integration Example with Google Secure Signals](../client-side/README.md).
+- For UID2: [Google Ad Manager Secure Signals Integration Guide](https://unifiedid.com/docs/guides/integration-google-ss#server-side-integration)
+- For EUID: [EUID Google Ad Manager Secure Signals Integration Guide](https://euid.eu/docs/guides/integration-google-ss#server-side-integration)
+
+For an example application using the SDK, see [Client-Server UID2/EUID SDK Integration Example with Google Secure Signals](../client-server/README.md) or [Client-Side UID2/EUID SDK Integration Example with Google Secure Signals](../client-side/README.md).
 
 > NOTE: Although the server side of the example application is implemented in JavaScript using node.js, it is not a requirement. You can use any technology of your choice and refer to the example application for an illustration of the functionality that needs to be implemented.
 
 ## Build and Run the Example Application
 
-The easiest way to try the example is to use the following Docker Build command:
+### Environment Configuration
 
+Copy the appropriate sample environment file:
+
+```bash
+# For UID2
+cp .env.sample.uid2 .env
+
+# For EUID
+cp .env.sample.euid .env
 ```
+
+Then update the `.env` file with your credentials.
+
+### Running with Docker
+
+```bash
 docker build . -t uid2-secure-signals-server
-docker run -it --rm -p 3000:3000 \
-    -e UID2_BASE_URL="https://operator-integ.uidapi.com" \
-    -e UID2_API_KEY="<your-integ-API-key>" \
-    -e UID2_CLIENT_SECRET="<your-integ-client-secret>" \
-    -e SESSION_KEY="<your-uid2-session-key>" \
-    -e AD_TAG_URL="<your-IMA-ad-tag-url>" \
-    uid2-secure-signals-server
+docker run -it --rm -p 3000:3000 --env-file .env uid2-secure-signals-server
 ```
 
-The following table lists the environment variables that you must specify to start the application.
+### Environment Variables
 
-| Parameter            | Data Type | Description                                                                                                                                              |
-| :------------------- | :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `UID2_BASE_URL`      | string    | The base URL of the UID2 service. For example:</br>Testing environment: `https://integ.uidapi.com`<br/>Production environment: `https://prod.uidapi.com` |
-| `UID2_API_KEY`       | string    | Your UID2 authentication key for the UID2 service specified in `UID2_BASE_URL`.                                                                          |
-| `UID2_CLIENT_SECRET` | string    | Your UID2 client secret for the UID2 service specified in `UID2_BASE_URL`.                                                                               |
-| `SESSION_KEY`        | string    | The key to the encryption session data stored in the application's session cookie.                                                                       |
-| `AD_TAG_URL`         | string    | The ad tag URL to test ad requests.                                                                                                                      |
+| Variable | Description | Example Values |
+|:---------|:------------|:---------------|
+| `UID_BASE_URL` | The base URL of the UID2/EUID service | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu` |
+| `UID_API_KEY` | Your authentication key | Your API key from UID2/EUID portal |
+| `UID_CLIENT_SECRET` | Your client secret | Your client secret from UID2/EUID portal |
+| `SESSION_KEY` | The key to the encryption session data stored in the application's session cookie | Any secure random string |
+| `UID_SECURE_SIGNALS_SDK_URL` | URL to the Secure Signals SDK | UID2: `https://cdn.integ.uidapi.com/uid2SecureSignal.js`<br/>EUID: `https://cdn.integ.euid.eu/euidSecureSignal.js` |
+| `PRODUCT_NAME` | Product name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
+| `DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
 
 Output similar to the following indicates that the example application is up and running.
 

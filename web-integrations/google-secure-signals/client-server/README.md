@@ -1,8 +1,11 @@
-# Client-Server UID2 SDK Integration Example with Google Secure Signals
+# Client-Server UID2/EUID SDK Integration Example with Google Secure Signals
 
-This example demonstrates how a content publisher who is working with [Google Interactive Media Ads(IMA) SDKs](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) can use [Google Secure Signal](https://support.google.com/admanager/answer/10488752) and the [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript) to share UID2 directly with bidders, in an implementation that uses this SDK.
+This example demonstrates how a content publisher who is working with [Google Interactive Media Ads(IMA) SDKs](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) can use [Google Secure Signal](https://support.google.com/admanager/answer/10488752) and the UID2/EUID SDK for JavaScript to share UID2 or EUID tokens directly with bidders, in an implementation that uses this SDK.
 
-For an example application without using the UID2 SDK, see [Server-Side UID2 Integration Example with Google Secure Signals](../server-side/README.md).
+- For UID2: [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript), [Google Ad Manager Secure Signals Integration Guide](https://unifiedid.com/docs/guides/integration-google-ss#sdk-for-javascript-client-server-integration)
+- For EUID: [EUID SDK for JavaScript](https://euid.eu/docs/sdks/sdk-ref-javascript), [EUID Google Ad Manager Secure Signals Integration Guide](https://euid.eu/docs/guides/integration-google-ss#sdk-for-javascript-client-server-integration)
+
+For an example application without using the SDK, see [Server-Side UID2/EUID Integration Example with Google Secure Signals](../server-side/README.md).
 
 > NOTE: Although the server side of the example application is implemented in JavaScript using node.js, it is not a requirement. You can use any technology of your choice and refer to the example application for an illustration of the functionality that needs to be implemented.
 
@@ -40,28 +43,31 @@ docker run -p 3052:3052 --env-file .env google-secure-signals-client
 The easiest way to try the example is to do the following:
 
 1. Open this repo in VS Code
-1. Create a `.env` file in the base directory and populate the required variables:
+1. Copy the appropriate sample environment file to `.env` in the base directory:
+   ```bash
+   # For UID2
+   cp .env.sample.uid2 .env
+   
+   # For EUID
+   cp .env.sample.euid .env
    ```
-   UID2_BASE_URL=http://localhost:8080
-   UID2_API_KEY=<your-integ-API-key>
-   UID2_CLIENT_SECRET=<your-integ-client-secret>
-   AD_TAG_URL=https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/extrernal/adx-test-tag&tfcd=0&npa=0&sz=640x480&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=
-   UID2_JS_SDK_URL=http://localhost:9091/uid2-sdk.js
-   PORT=3052
-   ```
+1. Update the `.env` file with your credentials
 1. Click the Run and Debug tab or hit `Crtl+Shift+D`
 1. Select `Launch Secure Signals (Chrome)` from the configuration dropdown
 1. Click `Start Debugging` or hit F5
 
-The following table lists the environment variables that you must specify to start the application.
+### Environment Variables
 
-| Parameter            | Data Type | Description                                                                                                                                              |
-| :------------------- | :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `UID2_BASE_URL`      | string    | The base URL of the UID2 service. For example:</br>Testing environment: `https://integ.uidapi.com`<br/>Production environment: `https://prod.uidapi.com` |
-| `UID2_API_KEY`       | string    | Your UID2 authentication key for the UID2 service specified in `UID2_BASE_URL`.                                                                          |
-| `UID2_CLIENT_SECRET` | string    | Your UID2 client secret for the UID2 service specified in `UID2_BASE_URL`.                                                                               |
-| `AD_TAG_URL`         | string    | The ad tag URL to test ad requests.                                                                                                                      |
-| `UID2_JS_SDK_URL`    | string    | The UID2 JS SDK. If this optional parameter it not provided, it will default to the integ URL specified in `server.js`                                   |
+| Variable | Description | Example Values |
+|:---------|:------------|:---------------|
+| `UID_BASE_URL` | The base URL of the UID2/EUID service | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu` |
+| `UID_API_KEY` | Your authentication key | Your API key from UID2/EUID portal |
+| `UID_CLIENT_SECRET` | Your client secret | Your client secret from UID2/EUID portal |
+| `UID_JS_SDK_URL` | URL to the JavaScript SDK | UID2: `https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js`<br/>EUID: `https://cdn.integ.euid.eu/euid-sdk-4.0.1.js` |
+| `UID_JS_SDK_NAME` | Global variable name for the SDK | UID2: `__uid2`<br/>EUID: `__euid` |
+| `UID_SECURE_SIGNALS_SDK_URL` | URL to the Secure Signals SDK | UID2: `https://cdn.integ.uidapi.com/uid2SecureSignal.js`<br/>EUID: `https://cdn.integ.euid.eu/euidSecureSignal.js` |
+| `PRODUCT_NAME` | Product name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
+| `DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
 
 Output similar to the following indicates that the example application is up and running.
 
