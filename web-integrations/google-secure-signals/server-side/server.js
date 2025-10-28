@@ -210,6 +210,7 @@ app.get('/login', async (req, res) => {
   } else {
     req.session = null;
     res.render('login', {
+      secureSignalsSdkUrl: secureSignalsSdkUrl,
       productName: productName,
       docsBaseUrl: docsBaseUrl
     });
@@ -224,6 +225,7 @@ function _GenerateTokenV1(req, res) {
     .then((response) => {
       if (response.data.status === 'optout') {
         res.render('optout', {
+          secureSignalsSdkUrl: secureSignalsSdkUrl,
           productName: productName,
           docsBaseUrl: docsBaseUrl
         });
@@ -231,6 +233,7 @@ function _GenerateTokenV1(req, res) {
         res.render('error', {
           error: 'Got unexpected token generate status: ' + response.data.status,
           response: response,
+          secureSignalsSdkUrl: secureSignalsSdkUrl,
           productName: productName,
           docsBaseUrl: docsBaseUrl
         });
@@ -238,6 +241,7 @@ function _GenerateTokenV1(req, res) {
         res.render('error', {
           error: 'Unexpected token generate response format: ' + response.data,
           response: response,
+          secureSignalsSdkUrl: secureSignalsSdkUrl,
           productName: productName,
           docsBaseUrl: docsBaseUrl
         });
@@ -250,6 +254,7 @@ function _GenerateTokenV1(req, res) {
       res.render('error', {
         error: error,
         response: error.response,
+        secureSignalsSdkUrl: secureSignalsSdkUrl,
         productName: productName,
         docsBaseUrl: docsBaseUrl
       });
@@ -277,6 +282,7 @@ app.post('/login', async (req, res) => {
 
     if (response.status === 'optout') {
       res.render('optout', {
+        secureSignalsSdkUrl: secureSignalsSdkUrl,
         productName: productName,
         docsBaseUrl: docsBaseUrl
       });
@@ -284,6 +290,7 @@ app.post('/login', async (req, res) => {
       res.render('error', {
         error: 'Got unexpected token generate status in decrypted response: ' + response.status,
         response: response,
+        secureSignalsSdkUrl: secureSignalsSdkUrl,
         productName: productName,
         docsBaseUrl: docsBaseUrl
       });
@@ -291,6 +298,7 @@ app.post('/login', async (req, res) => {
       res.render('error', {
         error: 'Unexpected token generate response format in decrypted response: ' + response,
         response: response,
+        secureSignalsSdkUrl: secureSignalsSdkUrl,
         productName: productName,
         docsBaseUrl: docsBaseUrl
       });
@@ -302,6 +310,7 @@ app.post('/login', async (req, res) => {
     res.render('error', {
       error: error,
       response: error.response,
+      secureSignalsSdkUrl: secureSignalsSdkUrl,
       productName: productName,
       docsBaseUrl: docsBaseUrl
     });
