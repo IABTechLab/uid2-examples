@@ -1,3 +1,6 @@
+const sdkName = '${UID_JS_SDK_NAME}';
+const sdk = window[sdkName];
+
 const clientSideIdentityOptions = {
   subscriptionId: '${SUBSCRIPTION_ID}',
   serverPublicKey: '${SERVER_PUBLIC_KEY}',
@@ -7,7 +10,6 @@ const clientSideIdentityOptions = {
 let loginAttempted = false;
 
 function updateGuiElements(state) {
-  const sdk = window['${UID_JS_SDK_NAME}'];
   $('#targeted_advertising_ready').text(sdk.getAdvertisingToken() ? 'yes' : 'no');
   const token = sdk.getAdvertisingToken();
   $('#advertising_token').text(String(token));
@@ -16,7 +18,7 @@ function updateGuiElements(state) {
   );
   $('#identity_state').text(String(JSON.stringify(state, null, 2)));
 
-  const uid2LoginRequired = sdk.isLoginRequired();
+  const loginRequired = sdk.isLoginRequired();
   
   // Check for opt-out: only if user attempted login, and we got identity null with no token
   const isOptedOut = loginAttempted && !token && state?.identity === null;
@@ -26,7 +28,7 @@ function updateGuiElements(state) {
     $('#logout_form').hide();
     $('#optout_message').show();
     $('#optout_banner').show();
-  } else if (uid2LoginRequired) {
+  } else if (loginRequired) {
     $('#login_form').show();
     $('#logout_form').hide();
     $('#optout_message').hide();
@@ -54,16 +56,13 @@ function updateGuiElements(state) {
   }
 }
 
-function onUid2IdentityUpdated(eventType, payload) {
-  console.log('UID2 Callback', payload);
+function onIdentityUpdated(eventType, payload) {
+  console.log('Identity Callback', payload);
   // allow secure signals time to load
   setTimeout(() => updateGuiElements(payload), 1000);
 }
 
 function onDocumentReady() {
-  const sdkName = '${UID_JS_SDK_NAME}';
-  const sdk = window[sdkName];
-  
   $('#logout').click(() => {
     window.googletag.secureSignalProviders.clearAllCache();
     sdk.disconnect();
@@ -90,14 +89,12 @@ function onDocumentReady() {
   });
 }
 
-const sdkName = '${UID_JS_SDK_NAME}';
 window[sdkName] = window[sdkName] || {};
 window[sdkName].callbacks = window[sdkName].callbacks || [];
 
-window[sdkName].callbacks.push(onUid2IdentityUpdated);
+window[sdkName].callbacks.push(onIdentityUpdated);
 window[sdkName].callbacks.push((eventType, payload) => {
   if (eventType === 'SdkLoaded') {
-    const sdk = window[sdkName];
     sdk.init({
       baseUrl: '${UID_BASE_URL}',
     });

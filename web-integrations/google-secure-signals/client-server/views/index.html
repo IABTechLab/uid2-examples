@@ -12,9 +12,9 @@
       $(document).ready(() => {
         let callbackCounter = 0;
         const sdkName = '<%- uidJsSdkName %>';
+        const sdk = window[sdkName];
 
         function updateGuiElements(payload) {
-          const sdk = window[sdkName];
           $("#targeted_advertising_ready").html(
             sdk.getAdvertisingToken() ? "yes" : "no"
           );
@@ -45,7 +45,6 @@
         }
 
         $("#logout").click(() => {
-          const sdk = window[sdkName];
           sdk.disconnect();
           window.googletag.secureSignalProviders.clearAllCache();
           updateGuiElements(undefined);
@@ -57,7 +56,6 @@
         window[sdkName] = window[sdkName] || { callbacks: [] };
         window[sdkName].callbacks.push((eventType, payload) => {
           if (eventType === "SdkLoaded") {
-            const sdk = window[sdkName];
             sdk.init({
               baseUrl: "<%- uidBaseUrl %>",
               enableSecureSignals: true,
