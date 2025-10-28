@@ -53,6 +53,8 @@ The example application illustrates the steps documented in the Google Ad Manage
 - UID2: [Google Ad Manager Secure Signals Integration Guide](https://unifiedid.com/docs/guides/integration-google-ss), [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript)
 - EUID: [EUID Google Ad Manager Secure Signals Integration Guide](https://euid.eu/docs/guides/integration-google-ss), [EUID SDK for JavaScript](https://euid.eu/docs/sdks/sdk-ref-javascript)
 
+**Note:** For API endpoint documentation, see the UID2 or EUID docs based on your configuration.
+
 The following table outlines and annotates the steps you may take to test and explore the example application.
 
 | Step | Description                                                                                                                                                                                                                                                     | Comments                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
