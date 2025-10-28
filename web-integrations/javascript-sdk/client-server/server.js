@@ -14,7 +14,7 @@ const uidApiKey = process.env.UID_API_KEY;
 const uidClientSecret = process.env.UID_CLIENT_SECRET;
 
 // UI/Display configuration
-const productName = process.env.PRODUCT_NAME || 'UID2';
+const identityName = process.env.IDENTITY_NAME || 'UID2';
 const docsBaseUrl = process.env.DOCS_BASE_URL || 'https://unifiedid.com/docs';
 const uidJsSdkUrl = process.env.UID_JS_SDK_URL || 'https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js';
 const uidJsSdkName = process.env.UID_JS_SDK_NAME || '__uid2';
@@ -33,7 +33,7 @@ app.set('view engine', 'html');
 app.get('/', (req, res) => {
     res.render('index', { 
         uidBaseUrl: uidBaseUrl,
-        productName: productName,
+        identityName: identityName,
         docsBaseUrl: docsBaseUrl,
         uidJsSdkUrl: uidJsSdkUrl,
         uidJsSdkName: uidJsSdkName
@@ -121,21 +121,21 @@ app.post('/login', async (req, res) => {
             res.render('error', { 
                 error: 'Got unexpected token generate status in decrypted response: ' + response.status, 
                 response: response,
-                productName: productName,
+                identityName: identityName,
                 docsBaseUrl: docsBaseUrl
             });
         } else if (typeof response.body !== 'object') {
             res.render('error', { 
                 error: 'Unexpected token generate response format in decrypted response: ' + response, 
                 response: response,
-                productName: productName,
+                identityName: identityName,
                 docsBaseUrl: docsBaseUrl
             });
         } else {
             res.render('login', { 
                 identity: response.body, 
                 uidBaseUrl: uidBaseUrl,
-                productName: productName,
+                identityName: identityName,
                 docsBaseUrl: docsBaseUrl,
                 uidJsSdkUrl: uidJsSdkUrl,
                 uidJsSdkName: uidJsSdkName
@@ -145,7 +145,7 @@ app.post('/login', async (req, res) => {
         res.render('error', { 
             error: error, 
             response: error.response,
-            productName: productName,
+            identityName: identityName,
             docsBaseUrl: docsBaseUrl
         });
     }

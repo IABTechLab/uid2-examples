@@ -42,7 +42,7 @@ The example app will be up and running at `http://localhost:3000`
 | `UID_JS_SDK_NAME` | Global variable name for the SDK | UID2: `__uid2`<br/>EUID: `__euid` |
 | `UID_SECURE_SIGNALS_SDK_URL` | URL to the Secure Signals SDK | UID2: `https://cdn.integ.uidapi.com/uid2SecureSignal.js`<br/>EUID: `https://cdn.integ.euid.eu/euidSecureSignal.js` |
 | `UID_SECURE_SIGNALS_STORAGE_KEY` | Local storage key for Secure Signals | UID2: `_GESPSK-uidapi.com`<br/>EUID: `_GESPSK-euid.eu` |
-| `PRODUCT_NAME` | Product name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
+| `IDENTITY_NAME` | Identity name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
 | `DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
 
 If needed, to close the application, terminate the docker container or use the `Ctrl+C` keyboard shortcut.

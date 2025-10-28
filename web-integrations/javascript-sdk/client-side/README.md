@@ -50,7 +50,7 @@ The application uses environment variables from the `.env` file in the base dire
 
 | Variable | Description | Example Values |
 |:---------|:------------|:---------------|
-| `PRODUCT_NAME` | Product name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
+| `IDENTITY_NAME` | Identity name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
 | `DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
 
 ## Accessing the Application

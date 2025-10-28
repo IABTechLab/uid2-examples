@@ -18,7 +18,7 @@ const UID_JS_SDK_NAME = process.env.REACT_APP_UID_JS_SDK_NAME || '__uid2';
 const UID_BASE_URL = process.env.REACT_APP_UID_CLIENT_BASE_URL || process.env.REACT_APP_UID_BASE_URL || 'https://operator-integ.uidapi.com';
 const SECURE_SIGNALS_SDK_URL = process.env.REACT_APP_UID_SECURE_SIGNALS_SDK_URL || 'https://cdn.integ.uidapi.com/uid2SecureSignal.js';
 const SECURE_SIGNALS_STORAGE_KEY = process.env.REACT_APP_UID_SECURE_SIGNALS_STORAGE_KEY || '_GESPSK-uidapi.com';
-const PRODUCT_NAME = process.env.REACT_APP_PRODUCT_NAME || 'UID2';
+const IDENTITY_NAME = process.env.REACT_APP_IDENTITY_NAME || 'UID2';
 const DOCS_BASE_URL = process.env.REACT_APP_DOCS_BASE_URL || 'https://unifiedid.com/docs';
 
 const clientSideIdentityOptions = {
@@ -88,7 +88,7 @@ const SecureSignalsApp = () => {
 
   const onUid2IdentityUpdated = useCallback(
     (eventType, payload) => {
-      console.log(`${PRODUCT_NAME} Callback`, payload);
+          console.log(`${IDENTITY_NAME} Callback`, payload);
       updateElements(payload);
     },
     [updateElements]
@@ -325,14 +325,14 @@ const SecureSignalsApp = () => {
   return (
     <div>
       <h1>
-        React Client-Side {PRODUCT_NAME} SDK Integration Example with Google Secure Signals
+        React Client-Side {IDENTITY_NAME} SDK Integration Example with Google Secure Signals
       </h1>
       <p>
         This example demonstrates how a content publisher can follow the{' '}
         <a href={`${DOCS_BASE_URL}/guides/integration-javascript-client-side`}>
           Client-Side Integration Guide for JavaScript
         </a>{' '}
-        to implement {PRODUCT_NAME} integration and generate {PRODUCT_NAME} tokens. Secure Signals is updated when the
+          to implement {IDENTITY_NAME} integration and generate {IDENTITY_NAME} tokens. Secure Signals is updated when the
         page is reloaded. Reload the page in order to update Secure Signals in local storage.
       </p>
 
@@ -354,7 +354,7 @@ const SecureSignalsApp = () => {
           <thead>
             <tr>
               <th>
-                {PRODUCT_NAME} Enabled{' '}
+                      {IDENTITY_NAME} Enabled{' '}
                 <input
                   type='checkbox'
                   checked={isUid2Enabled}
@@ -372,19 +372,19 @@ const SecureSignalsApp = () => {
               </td>
             </tr>
             <tr>
-              <td className='label'>{PRODUCT_NAME} Advertising Token:</td>
+                      <td className='label'>{IDENTITY_NAME} Advertising Token:</td>
               <td className='value'>
                 <pre>{advertisingToken}</pre>
               </td>
             </tr>
             <tr>
-              <td className='label'>Is {PRODUCT_NAME} Login Required?</td>
+                      <td className='label'>Is {IDENTITY_NAME} Login Required?</td>
               <td className='value'>
                 <pre>{loginRequired ? 'yes' : 'no'}</pre>
               </td>
             </tr>
             <tr>
-              <td className='label'>{PRODUCT_NAME} Identity Callback State:</td>
+                      <td className='label'>{IDENTITY_NAME} Identity Callback State:</td>
               <td className='value'>
                 <pre>{identityState}</pre>
               </td>
@@ -408,7 +408,7 @@ const SecureSignalsApp = () => {
       {isOptedOut ? (
         <>
           <div id='optout_banner' style={{ border: '3px solid #ffc107', padding: '15px', margin: '20px 0' }}>
-            <p style={{ margin: 0 }}>The email address you entered has opted out of {PRODUCT_NAME}.</p>
+                <p style={{ margin: 0 }}>The email address you entered has opted out of {IDENTITY_NAME}.</p>
           </div>
           <div id='optout_message' className='form'>
             <button type='button' className='button' onClick={handleTryAnother}>
@@ -431,7 +431,7 @@ const SecureSignalsApp = () => {
           </div>
           <div>
             <button type='button' className='button' onClick={handleLogin}>
-              Generate {PRODUCT_NAME}
+                  Generate {IDENTITY_NAME}
             </button>
           </div>
         </div>
@@ -439,7 +439,7 @@ const SecureSignalsApp = () => {
         <div id='logout_form' className='form'>
           <form>
             <button type='button' className='button' onClick={handleLogout}>
-              Clear {PRODUCT_NAME}
+                  Clear {IDENTITY_NAME}
             </button>
           </form>
         </div>

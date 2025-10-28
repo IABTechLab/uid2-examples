@@ -9,7 +9,7 @@ export SERVER_PUBLIC_KEY=${UID_CSTG_SERVER_PUBLIC_KEY:-"UID2-X-I-MFkwEwYHKoZIzj0
 export SUBSCRIPTION_ID=${UID_CSTG_SUBSCRIPTION_ID:-"DMr7uHxqLU"}
 export UID_SECURE_SIGNALS_SDK_URL=${UID_SECURE_SIGNALS_SDK_URL:-"https://cdn.integ.uidapi.com/uid2SecureSignal.js"}
 export UID_SECURE_SIGNALS_STORAGE_KEY=${UID_SECURE_SIGNALS_STORAGE_KEY:-"_GESPSK-uidapi.com"}
-export PRODUCT_NAME=${PRODUCT_NAME:-"UID2"}
+export IDENTITY_NAME=${IDENTITY_NAME:-"UID2"}
 export DOCS_BASE_URL=${DOCS_BASE_URL:-"https://unifiedid.com/docs"}
 
 # Process index.html template with environment variables

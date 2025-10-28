@@ -21,7 +21,7 @@ const uidJsSdkName = process.env.UID_JS_SDK_NAME || '__uid2';
 const secureSignalsSdkUrl = process.env.UID_SECURE_SIGNALS_SDK_URL || 'https://cdn.integ.uidapi.com/uid2SecureSignal.js';
 
 // UI/Display configuration
-const productName = process.env.PRODUCT_NAME || 'UID2';
+const identityName = process.env.IDENTITY_NAME || 'UID2';
 const docsBaseUrl = process.env.DOCS_BASE_URL || 'https://unifiedid.com/docs';
 
 const ivLength = 12;
@@ -41,7 +41,7 @@ app.get('/', (req, res) => {
     uidJsSdkUrl: uidJsSdkUrl,
     uidJsSdkName: uidJsSdkName,
     secureSignalsSdkUrl: secureSignalsSdkUrl,
-    productName: productName,
+    identityName: identityName,
     docsBaseUrl: docsBaseUrl
   });
 });
@@ -137,21 +137,21 @@ app.post('/login', async (req, res) => {
         uidJsSdkUrl: uidJsSdkUrl,
         uidJsSdkName: uidJsSdkName,
         secureSignalsSdkUrl: secureSignalsSdkUrl,
-        productName: productName,
+        identityName: identityName,
         docsBaseUrl: docsBaseUrl
       });
     } else if (response.status !== 'success') {
       res.render('error', {
         error: 'Got unexpected token generate status in decrypted response: ' + response.status,
         response: response,
-        productName: productName,
+        identityName: identityName,
         docsBaseUrl: docsBaseUrl
       });
     } else if (typeof response.body !== 'object') {
       res.render('error', {
         error: 'Unexpected token generate response format in decrypted response: ' + response,
         response: response,
-        productName: productName,
+        identityName: identityName,
         docsBaseUrl: docsBaseUrl
       });
     } else {
@@ -161,7 +161,7 @@ app.post('/login', async (req, res) => {
         uidJsSdkUrl: uidJsSdkUrl,
         uidJsSdkName: uidJsSdkName,
         secureSignalsSdkUrl: secureSignalsSdkUrl,
-        productName: productName,
+        identityName: identityName,
         docsBaseUrl: docsBaseUrl
       });
     }
@@ -169,7 +169,7 @@ app.post('/login', async (req, res) => {
     res.render('error', {
       error: error,
       response: error.response,
-      productName: productName,
+      identityName: identityName,
       docsBaseUrl: docsBaseUrl
     });
   }

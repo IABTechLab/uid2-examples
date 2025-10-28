@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Client-Server <%- productName %> SDK Integration Example with Google Secure Signals</title>
+    <title>Client-Server <%- identityName %> SDK Integration Example with Google Secure Signals</title>
     <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
     <link rel="shortcut icon" href="/images/favicon.png" />
@@ -95,19 +95,19 @@
         <td class="value"><pre id="targeted_advertising_ready"></pre></td>
       </tr>
       <tr>
-        <td class="label"><%- productName %> Advertising Token:</td>
+        <td class="label"><%- identityName %> Advertising Token:</td>
         <td class="value"><pre id="advertising_token"></pre></td>
       </tr>
       <tr>
-        <td class="label">Is <%- productName %> Login Required?</td>
+        <td class="label">Is <%- identityName %> Login Required?</td>
         <td class="value"><pre id="login_required"></pre></td>
       </tr>
       <tr>
-        <td class="label"><%- productName %> Identity Updated Counter:</td>
+        <td class="label"><%- identityName %> Identity Updated Counter:</td>
         <td class="value"><pre id="update_counter"></pre></td>
       </tr>
       <tr>
-        <td class="label"><%- productName %> Identity Callback State:</td>
+        <td class="label"><%- identityName %> Identity Callback State:</td>
         <td class="value"><pre id="identity_state"></pre></td>
       </tr>
     </table>
@@ -122,12 +122,12 @@
             style="border-style: none"
           />
         </div>
-        <div><input type="submit" value="Generate <%- productName %>" class="button" id="login" /></div>
+        <div><input type="submit" value="Generate <%- identityName %>" class="button" id="login" /></div>
       </form>
     </div>
     <div id="logout_form" style="display: none" class="form">
       <form>
-        <button type="button" class="button" id="logout">Clear <%- productName %></button>
+        <button type="button" class="button" id="logout">Clear <%- identityName %></button>
       </form>
     </div>
   </body>

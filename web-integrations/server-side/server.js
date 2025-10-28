@@ -15,7 +15,7 @@ const uidApiKey = process.env.UID_API_KEY;
 const uidClientSecret = process.env.UID_CLIENT_SECRET;
 
 // UI/Display configuration
-const productName = process.env.PRODUCT_NAME || 'UID2';
+const identityName = process.env.IDENTITY_NAME || 'UID2';
 const docsBaseUrl = process.env.DOCS_BASE_URL || 'https://unifiedid.com/docs';
 
 const ivLength = 12;
@@ -169,7 +169,7 @@ async function protect(req, res, next){
 app.get('/', protect, (req, res) => {
   res.render('index', { 
     identity: req.session.identity,
-    productName: productName,
+    identityName: identityName,
     docsBaseUrl: docsBaseUrl
   });
 });
@@ -177,7 +177,7 @@ app.get('/content1', protect, (req, res) => {
   res.render('content', { 
     identity: req.session.identity, 
     content: 'First Sample Content',
-    productName: productName,
+    identityName: identityName,
     docsBaseUrl: docsBaseUrl
   });
 });
@@ -185,7 +185,7 @@ app.get('/content2', protect, (req, res) => {
   res.render('content', { 
     identity: req.session.identity, 
     content: 'Second Sample Content',
-    productName: productName,
+    identityName: identityName,
     docsBaseUrl: docsBaseUrl
   });
 });
@@ -195,7 +195,7 @@ app.get('/login', async (req, res) => {
   } else {
     req.session = null;
     res.render('login', {
-      productName: productName,
+      identityName: identityName,
       docsBaseUrl: docsBaseUrl
     });
   }
@@ -209,14 +209,14 @@ function _GenerateTokenV1(req, res) {
           res.render('error', { 
             error: 'Got unexpected token generate status: ' + response.data.status, 
             response: response,
-            productName: productName,
+            identityName: identityName,
             docsBaseUrl: docsBaseUrl
           });
         } else if (typeof response.data.body !== 'object') {
           res.render('error', { 
             error: 'Unexpected token generate response format: ' + response.data, 
             response: response,
-            productName: productName,
+            identityName: identityName,
             docsBaseUrl: docsBaseUrl
           });
         } else {
@@ -228,7 +228,7 @@ function _GenerateTokenV1(req, res) {
         res.render('error', { 
           error: error, 
           response: error.response,
-          productName: productName,
+          identityName: identityName,
           docsBaseUrl: docsBaseUrl
         });
       });
@@ -253,14 +253,14 @@ app.post('/login', async (req, res) => {
       res.render('error', { 
         error: 'Got unexpected token generate status in decrypted response: ' + response.status, 
         response: response,
-        productName: productName,
+        identityName: identityName,
         docsBaseUrl: docsBaseUrl
       });
     } else if (typeof response.body !== 'object') {
       res.render('error', { 
         error: 'Unexpected token generate response format in decrypted response: ' + response, 
         response: response,
-        productName: productName,
+        identityName: identityName,
         docsBaseUrl: docsBaseUrl
       });
     } else {
@@ -271,7 +271,7 @@ app.post('/login', async (req, res) => {
     res.render('error', { 
       error: error, 
       response: error.response,
-      productName: productName,
+      identityName: identityName,
       docsBaseUrl: docsBaseUrl
     });
   }

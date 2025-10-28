@@ -18,7 +18,7 @@ const uidClientSecret = process.env.UID_CLIENT_SECRET;
 const secureSignalsSdkUrl = process.env.UID_SECURE_SIGNALS_SDK_URL || 'https://cdn.integ.uidapi.com/uid2SecureSignal.js';
 
 // UI/Display configuration
-const productName = process.env.PRODUCT_NAME || 'UID2';
+const identityName = process.env.IDENTITY_NAME || 'UID2';
 const docsBaseUrl = process.env.DOCS_BASE_URL || 'https://unifiedid.com/docs';
 
 const ivLength = 12;
@@ -188,7 +188,7 @@ app.get('/', protect, (req, res) => {
   res.render('index', {
     identity: req.session.identity,
     secureSignalsSdkUrl: secureSignalsSdkUrl,
-    productName: productName,
+    identityName: identityName,
     docsBaseUrl: docsBaseUrl
   });
 });
@@ -211,7 +211,7 @@ app.get('/login', async (req, res) => {
     req.session = null;
     res.render('login', {
       secureSignalsSdkUrl: secureSignalsSdkUrl,
-      productName: productName,
+      identityName: identityName,
       docsBaseUrl: docsBaseUrl
     });
   }
@@ -226,7 +226,7 @@ function _GenerateTokenV1(req, res) {
       if (response.data.status === 'optout') {
         res.render('optout', {
           secureSignalsSdkUrl: secureSignalsSdkUrl,
-          productName: productName,
+          identityName: identityName,
           docsBaseUrl: docsBaseUrl
         });
       } else if (response.data.status !== 'success') {
@@ -234,7 +234,7 @@ function _GenerateTokenV1(req, res) {
           error: 'Got unexpected token generate status: ' + response.data.status,
           response: response,
           secureSignalsSdkUrl: secureSignalsSdkUrl,
-          productName: productName,
+          identityName: identityName,
           docsBaseUrl: docsBaseUrl
         });
       } else if (typeof response.data.body !== 'object') {
@@ -242,7 +242,7 @@ function _GenerateTokenV1(req, res) {
           error: 'Unexpected token generate response format: ' + response.data,
           response: response,
           secureSignalsSdkUrl: secureSignalsSdkUrl,
-          productName: productName,
+          identityName: identityName,
           docsBaseUrl: docsBaseUrl
         });
       } else {
@@ -255,7 +255,7 @@ function _GenerateTokenV1(req, res) {
         error: error,
         response: error.response,
         secureSignalsSdkUrl: secureSignalsSdkUrl,
-        productName: productName,
+        identityName: identityName,
         docsBaseUrl: docsBaseUrl
       });
     });
@@ -283,7 +283,7 @@ app.post('/login', async (req, res) => {
     if (response.status === 'optout') {
       res.render('optout', {
         secureSignalsSdkUrl: secureSignalsSdkUrl,
-        productName: productName,
+        identityName: identityName,
         docsBaseUrl: docsBaseUrl
       });
     } else if (response.status !== 'success') {
@@ -291,7 +291,7 @@ app.post('/login', async (req, res) => {
         error: 'Got unexpected token generate status in decrypted response: ' + response.status,
         response: response,
         secureSignalsSdkUrl: secureSignalsSdkUrl,
-        productName: productName,
+        identityName: identityName,
         docsBaseUrl: docsBaseUrl
       });
     } else if (typeof response.body !== 'object') {
@@ -299,7 +299,7 @@ app.post('/login', async (req, res) => {
         error: 'Unexpected token generate response format in decrypted response: ' + response,
         response: response,
         secureSignalsSdkUrl: secureSignalsSdkUrl,
-        productName: productName,
+        identityName: identityName,
         docsBaseUrl: docsBaseUrl
       });
     } else {
@@ -311,7 +311,7 @@ app.post('/login', async (req, res) => {
       error: error,
       response: error.response,
       secureSignalsSdkUrl: secureSignalsSdkUrl,
-      productName: productName,
+      identityName: identityName,
       docsBaseUrl: docsBaseUrl
     });
   }

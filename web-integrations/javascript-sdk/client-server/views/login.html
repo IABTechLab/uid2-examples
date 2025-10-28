@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Login - Client-Server <%- productName %> Integration Example using JavaScript SDK</title>
+    <title>Login - Client-Server <%- identityName %> Integration Example using JavaScript SDK</title>
     <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
     <link rel="shortcut icon" href="/images/favicon.png" />
     <script src="<%- uidJsSdkUrl %>"></script>
@@ -22,12 +22,12 @@
   </head>
   <body>
     <%- include('intro.html'); -%>
-    <p class="message">Generate <%- productName %> completed</p>
-    <p><%- productName %> identity:</p>
+    <p class="message">Generate <%- identityName %> completed</p>
+    <p><%- identityName %> identity:</p>
     <pre><%- JSON.stringify(identity, null, 2) %></pre>
     <p><a href="/">Back to the main page</a></p>
     <p>
-      Normally user would be redirected automatically, but this example demonstrates one way <%- productName %>
+      Normally user would be redirected automatically, but this example demonstrates one way <%- identityName %>
       generation could be handled.
     </p>
   </body>
