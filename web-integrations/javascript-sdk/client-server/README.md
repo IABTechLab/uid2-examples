@@ -5,7 +5,7 @@
 - For UID2: [UID2 services](https://unifiedid.com/docs/intro), [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript), [client-server UID2 integration workflow](https://unifiedid.com/docs/guides/integration-javascript-client-server)
 - For EUID: [EUID services](https://euid.eu/docs/intro), [EUID SDK for JavaScript](https://euid.eu/docs/sdks/sdk-ref-javascript), [client-server EUID integration workflow](https://euid.eu/docs/guides/integration-javascript-client-server)
 
-This example supports both UID2 and EUID environments — the behavior depends on your configured environment variables.
+This example can be configured for either UID2 or EUID — the behavior is determined by your environment variable configuration. You cannot use both simultaneously.
 
 For an example application without using the SDK, see [Server-Side UID2 or EUID Integration Example](../../server-side/README.md).
 

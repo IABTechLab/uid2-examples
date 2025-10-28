@@ -5,7 +5,7 @@ This example demonstrates how a content publisher who is working with [Google In
 - For UID2: [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript), [Google Ad Manager Secure Signals Integration Guide](https://unifiedid.com/docs/guides/integration-google-ss)
 - For EUID: [EUID SDK for JavaScript](https://euid.eu/docs/sdks/sdk-ref-javascript), [EUID Google Ad Manager Secure Signals Integration Guide](https://euid.eu/docs/guides/integration-google-ss)
 
-This example supports both UID2 and EUID environments — the behavior depends on your configured environment variables.
+This example can be configured for either UID2 or EUID — the behavior is determined by your environment variable configuration. You cannot use both simultaneously.
 
 ## Build and Run the Example Application
 

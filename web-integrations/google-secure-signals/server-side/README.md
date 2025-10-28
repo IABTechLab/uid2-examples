@@ -5,7 +5,7 @@ This example demonstrates how a content publisher who is working with [Google In
 - For UID2: [Google Ad Manager Secure Signals Integration Guide](https://unifiedid.com/docs/guides/integration-google-ss#server-side-integration)
 - For EUID: [EUID Google Ad Manager Secure Signals Integration Guide](https://euid.eu/docs/guides/integration-google-ss#server-side-integration)
 
-This example supports both UID2 and EUID environments — the behavior depends on your configured environment variables.
+This example can be configured for either UID2 or EUID — the behavior is determined by your environment variable configuration. You cannot use both simultaneously.
 
 For an example application using the SDK, see [Client-Server UID2 or EUID SDK Integration Example with Google Secure Signals](../client-server/README.md) or [Client-Side UID2 or EUID SDK Integration Example with Google Secure Signals](../client-side/README.md).
 

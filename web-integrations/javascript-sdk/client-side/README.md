@@ -5,7 +5,7 @@ This example demonstrates how a content publisher can follow the Client-Side Int
 - For UID2: [Client-Side Integration Guide for JavaScript](https://unifiedid.com/docs/guides/integration-javascript-client-side), [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript)
 - For EUID: [EUID Client-Side Integration Guide for JavaScript](https://euid.eu/docs/guides/integration-javascript-client-side), [EUID SDK for JavaScript](https://euid.eu/docs/sdks/sdk-ref-javascript)
 
-This example supports both UID2 and EUID environments — the behavior depends on your configured environment variables.
+This example can be configured for either UID2 or EUID — the behavior is determined by your environment variable configuration. You cannot use both simultaneously.
 
 ## Running with Docker
 
