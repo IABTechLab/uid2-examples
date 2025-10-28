@@ -29,9 +29,21 @@ Then update the `.env` file with your credentials.
 
 ### Running with Docker
 
+#### Using Docker Compose (Recommended)
+
+From the repository root directory:
+
 ```bash
-docker build . -t uid2-secure-signals-server
-docker run -it --rm -p 3000:3000 --env-file .env uid2-secure-signals-server
+docker compose up google-secure-signals-server-side
+```
+
+The application will be available at http://localhost:3043
+
+#### Using Docker Build
+
+```bash
+docker build -f web-integrations/google-secure-signals/server-side/Dockerfile -t google-secure-signals-server-side .
+docker run -it --rm -p 3043:3043 --env-file .env google-secure-signals-server-side
 ```
 
 ### Environment Variables

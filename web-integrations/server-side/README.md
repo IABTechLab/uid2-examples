@@ -15,34 +15,19 @@ For an example application using the SDK, see [Client-Server UID2 or EUID Integr
 
 ### Using Docker Compose (Recommended)
 
-From the base directory:
+From the repository root directory:
 
 ```bash
-# Start the service
-docker-compose up -d server-side
-
-# View logs
-docker-compose logs server-side
-
-# Stop the service
-docker-compose down server-side
+docker compose up server-side
 ```
 
-### Using Docker directly
+The application will be available at http://localhost:3033
 
-From the base directory:
+### Using Docker Build
 
 ```bash
-# Build the image
 docker build -f web-integrations/server-side/Dockerfile -t server-side .
-
-# Run the container
-docker run -it --rm -p 3033:3033 \
-    -e UID_BASE_URL="https://operator-integ.uidapi.com" \
-    -e UID_API_KEY="{INTEG_API_KEY}" \
-    -e UID_CLIENT_SECRET="{CLIENT_KEY}" \
-    -e SESSION_KEY="{SESSION_KEY}" \
-    server-side
+docker run -it --rm -p 3033:3033 --env-file .env server-side
 ```
 
 The following table lists the environment variables that you must specify to start the application.

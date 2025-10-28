@@ -11,13 +11,14 @@
 
     <script>
       const sdkName = '<%- uidJsSdkName %>';
-      const sdk = window[sdkName] || { callbacks: [] };
-      window[sdkName] = sdk;
+      const sdk = window[sdkName];
       
+      sdk.callbacks = sdk.callbacks || [];
       sdk.callbacks.push((eventType, payload) => {
         if (eventType === 'SdkLoaded') {
           sdk.init({
             baseUrl: "<%- uidBaseUrl %>",
+            enableSecureSignals: true,
           });
         }
         if (eventType === 'InitCompleted') {

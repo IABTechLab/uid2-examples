@@ -15,29 +15,19 @@ For an example application without using the SDK, see [Server-Side UID2 or EUID 
 
 ### Using Docker Compose (Recommended)
 
-From the base directory:
+From the repository root directory:
 
 ```bash
-# Start the service
-docker-compose up -d google-secure-signals-client
-
-# View logs
-docker-compose logs google-secure-signals-client
-
-# Stop the service
-docker-compose down google-secure-signals-client
+docker compose up google-secure-signals-client-server
 ```
 
-### Using Docker directly
+The application will be available at http://localhost:3041
 
-From the base directory:
+### Using Docker Build
 
 ```bash
-# Build the image
-docker build -f web-integrations/google-secure-signals/client-server/Dockerfile -t google-secure-signals-client .
-
-# Run the container
-docker run -p 3052:3052 --env-file .env google-secure-signals-client
+docker build -f web-integrations/google-secure-signals/client-server/Dockerfile -t google-secure-signals-client-server .
+docker run -it --rm -p 3041:3041 --env-file .env google-secure-signals-client-server
 ```
 
 ### Using the VS Code Debugger

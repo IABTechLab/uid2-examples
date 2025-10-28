@@ -14,22 +14,21 @@ For an example application without using the SDK, see [Server-Side UID2 or EUID 
 
 ## Build and Run the Example Application
 
-The easiest way to try the example is to use the following docker build command:
+### Using Docker Compose (Recommended)
 
-```
-docker build . -t uid2-publisher-standard
-docker run -it --rm -p 3000:3000 \
-    -e UID_BASE_URL="https://operator-integ.uidapi.com" \
-    -e UID_API_KEY="{INTEG_API_KEY}" \
-    -e UID_CLIENT_SECRET="{CLIENT_SECRET}" \
-    uid2-publisher-standard
+From the repository root directory:
+
+```bash
+docker compose up javascript-sdk-client-server
 ```
 
-If this command does not work in Powershell because of the `-e` variable, try running in Command Prompt with quotes around each variable like so:
+The application will be available at http://localhost:3032
 
-```
-docker build . -t uid2-publisher-server
-docker run -it --rm -p 3000:3000 -e "UID_BASE_URL=https://operator-integ.uidapi.com" -e "UID_API_KEY={INTEG_API_KEY}" -e "UID_CLIENT_SECRET={CLIENT_SECRET}" uid2-publisher-server
+### Using Docker Build
+
+```bash
+docker build -f web-integrations/javascript-sdk/client-server/Dockerfile -t javascript-sdk-client-server .
+docker run -it --rm -p 3032:3032 --env-file .env javascript-sdk-client-server
 ```
 
 The following table lists the environment variables that you must specify to start the application.
@@ -51,16 +50,6 @@ The following table lists the environment variables that you must specify to sta
 | `IDENTITY_NAME` | Identity name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
 | `DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
 
-After you see output similar to the following, the example application is up and running.
-
-```
-> uid2-publisher@1.0.0 start /usr/src/app
-> node server.js
-
-Example app listening at http://localhost:3000
-```
-
-If needed, to close the application, terminate the docker container or use the `Ctrl+C` keyboard shortcut.
 
 ## Test the Example Application
 
