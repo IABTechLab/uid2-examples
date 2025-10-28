@@ -17,9 +17,9 @@ app.use(express.static('public', { type: 'application/javascript' }));
 
 app.get('/', (req, res) => {
   res.render('index', {
-    uid2SubscriptionId: process.env.UID2_CSTG_SUBSCRIPTION_ID,
-    uid2ServerPublicKey: process.env.UID2_CSTG_SERVER_PUBLIC_KEY,
-    uid2BaseUrl: process.env.UID2_BASE_URL,
+    uid2SubscriptionId: process.env.REACT_APP_UID_CSTG_SUBSCRIPTION_ID,
+    uid2ServerPublicKey: process.env.REACT_APP_UID_CSTG_SERVER_PUBLIC_KEY,
+    uid2BaseUrl: process.env.REACT_APP_UID_BASE_URL,
   });
 });
 
