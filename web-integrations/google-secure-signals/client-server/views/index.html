@@ -34,7 +34,7 @@
           }
         }
 
-        function onUid2IdentityUpdated(eventType, payload) {
+        function onIdentityUpdated(eventType, payload) {
           if (
             payload?.identity &&
             (eventType === "InitCompleted" || eventType === "IdentityUpdated")
@@ -62,7 +62,7 @@
             });
           }
         });
-        sdk.callbacks.push(onUid2IdentityUpdated);
+        sdk.callbacks.push(onIdentityUpdated);
       });
     </script>
   </head>

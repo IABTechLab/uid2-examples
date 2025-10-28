@@ -7,7 +7,7 @@
     <link rel="shortcut icon" href="/images/favicon.png" />
     <script src="<%- uidJsSdkUrl %>"></script>
     <script>
-      function onUid2IdentityUpdated(state) {
+      function onIdentityUpdated(state) {
         // can automatically redirect user to index page here
       }
 
@@ -17,7 +17,7 @@
         baseUrl: "<%- uidBaseUrl %>",
         identity: <%- JSON.stringify(identity) %>
       });
-      sdk.callbacks.push(onUid2IdentityUpdated);
+      sdk.callbacks.push(onIdentityUpdated);
     </script>
   </head>
   <body>

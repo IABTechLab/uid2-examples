@@ -29,7 +29,7 @@
           }
         }
 
-        function onUid2IdentityUpdated(state) {
+        function onIdentityUpdated(state) {
           ++callbackCounter;
           updateGuiElements(state);
         }
@@ -45,7 +45,7 @@
           baseUrl: '<%- uidBaseUrl %>',
         });
 
-        sdk.callbacks.push(onUid2IdentityUpdated);
+        sdk.callbacks.push(onIdentityUpdated);
       });
     </script>
   </head>

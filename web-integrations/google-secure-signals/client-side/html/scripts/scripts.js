@@ -89,26 +89,16 @@ function onDocumentReady() {
   });
 }
 
-window[sdkName] = window[sdkName] || {};
-window[sdkName].callbacks = window[sdkName].callbacks || [];
+sdk.callbacks = sdk.callbacks || [];
 
-window[sdkName].callbacks.push(onIdentityUpdated);
-window[sdkName].callbacks.push((eventType, payload) => {
+sdk.callbacks.push(onIdentityUpdated);
+sdk.callbacks.push((eventType, payload) => {
   if (eventType === 'SdkLoaded') {
     sdk.init({
       baseUrl: '${UID_BASE_URL}',
     });
     $(document).ready(() => {
-      // Clear any existing identity on page load for clean state
-      sdk.disconnect();
-      loginAttempted = false;
-      
       onDocumentReady();
-      // Always show login form on initial page load
-      $('#login_form').show();
-      $('#logout_form').hide();
-      $('#optout_message').hide();
-      $('#optout_banner').hide();
     });
   }
 });

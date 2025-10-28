@@ -13,7 +13,7 @@ declare global {
 // Declare global variables
 declare const google: any;
 
-// Environment variables with UID_ prefix for both UID2 and EUID
+// Set default to uid2 configuration 
 const UID_JS_SDK_NAME = process.env.REACT_APP_UID_JS_SDK_NAME || '__uid2';
 const UID_BASE_URL = process.env.REACT_APP_UID_CLIENT_BASE_URL || process.env.REACT_APP_UID_BASE_URL || 'https://operator-integ.uidapi.com';
 const SECURE_SIGNALS_SDK_URL = process.env.REACT_APP_UID_SECURE_SIGNALS_SDK_URL || 'https://cdn.integ.uidapi.com/uid2SecureSignal.js';
@@ -50,8 +50,11 @@ const SecureSignalsApp = () => {
   // Track whether user has attempted to generate a token
   const loginAttemptedRef = useRef(false);
 
+  // Helper function to get SDK instance
+  const getSDK = () => window[UID_JS_SDK_NAME];
+
   const updateElements = useCallback((status) => {
-    const sdk = window[UID_JS_SDK_NAME];
+    const sdk = getSDK();
     const token = sdk.getAdvertisingToken();
     
     // Check for opt-out: only if user attempted login, and we got identity null with no token
@@ -86,7 +89,7 @@ const SecureSignalsApp = () => {
     return false;
   };
 
-  const onUid2IdentityUpdated = useCallback(
+  const onIdentityUpdated = useCallback(
     (eventType, payload) => {
           console.log(`${IDENTITY_NAME} Callback`, payload);
       updateElements(payload);
@@ -183,9 +186,9 @@ const SecureSignalsApp = () => {
 
   useEffect(() => {
     // Add callbacks for UID2/EUID JS SDK
-    const sdk = window[UID_JS_SDK_NAME];
+    const sdk = getSDK();
     sdk.callbacks = sdk.callbacks || [];
-    sdk.callbacks.push(onUid2IdentityUpdated);
+    sdk.callbacks.push(onIdentityUpdated);
     sdk.callbacks.push((eventType, payload) => {
       if (eventType === 'SdkLoaded') {
         sdk.init({
@@ -199,7 +202,7 @@ const SecureSignalsApp = () => {
         }
       }
     });
-  }, [identity, onUid2IdentityUpdated]);
+  }, [identity, onIdentityUpdated]);
 
   useEffect(() => {
     // initialize ads manager
@@ -267,7 +270,7 @@ const SecureSignalsApp = () => {
 
     try {
       if (isEnabled('uid2')) {
-        const sdk = window[UID_JS_SDK_NAME];
+        const sdk = getSDK();
         await sdk.setIdentityFromEmail(email, clientSideIdentityOptions);
         loadSecureSignals();
       }
@@ -279,7 +282,7 @@ const SecureSignalsApp = () => {
   const handleLogout = () => {
     window.googletag.secureSignalProviders.clearAllCache();
     if (isEnabled('uid2')) {
-      const sdk = window[UID_JS_SDK_NAME];
+      const sdk = getSDK();
       sdk.disconnect();
     }
     loginAttemptedRef.current = false; // Reset flag
@@ -289,7 +292,7 @@ const SecureSignalsApp = () => {
   const handleTryAnother = () => {
     window.googletag.secureSignalProviders.clearAllCache();
     if (isEnabled('uid2')) {
-      const sdk = window[UID_JS_SDK_NAME];
+      const sdk = getSDK();
       sdk.disconnect();
     }
     setEmail('');
