@@ -2,11 +2,11 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Server-Side UID2 Integration Example with Google Secure Signals</title>
+    <title>Server-Side <%- productName %> Integration Example with Google Secure Signals</title>
     <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
     <link rel="shortcut icon" href="/images/favicon.png" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script async src="https://cdn.integ.uidapi.com/uid2SecureSignal.js"></script>
+    <script async src="<%- secureSignalsSdkUrl %>"></script>
     <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
 
     <script type="text/javascript">
@@ -26,18 +26,18 @@
     </script>
   </head>
   <body>
-    <h1>Server-Side UID2 Integration Example with Google Secure Signals</h1>
+    <h1>Server-Side <%- productName %> Integration Example with Google Secure Signals</h1>
     <p class="intro">
-      This example demonstrates how a content publisher can use the UID2 services to implement the
-      <a href="https://unifiedid.com/docs/guides/integration-google-ss#server-side-integration">server-side UID2 integration workflow with Secure Signals</a>. [<a
+      This example demonstrates how a content publisher can use the <%- productName %> services to implement the
+      <a href="<%- docsBaseUrl %>/guides/integration-google-ss#server-side-integration">server-side <%- productName %> integration workflow with Secure Signals</a>. [<a
         href="https://github.com/IABTechLab/uid2-examples/tree/main/web-integrations/google-secure-signals/server-side"
         >Source Code</a
       >]
       <br />
       <br />
       This assumes that the publisher has implemented
-      <a href="https://unifiedid.com/docs/guides/integration-publisher-server-side">UID2 Server-Side integration</a>
-      on the backend and is able to pass the resulting UID2 identity response to the front end.
+      <a href="<%- docsBaseUrl %>/guides/integration-publisher-server-side"><%- productName %> Server-Side integration</a>
+      on the backend and is able to pass the resulting <%- productName %> identity response to the front end.
     </p>
   </body>
 </html>

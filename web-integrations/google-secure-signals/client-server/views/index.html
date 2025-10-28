@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Client-Server UID2 SDK Integration Example with Google Secure Signals</title>
+    <title>Client-Server <%- productName %> SDK Integration Example with Google Secure Signals</title>
     <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
     <link rel="shortcut icon" href="/images/favicon.png" />
@@ -11,17 +11,19 @@
     <script>
       $(document).ready(() => {
         let callbackCounter = 0;
+        const sdkName = '<%- uid2JsSdkName %>';
 
         function updateGuiElements(payload) {
+          const sdk = window[sdkName];
           $("#targeted_advertising_ready").html(
-            __uid2.getAdvertisingToken() ? "yes" : "no"
+            sdk.getAdvertisingToken() ? "yes" : "no"
           );
-          $("#advertising_token").html(String(__uid2.getAdvertisingToken()));
-          $("#login_required").html(__uid2.isLoginRequired() ? "yes" : "no");
+          $("#advertising_token").html(String(sdk.getAdvertisingToken()));
+          $("#login_required").html(sdk.isLoginRequired() ? "yes" : "no");
           $("#update_counter").html(callbackCounter);
           $("#identity_state").html(String(JSON.stringify(payload, null, 2)));
 
-          if (__uid2.isLoginRequired()) {
+          if (sdk.isLoginRequired()) {
             $("#login_form").show();
             $("#logout_form").hide();
             $('#googleAdContainer').hide();
@@ -43,7 +45,8 @@
         }
 
         $("#logout").click(() => {
-          window.__uid2.disconnect();
+          const sdk = window[sdkName];
+          sdk.disconnect();
           window.googletag.secureSignalProviders.clearAllCache();
           updateGuiElements(undefined);
         });
@@ -51,16 +54,17 @@
           window.googletag.secureSignalProviders.clearAllCache();
           updateGuiElements(undefined);
         });
-        window.__uid2 = window.__uid2 || { callbacks: [] };
-        window.__uid2.callbacks.push((eventType, payload) => {
+        window[sdkName] = window[sdkName] || { callbacks: [] };
+        window[sdkName].callbacks.push((eventType, payload) => {
           if (eventType === "SdkLoaded") {
-            __uid2.init({
+            const sdk = window[sdkName];
+            sdk.init({
               baseUrl: "<%- uid2BaseUrl %>",
               enableSecureSignals: true,
             });
           }
         });
-        window.__uid2.callbacks.push(onUid2IdentityUpdated);
+        window[sdkName].callbacks.push(onUid2IdentityUpdated);
       });
     </script>
   </head>
@@ -76,7 +80,7 @@
       </div>
       <button id="playButton">Play</button>
       <script type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
-      <script async src="https://cdn.integ.uidapi.com/uid2SecureSignal.js"></script>
+      <script async src="<%- secureSignalsSdkUrl %>"></script>
       <script async src="<%- uid2JsSdkUrl %>"></script>
       <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
       <script type="text/javascript" src="ads.js"></script>
@@ -93,19 +97,19 @@
         <td class="value"><pre id="targeted_advertising_ready"></pre></td>
       </tr>
       <tr>
-        <td class="label">UID2 Advertising Token:</td>
+        <td class="label"><%- productName %> Advertising Token:</td>
         <td class="value"><pre id="advertising_token"></pre></td>
       </tr>
       <tr>
-        <td class="label">Is UID2 Login Required?</td>
+        <td class="label">Is <%- productName %> Login Required?</td>
         <td class="value"><pre id="login_required"></pre></td>
       </tr>
       <tr>
-        <td class="label">UID2 Identity Updated Counter:</td>
+        <td class="label"><%- productName %> Identity Updated Counter:</td>
         <td class="value"><pre id="update_counter"></pre></td>
       </tr>
       <tr>
-        <td class="label">UID2 Identity Callback State:</td>
+        <td class="label"><%- productName %> Identity Callback State:</td>
         <td class="value"><pre id="identity_state"></pre></td>
       </tr>
     </table>
@@ -120,12 +124,12 @@
             style="border-style: none"
           />
         </div>
-        <div><input type="submit" value="Generate UID2" class="button" id="login" /></div>
+        <div><input type="submit" value="Generate <%- productName %>" class="button" id="login" /></div>
       </form>
     </div>
     <div id="logout_form" style="display: none" class="form">
       <form>
-        <button type="button" class="button" id="logout">Clear UID2</button>
+        <button type="button" class="button" id="logout">Clear <%- productName %></button>
       </form>
     </div>
   </body>

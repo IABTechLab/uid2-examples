@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Error - Client-Server UID2 SDK Integration Example with Google Secure Signals</title>
+    <title>Error - Client-Server <%- productName %> SDK Integration Example with Google Secure Signals</title>
     <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
     <link rel="shortcut icon" href="/images/favicon.png" />
   </head>
@@ -10,7 +10,7 @@
     <%- include('intro.html'); -%>
     <p>Something went wrong:</p>
     <pre><%= error %></pre>
-    <p>Response from the UID2 operator:</p>
+    <p>Response from the <%- productName %> operator:</p>
     <pre><%= response ? JSON.stringify(response.data) : '' %></pre>
     <p>HTTP error:</p>
     <pre><%= response ? (response.status + ' ' + response.statusText) : '' %></pre>

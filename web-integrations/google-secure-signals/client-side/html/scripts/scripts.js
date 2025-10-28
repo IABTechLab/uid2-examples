@@ -7,15 +7,16 @@ const clientSideIdentityOptions = {
 let loginAttempted = false;
 
 function updateGuiElements(state) {
-  $('#targeted_advertising_ready').text(__uid2.getAdvertisingToken() ? 'yes' : 'no');
-  const token = __uid2.getAdvertisingToken();
+  const sdk = window['${UID_JS_SDK_NAME}'];
+  $('#targeted_advertising_ready').text(sdk.getAdvertisingToken() ? 'yes' : 'no');
+  const token = sdk.getAdvertisingToken();
   $('#advertising_token').text(String(token));
   $('#login_required').text(
-    __uid2.isLoginRequired() || __uid2.isLoginRequired() === undefined ? 'yes' : 'no'
+    sdk.isLoginRequired() || sdk.isLoginRequired() === undefined ? 'yes' : 'no'
   );
   $('#identity_state').text(String(JSON.stringify(state, null, 2)));
 
-  const uid2LoginRequired = __uid2.isLoginRequired();
+  const uid2LoginRequired = sdk.isLoginRequired();
   
   // Check for opt-out: only if user attempted login, and we got identity null with no token
   const isOptedOut = loginAttempted && !token && state?.identity === null;
@@ -37,7 +38,8 @@ function updateGuiElements(state) {
     $('#optout_banner').hide();
   }
 
-  const secureSignalsStorage = localStorage['_GESPSK-uidapi.com'];
+  const secureSignalsStorageKey = '${UID_SECURE_SIGNALS_STORAGE_KEY}';
+  const secureSignalsStorage = localStorage[secureSignalsStorageKey];
   if (token && !secureSignalsStorage) {
     //Token is valid but Secure Signals has not been refreshed. Reload the page.
     location.reload();
@@ -59,9 +61,12 @@ function onUid2IdentityUpdated(eventType, payload) {
 }
 
 function onDocumentReady() {
+  const sdkName = '${UID_JS_SDK_NAME}';
+  const sdk = window[sdkName];
+  
   $('#logout').click(() => {
     window.googletag.secureSignalProviders.clearAllCache();
-    __uid2.disconnect();
+    sdk.disconnect();
     loginAttempted = false; // Reset flag
   });
 
@@ -71,7 +76,7 @@ function onDocumentReady() {
     loginAttempted = true; // Mark that user attempted to generate a token
 
     try {
-        await __uid2.setIdentityFromEmail(email, clientSideIdentityOptions);
+        await sdk.setIdentityFromEmail(email, clientSideIdentityOptions);
     } catch (e) {
       console.error('setIdentityFromEmail failed', e);
     }
@@ -79,24 +84,26 @@ function onDocumentReady() {
 
   $('#try_another').click(() => {
     window.googletag.secureSignalProviders.clearAllCache();
-    __uid2.disconnect();
+    sdk.disconnect();
     $('#email').val('');
     loginAttempted = false; // Reset flag
   });
 }
 
-window.__uid2 = window.__uid2 || {};
-window.__uid2.callbacks = window.__uid2.callbacks || [];
+const sdkName = '${UID_JS_SDK_NAME}';
+window[sdkName] = window[sdkName] || {};
+window[sdkName].callbacks = window[sdkName].callbacks || [];
 
-window.__uid2.callbacks.push(onUid2IdentityUpdated);
-window.__uid2.callbacks.push((eventType, payload) => {
+window[sdkName].callbacks.push(onUid2IdentityUpdated);
+window[sdkName].callbacks.push((eventType, payload) => {
   if (eventType === 'SdkLoaded') {
-    window.__uid2.init({
+    const sdk = window[sdkName];
+    sdk.init({
       baseUrl: '${UID_BASE_URL}',
     });
     $(document).ready(() => {
       // Clear any existing identity on page load for clean state
-      __uid2.disconnect();
+      sdk.disconnect();
       loginAttempted = false;
       
       onDocumentReady();

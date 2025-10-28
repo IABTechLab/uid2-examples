@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Client-Side UID2 SDK Integration Example with Google Secure Signals</title>
+    <title>Client-Side ${PRODUCT_NAME} SDK Integration Example with Google Secure Signals</title>
     <link rel="stylesheet" type="text/css" href="/styles/ads.css" />
     <link rel="stylesheet" type="text/css" href="/styles/app.css" />
     <link rel="shortcut icon" href="images/favicon.png" />
@@ -12,10 +12,10 @@
     </script>
   </head>
   <body>
-    <h1>Client-Side UID2 SDK Integration Example with Google Secure Signals</h1>
+    <h1>Client-Side ${PRODUCT_NAME} SDK Integration Example with Google Secure Signals</h1>
     <p>
       This example demonstrates how a content publisher can follow the
-      <a href="https://unifiedid.com/docs/guides/integration-javascript-client-side">Client-Side Integration Guide for JavaScript</a> to implement UID2 integration and generate UID2 tokens.
+      <a href="${DOCS_BASE_URL}/guides/integration-javascript-client-side">Client-Side Integration Guide for JavaScript</a> to implement ${PRODUCT_NAME} integration and generate ${PRODUCT_NAME} tokens.
       Secure Signals is updated when the page is reloaded.  
       Reload the page in order to update Secure Signals in local storage.
       <strong>Note:</strong> This is a <em>test-only</em> integration environment—not for production use.
@@ -39,15 +39,15 @@
           <td class="value"><pre id="targeted_advertising_ready"></pre></td>
         </tr>
         <tr>
-          <td class="label">UID2 Advertising Token:</td>
+          <td class="label">${PRODUCT_NAME} Advertising Token:</td>
           <td class="value"><pre id="advertising_token"></pre></td>
         </tr>
         <tr>
-          <td class="label">Is UID2 Login Required?</td>
+          <td class="label">Is ${PRODUCT_NAME} Login Required?</td>
           <td class="value"><pre id="login_required"></pre></td>
         </tr>
         <tr>
-          <td class="label">UID2 Identity Callback State:</td>
+          <td class="label">${PRODUCT_NAME} Identity Callback State:</td>
           <td class="value"><pre id="identity_state"></pre></td>
         </tr>
         <tr>
@@ -61,7 +61,7 @@
       </table>
     </div>
     <div id="optout_banner" style="display: none; border: 3px solid #ffc107; padding: 15px; margin: 20px 0;">
-      <p style="margin: 0;">The email address you entered has opted out of UID2.</p>
+      <p style="margin: 0;">The email address you entered has opted out of ${PRODUCT_NAME}.</p>
     </div>
     <div id="optout_message" style="display: none" class="form">
       <button type="button" class="button" id="try_another">Try Another Email</button>
@@ -76,15 +76,15 @@
           style="border-style: none"
         />
       </div>
-      <div><button type="button" class="button" id="login">Generate UID2</button></div>
+      <div><button type="button" class="button" id="login">Generate ${PRODUCT_NAME}</button></div>
     </div>
     <div id="logout_form" style="display: none" class="form">
       <form>
-        <button type="button" class="button" id="logout">Clear UID2</button>
+        <button type="button" class="button" id="logout">Clear ${PRODUCT_NAME}</button>
       </form>
     </div>
     <script src="${UID_JS_SDK_URL}"></script>
-    <script src="https://cdn.integ.uidapi.com/uid2SecureSignal.js"></script>
+    <script src="${UID_SECURE_SIGNALS_SDK_URL}"></script>
     <script type="text/javascript" src="/scripts/ads.js"></script>
     <script type="text/javascript" src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
     <script type="text/javascript" src="/scripts/scripts.js"></script>
