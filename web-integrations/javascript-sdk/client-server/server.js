@@ -9,15 +9,15 @@ const crypto = require('crypto');
 const app = express();
 const port = process.env.PORT || 3032;
 
-const uid2BaseUrl = process.env.UID2_BASE_URL;
-const uid2ApiKey = process.env.UID2_API_KEY;
-const uid2ClientSecret = process.env.UID2_CLIENT_SECRET;
+const uid2BaseUrl = process.env.UID_BASE_URL;
+const uid2ApiKey = process.env.UID_API_KEY;
+const uid2ClientSecret = process.env.UID_CLIENT_SECRET;
 
 // UI/Display configuration
 const productName = process.env.PRODUCT_NAME || 'UID2';
 const docsBaseUrl = process.env.DOCS_BASE_URL || 'https://unifiedid.com/docs';
-const uid2JsSdkUrl = process.env.UID2_JS_SDK_URL || 'https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js';
-const uid2JsSdkName = process.env.UID2_JS_SDK_NAME || '__uid2';
+const uid2JsSdkUrl = process.env.UID_JS_SDK_URL || 'https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js';
+const uid2JsSdkName = process.env.UID_JS_SDK_NAME || '__uid2';
 
 const ivLength = 12;
 const nonceLength = 8;

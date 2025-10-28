@@ -17,9 +17,9 @@ The easiest way to try the example is to use the following docker build command:
 ```
 docker build . -t uid2-publisher-standard
 docker run -it --rm -p 3000:3000 \
-    -e UID2_BASE_URL="https://operator-integ.uidapi.com" \
-    -e UID2_API_KEY="{INTEG_API_KEY}" \
-    -e UID2_CLIENT_SECRET="{CLIENT_SECRET}" \
+    -e UID_BASE_URL="https://operator-integ.uidapi.com" \
+    -e UID_API_KEY="{INTEG_API_KEY}" \
+    -e UID_CLIENT_SECRET="{CLIENT_SECRET}" \
     uid2-publisher-standard
 ```
 
@@ -27,27 +27,27 @@ If this command does not work in Powershell because of the `-e` variable, try ru
 
 ```
 docker build . -t uid2-publisher-server
-docker run -it --rm -p 3000:3000 -e "UID2_BASE_URL=https://operator-integ.uidapi.com" -e "UID2_API_KEY={INTEG_API_KEY}" -e "UID2_CLIENT_SECRET={CLIENT_SECRET}" uid2-publisher-server
+docker run -it --rm -p 3000:3000 -e "UID_BASE_URL=https://operator-integ.uidapi.com" -e "UID_API_KEY={INTEG_API_KEY}" -e "UID_CLIENT_SECRET={CLIENT_SECRET}" uid2-publisher-server
 ```
 
 The following table lists the environment variables that you must specify to start the application.
 
 ### Core Configuration
 
-| Parameter            | Data Type | Description                                                                                                                                                                                                  |
-| :------------------- | :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `UID2_BASE_URL`      | string    | The base URL of the UID2/EUID service. Examples:</br>UID2 Testing: `https://operator-integ.uidapi.com`<br/>EUID Testing: `https://integ.euid.eu/v2`<br/>For details, see [Environments](https://unifiedid.com/docs/getting-started/gs-environments) (UID2) or [Environments](https://euid.eu/docs/getting-started/gs-environments) (EUID). |
-| `UID2_API_KEY`       | string    | Your UID2/EUID authentication key for the service specified in `UID2_BASE_URL`.                                                                                                                              |
-| `UID2_CLIENT_SECRET` | string    | Your UID2/EUID client secret for the service specified in `UID2_BASE_URL`.                                                                                                                                   |
-| `UID2_JS_SDK_URL`    | string    | URL to the JavaScript SDK. Examples:</br>UID2: `https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js`<br/>EUID: `https://cdn.integ.euid.eu/euid-sdk-4.0.1.js` |
-| `UID2_JS_SDK_NAME`   | string    | Global variable name for the SDK. UID2: `__uid2`, EUID: `__euid` |
+| Variable | Description | Example Values |
+|:---------|:------------|:---------------|
+| `UID_BASE_URL` | The base URL of the UID2/EUID service. For details, see [Environments](https://unifiedid.com/docs/getting-started/gs-environments) (UID2) or [Environments](https://euid.eu/docs/getting-started/gs-environments) (EUID). | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu/v2` |
+| `UID_API_KEY` | Your UID2/EUID authentication key for the service specified in `UID_BASE_URL` | Your API key from UID2/EUID portal |
+| `UID_CLIENT_SECRET` | Your UID2/EUID client secret for the service specified in `UID_BASE_URL` | Your client secret from UID2/EUID portal |
+| `UID_JS_SDK_URL` | URL to the JavaScript SDK | UID2: `https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js`<br/>EUID: `https://cdn.integ.euid.eu/euid-sdk-4.0.1.js` |
+| `UID_JS_SDK_NAME` | Global variable name for the SDK | UID2: `__uid2`<br/>EUID: `__euid` |
 
 ### Display/UI Configuration
 
-| Parameter            | Data Type | Description                                                                                                                                                                                                  |
-| :------------------- | :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `PRODUCT_NAME`       | string    | Product name for UI display (default: `UID2`, or `EUID`)                                                                                                                                                    |
-| `DOCS_BASE_URL`      | string    | Documentation base URL (default: `https://unifiedid.com/docs`, or `https://euid.eu/docs`)                                                                                                                   |
+| Variable | Description | Example Values |
+|:---------|:------------|:---------------|
+| `PRODUCT_NAME` | Product name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
+| `DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
 
 After you see output similar to the following, the example application is up and running.
 

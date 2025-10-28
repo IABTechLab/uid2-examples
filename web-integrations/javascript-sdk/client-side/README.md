@@ -36,21 +36,21 @@ docker run -p 3032:3032 --env-file .env javascript-sdk-client-side
 The application uses environment variables from the `.env` file in the base directory:
 
 ### Core Configuration
-- `UID2_JS_SDK_URL` - URL to the UID2/EUID JavaScript SDK
-  - UID2 default: `https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js`
-  - EUID example: `https://cdn.integ.euid.eu/euid-sdk-4.0.1.js`
-- `UID2_JS_SDK_NAME` - Global variable name for the SDK
-  - UID2: `__uid2`
-  - EUID: `__euid`
-- `UID2_BASE_URL` - API base URL
-  - UID2 default: `https://operator-integ.uidapi.com`
-  - EUID example: `https://integ.euid.eu/v2`
-- `UID2_CSTG_SERVER_PUBLIC_KEY` - Server public key for client-side token generation
-- `UID2_CSTG_SUBSCRIPTION_ID` - Subscription ID for client-side token generation
+
+| Variable | Description | Example Values |
+|:---------|:------------|:---------------|
+| `UID_JS_SDK_URL` | URL to the UID2/EUID JavaScript SDK | UID2: `https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js`<br/>EUID: `https://cdn.integ.euid.eu/euid-sdk-4.0.1.js` |
+| `UID_JS_SDK_NAME` | Global variable name for the SDK | UID2: `__uid2`<br/>EUID: `__euid` |
+| `UID_BASE_URL` | API base URL | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu/v2` |
+| `UID_CSTG_SERVER_PUBLIC_KEY` | Server public key for client-side token generation | Your public key from UID2/EUID portal |
+| `UID_CSTG_SUBSCRIPTION_ID` | Subscription ID for client-side token generation | Your subscription ID from UID2/EUID portal |
 
 ### Display/UI Configuration
-- `PRODUCT_NAME` - Product name for UI display (default: `UID2`, or `EUID`)
-- `DOCS_BASE_URL` - Documentation base URL (default: `https://unifiedid.com/docs`, or `https://euid.eu/docs`)
+
+| Variable | Description | Example Values |
+|:---------|:------------|:---------------|
+| `PRODUCT_NAME` | Product name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
+| `DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
 
 ## Accessing the Application
 

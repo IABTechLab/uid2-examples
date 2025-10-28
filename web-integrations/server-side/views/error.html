@@ -1,7 +1,7 @@
 <%- include('header.html'); -%>
 <p>Something went wrong:</p>
 <pre><%= error %></pre>
-<p>Response from the UID2 operator:</p>
+<p>Response from the <%- productName %> operator:</p>
 <pre><%= response ? JSON.stringify(response.data) : '' %></pre>
 <p>HTTP error:</p>
 <pre><%= response ? (response.status + ' ' + response.statusText) : '' %></pre>

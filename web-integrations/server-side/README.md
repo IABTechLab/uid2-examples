@@ -1,8 +1,11 @@
-# Server-Side UID2 Integration Example
+# Server-Side UID2/EUID Integration Example
 
-[This example](https://example-srvonly-integ.uidapi.com/) demonstrates how a content publisher can use the [UID2 services](https://unifiedid.com/docs/intro) to implement the [server-side UID2 integration workflow](https://unifiedid.com/docs/guides/integration-publisher-server-side).
+[This example](https://example-srvonly-integ.uidapi.com/) demonstrates how a content publisher can use the UID2/EUID services to implement the server-side UID2/EUID integration workflow without using an SDK.
 
-For an example application using the [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript), see [Client-Server UID2 Integration Example using JavaScript SDK](../javascript-sdk/client-server/README.md) or [Client-Side UID2 Integration Example using JavaScript SDK](../javascript-sdk/client-side/README.md).
+- For UID2: [UID2 services](https://unifiedid.com/docs/intro), [server-side UID2 integration workflow](https://unifiedid.com/docs/guides/integration-publisher-server-side)
+- For EUID: [EUID services](https://euid.eu/docs/intro), [server-side EUID integration workflow](https://euid.eu/docs/guides/integration-publisher-server-side)
+
+For an example application using the SDK, see [Client-Server UID2 Integration Example using JavaScript SDK](../javascript-sdk/client-server/README.md) or [Client-Side UID2 Integration Example using JavaScript SDK](../javascript-sdk/client-side/README.md).
 
 >NOTE: While the server side of the example application is implemented in JavaScript using node.js, it is not a requirement. You can use any technology of your choice and refer to the example application for illustration of the functionality that needs to be implemented.
 
@@ -33,21 +36,30 @@ docker build -f web-integrations/server-side/Dockerfile -t server-side .
 
 # Run the container
 docker run -it --rm -p 3033:3033 \
-    -e UID2_BASE_URL="https://operator-integ.uidapi.com" \
-    -e UID2_API_KEY="{INTEG_API_KEY}" \
-    -e UID2_CLIENT_SECRET="{CLIENT_KEY}" \
+    -e UID_BASE_URL="https://operator-integ.uidapi.com" \
+    -e UID_API_KEY="{INTEG_API_KEY}" \
+    -e UID_CLIENT_SECRET="{CLIENT_KEY}" \
     -e SESSION_KEY="{SESSION_KEY}" \
     server-side
 ```
 
 The following table lists the environment variables that you must specify to start the application.
 
-| Parameter            | Data Type | Description                                                                                                                                                                                               |
-|:---------------------|:----------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `UID2_BASE_URL`      | string    | The base URL of the UID2 service. For example:</br>Testing environment: `https://operator-integ.uidapi.com`<br/>For details, see [Environments](https://unifiedid.com/docs/getting-started/gs-environments). |
-| `UID2_API_KEY`       | string    | Your UID2 authentication key for the UID2 service specified in `UID2_BASE_URL`.                                                                                                                           |                                                                          |
-| `UID2_CLIENT_SECRET` | string    | Your UID2 client secret for the UID2 service specified in `UID2_BASE_URL`.                                                                                                                                |                                                                           |
-| `SESSION_KEY`        | string    | The key to the encryption session data stored in the application session cookie. This can be any arbitrary string.                                                                                          |                                                                           |
+### Core Configuration
+
+| Variable | Description | Example Values |
+|:---------|:------------|:---------------|
+| `UID_BASE_URL` | The base URL of the UID2/EUID service. For details, see [Environments](https://unifiedid.com/docs/getting-started/gs-environments) (UID2) or [Environments](https://euid.eu/docs/getting-started/gs-environments) (EUID). | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu/v2` |
+| `UID_API_KEY` | Your UID2/EUID authentication key for the service specified in `UID_BASE_URL` | Your API key from UID2/EUID portal |
+| `UID_CLIENT_SECRET` | Your UID2/EUID client secret for the service specified in `UID_BASE_URL` | Your client secret from UID2/EUID portal |
+| `SESSION_KEY` | The key to the encryption session data stored in the application session cookie. This can be any arbitrary string. | Any secure random string |
+
+### Display/UI Configuration
+
+| Variable | Description | Example Values |
+|:---------|:------------|:---------------|
+| `PRODUCT_NAME` | Product name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
+| `DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
 
 After you see output similar to the following, the example application is up and running.
 
@@ -62,13 +74,15 @@ If needed, to close the application, terminate the docker container or use the `
 
 ## Test the Example Application
 
-The example application illustrates the steps documented in the [Server-Only UID2 Integration Guide](https://unifiedid.com/docs/guides/custom-publisher-integration).
+The example application illustrates the steps documented in the server-side integration guides:
+- UID2: [Server-Side UID2 Integration Guide](https://unifiedid.com/docs/guides/custom-publisher-integration)
+- EUID: [Server-Side EUID Integration Guide](https://euid.eu/docs/guides/custom-publisher-integration)
 
 The application provides three main pages: index (main), example content 1, and example content 2. Access to these pages is possible only after the user completes the login process. If the user is not logged in, they will be redirected to the login page.
 
 Submitting the login form simulates logging in to a publisher's application in the real world. Normally the login
 would require checking the user's secure credentials (for example, a password), but for demonstration purposes this
-step is omitted, and the login process focuses on integration with the UID2 services instead.
+step is omitted, and the login process focuses on integration with the UID2/EUID services instead.
 
 The following table outlines and annotates the steps you may take to test and explore the example application.
 

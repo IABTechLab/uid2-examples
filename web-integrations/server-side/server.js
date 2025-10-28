@@ -10,9 +10,13 @@ const crypto = require('crypto');
 const app = express();
 const port = process.env.PORT || 3033;
 
-const uid2BaseUrl = process.env.UID2_BASE_URL;
-const uid2ApiKey = process.env.UID2_API_KEY;
-const uid2ClientSecret = process.env.UID2_CLIENT_SECRET;
+const uid2BaseUrl = process.env.UID_BASE_URL;
+const uid2ApiKey = process.env.UID_API_KEY;
+const uid2ClientSecret = process.env.UID_CLIENT_SECRET;
+
+// UI/Display configuration
+const productName = process.env.PRODUCT_NAME || 'UID2';
+const docsBaseUrl = process.env.DOCS_BASE_URL || 'https://unifiedid.com/docs';
 
 const ivLength = 12;
 const nonceLength = 8;
@@ -163,20 +167,37 @@ async function protect(req, res, next){
 }
 
 app.get('/', protect, (req, res) => {
-  res.render('index', { identity: req.session.identity });
+  res.render('index', { 
+    identity: req.session.identity,
+    productName: productName,
+    docsBaseUrl: docsBaseUrl
+  });
 });
 app.get('/content1', protect, (req, res) => {
-  res.render('content', { identity: req.session.identity, content: 'First Sample Content' });
+  res.render('content', { 
+    identity: req.session.identity, 
+    content: 'First Sample Content',
+    productName: productName,
+    docsBaseUrl: docsBaseUrl
+  });
 });
 app.get('/content2', protect, (req, res) => {
-  res.render('content', { identity: req.session.identity, content: 'Second Sample Content' });
+  res.render('content', { 
+    identity: req.session.identity, 
+    content: 'Second Sample Content',
+    productName: productName,
+    docsBaseUrl: docsBaseUrl
+  });
 });
 app.get('/login', async (req, res) => {
   if (await verifyIdentity(req)) {
     res.redirect('/');
   } else {
     req.session = null;
-    res.render('login');
+    res.render('login', {
+      productName: productName,
+      docsBaseUrl: docsBaseUrl
+    });
   }
 });
 
@@ -185,16 +206,31 @@ function _GenerateTokenV1(req, res) {
   axios.get(uid2BaseUrl + '/v1/token/generate?email=' + encodeURIComponent(req.body.email), { headers: { 'Authorization': 'Bearer ' + uid2ApiKey } })
       .then((response) => {
         if (response.data.status !== 'success') {
-          res.render('error', { error: 'Got unexpected token generate status: ' + response.data.status, response: response });
+          res.render('error', { 
+            error: 'Got unexpected token generate status: ' + response.data.status, 
+            response: response,
+            productName: productName,
+            docsBaseUrl: docsBaseUrl
+          });
         } else if (typeof response.data.body !== 'object') {
-          res.render('error', { error: 'Unexpected token generate response format: ' + response.data, response: response });
+          res.render('error', { 
+            error: 'Unexpected token generate response format: ' + response.data, 
+            response: response,
+            productName: productName,
+            docsBaseUrl: docsBaseUrl
+          });
         } else {
           req.session.identity = response.data.body;
           res.redirect('/');
         }
       })
       .catch((error) => {
-        res.render('error', { error: error, response: error.response });
+        res.render('error', { 
+          error: error, 
+          response: error.response,
+          productName: productName,
+          docsBaseUrl: docsBaseUrl
+        });
       });
 }
 
@@ -214,15 +250,30 @@ app.post('/login', async (req, res) => {
     const response = decrypt(encryptedResponse.data, uid2ClientSecret, false, nonce);
 
     if (response.status !== 'success') {
-      res.render('error', { error: 'Got unexpected token generate status in decrypted response: ' + response.status, response: response });
+      res.render('error', { 
+        error: 'Got unexpected token generate status in decrypted response: ' + response.status, 
+        response: response,
+        productName: productName,
+        docsBaseUrl: docsBaseUrl
+      });
     } else if (typeof response.body !== 'object') {
-      res.render('error', { error: 'Unexpected token generate response format in decrypted response: ' + response, response: response });
+      res.render('error', { 
+        error: 'Unexpected token generate response format in decrypted response: ' + response, 
+        response: response,
+        productName: productName,
+        docsBaseUrl: docsBaseUrl
+      });
     } else {
       req.session.identity = response.body;
       res.redirect('/');
     }
   } catch (error) {
-    res.render('error', { error: error, response: error.response });
+    res.render('error', { 
+      error: error, 
+      response: error.response,
+      productName: productName,
+      docsBaseUrl: docsBaseUrl
+    });
   }
 
 });
