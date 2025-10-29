@@ -14,46 +14,10 @@
       const apiBaseKey = identityName === 'EUID' ? 'euidApiBase' : 'uid2ApiBase';
       const userIdName = identityName.toLowerCase();  // 'uid2' or 'euid'
 
-      // Consent management for GDPR compliance (required for EUID, safe to include for UID2)
-      const consentManagementObj = {
-        "cmpApi": "static",
-        "consentData": {
-          "getTCData": {
-            "tcString": "CO-HDlqO-HDlqAKAXCENBDCsAP_AAH_AACiQHKNd_X_fb39j-_59_9t0eY1f9_7_v20zjgeds-8Nyd_X_L8X42M7vF36pq4KuR4Eu3LBIQFlHOHcTUmw6IkVqTPsak2Mr7NKJ7PEinMbe2dYGHtfn9VTuZKYr97s___z__-__v__75f_r-3_3_vp9V---_fA5QAkw1L4CLMSxwJJo0qhRAhCuJDoAQAUUIwtE1hASuCnZXAR-ggYAIDUBGBECDEFGLIIAAAAAkoiAkAPBAIgCIBAACAFSAhAARoAgsAJAwCAAUA0LACKAIQJCDI4KjlMCAiRaKCeSMASi72MMIQyigBoFH4AAAAA.cAAAAAAAAAAA",
-            "cmpId": 10,
-            "cmpVersion": 23,
-            "tcfPolicyVersion": 2,
-            "gdprApplies": true, 
-            "cmpStatus": "loaded",
-            "eventStatus": "tcloaded",
-            "purpose": {
-              "consents": {
-                "1": true,
-                "2": true
-              }
-            },
-            "vendor": {
-              "consents": {
-                "52": true,     // rubicon for adserving
-                "21": true,     // unifiedId
-                "131": true,    // id5Id
-                "929": true,    // parrableId
-                "97": true,     // identityLink
-                "887": true,    // uid2
-                "95": true,     // lotamePanoramaId
-                "301": true,    // zeotapIdPlus
-                "91": true,     // criteo
-                "737": true,    // amxId
-                "58": true,     // 33acrossId
-              }
-            }
-          }
-        }
-      };
-
       function updateGuiElements() {
         console.log('Updating displayed values.');
         const identity = pbjs.getUserIds()[userIdName];
+        console.log('Identity:', identity);
         
         let isOptedOut = false;
         const storedToken = localStorage.getItem('${UID_STORAGE_KEY}');
@@ -115,7 +79,6 @@
           [apiBaseKey]: '${BASE_URL}',
         };
         
-        // Build config object - only include consent management for EUID
         const config = {
           debug: true,
           userSync: {
@@ -137,6 +100,43 @@
         
         pbjs.setConfig(config);
       }
+
+      // Consent management for GDPR compliance (required for EUID)
+      const consentManagementObj = {
+        "cmpApi": "static",
+        "consentData": {
+          "getTCData": {
+            "tcString": "CO-HDlqO-HDlqAKAXCENBDCsAP_AAH_AACiQHKNd_X_fb39j-_59_9t0eY1f9_7_v20zjgeds-8Nyd_X_L8X42M7vF36pq4KuR4Eu3LBIQFlHOHcTUmw6IkVqTPsak2Mr7NKJ7PEinMbe2dYGHtfn9VTuZKYr97s___z__-__v__75f_r-3_3_vp9V---_fA5QAkw1L4CLMSxwJJo0qhRAhCuJDoAQAUUIwtE1hASuCnZXAR-ggYAIDUBGBECDEFGLIIAAAAAkoiAkAPBAIgCIBAACAFSAhAARoAgsAJAwCAAUA0LACKAIQJCDI4KjlMCAiRaKCeSMASi72MMIQyigBoFH4AAAAA.cAAAAAAAAAAA",
+            "cmpId": 10,
+            "cmpVersion": 23,
+            "tcfPolicyVersion": 2,
+            "gdprApplies": true, 
+            "cmpStatus": "loaded",
+            "eventStatus": "tcloaded",
+            "purpose": {
+              "consents": {
+                "1": true,
+                "2": true
+              }
+            },
+            "vendor": {
+              "consents": {
+                "52": true,     // rubicon for adserving
+                "21": true,     // unifiedId
+                "131": true,    // id5Id
+                "929": true,    // parrableId
+                "97": true,     // identityLink
+                "887": true,    // uid2
+                "95": true,     // lotamePanoramaId
+                "301": true,    // zeotapIdPlus
+                "91": true,     // criteo
+                "737": true,    // amxId
+                "58": true,     // 33acrossId
+              }
+            }
+          }
+        }
+      };
 
       var adUnits = [
         {
@@ -180,7 +180,7 @@
       It does not perform real user authentication or generate production-level tokens.
       Do not use real user data on this page.
     </p>
-    <table id="uid2_state">
+    <table id="identity_state">
       <tr>
         <td class="label">Ready for Targeted Advertising:</td>
         <td class="value"><pre id="targeted_advertising_ready"></pre></td>

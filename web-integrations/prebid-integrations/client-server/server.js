@@ -12,10 +12,12 @@ const app = express();
 const port = 3052;
 
 // UID2 API Configuration (set via .env file)
-const uid2BaseUrl = process.env.UID2_BASE_URL || 'https://operator-integ.uidapi.com';
-const uid2ApiKey = process.env.UID2_API_KEY;
-const uid2ClientSecret = process.env.UID2_CLIENT_SECRET;
-const UID2_STORAGE_KEY = process.env.UID2_STORAGE_KEY || '__uid2_advertising_token';
+const uid2BaseUrl = process.env.UID_SERVER_BASE_URL || process.env.UID2_BASE_URL || 'https://operator-integ.uidapi.com';
+const uid2ApiKey = process.env.UID_API_KEY || process.env.UID2_API_KEY;
+const uid2ClientSecret = process.env.UID_CLIENT_SECRET || process.env.UID2_CLIENT_SECRET;
+const uidStorageKey = process.env.UID_STORAGE_KEY || '__uid2_advertising_token';
+const identityName = process.env.IDENTITY_NAME || 'UID2';
+const docsBaseUrl = process.env.DOCS_BASE_URL || 'https://unifiedid.com/docs';
 
 // Encryption constants
 const ivLength = 12;
@@ -109,7 +111,11 @@ function createEnvelope(payload) {
 
 // GET / - Render the main page
 app.get('/', (req, res) => {
-    res.render('index', { UID2_STORAGE_KEY: UID2_STORAGE_KEY });
+    res.render('index', { 
+        uidStorageKey,
+        identityName,
+        docsBaseUrl
+    });
 });
 
 // POST /login - Generates UID2 token for email address
