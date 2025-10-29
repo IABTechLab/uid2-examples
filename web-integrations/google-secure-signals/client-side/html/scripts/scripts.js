@@ -98,6 +98,12 @@ sdk.callbacks.push((eventType, payload) => {
     });
     $(document).ready(() => {
       onDocumentReady();
+      
+      // Set initial UI state - updateGuiElements will adjust based on actual identity state
+      $('#login_form').show();
+      $('#logout_form').hide();
+      $('#optout_message').hide();
+      $('#optout_banner').hide();
     });
   }
 });
