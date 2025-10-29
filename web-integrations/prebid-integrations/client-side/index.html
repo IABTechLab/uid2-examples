@@ -18,10 +18,10 @@
 
       function updateGuiElements() {
         console.log('Updating displayed values.');
-        const uid2  = pbjs.getUserIds().uid2; // needs to be updated
+        const uid2  = pbjs.getUserIds().uid2;
         
-        let isOptedOut = false; // UID2 returns empty object so we have to check advertising token first
-        const storedToken = localStorage.getItem('__uid2_advertising_token'); // needs to be updated
+        let isOptedOut = false;
+        const storedToken = localStorage.getItem('__uid2_advertising_token');
         if (storedToken) {
           try {
             const tokenData = JSON.parse(storedToken);
@@ -48,9 +48,6 @@
           }
         }
       }
-
-      // include consentManagementObj if EUID 
-      // check if just gdprApplies has to be true or the entire things has to exist
 
       async function handleLogin() {
         const email = $('#email').val();
@@ -81,7 +78,6 @@
         };
         pbjs.setConfig({
           debug: true,
-          // set consentManagementObject if EUID
           userSync: {
             userIds: [
               {
@@ -121,7 +117,7 @@
       var pbjs = pbjs || {};
       pbjs.que = pbjs.que || [];
       pbjs.que.push(function () {
-        setUid2Config(); // keep the uid2 way where we set uid ahead of time
+        setUid2Config();
         pbjs.addAdUnits(adUnits);
         pbjs.requestBids();
 
