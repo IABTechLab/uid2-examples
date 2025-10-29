@@ -62,8 +62,8 @@ docker run -it --rm -p 3042:3042 --env-file .env google-secure-signals-client-si
 |:---------|:------------|:---------------|
 | `UID_CLIENT_BASE_URL` | API base URL for client-side/browser calls | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu` |
 | `UID_BASE_URL` | Fallback API base URL (used if `UID_CLIENT_BASE_URL` not set) | Same as above |
-| `UID_CSTG_SERVER_PUBLIC_KEY` | Server public key for client-side token generation. Provided via the UID2 Portal or your integration representative. | Your assigned server public key |
-| `UID_CSTG_SUBSCRIPTION_ID` | Subscription ID for client-side token generation. Provided via the UID2 Portal or your integration representative. | Your assigned subscription ID |
+| `UID_CSTG_SERVER_PUBLIC_KEY` | Your server public key for client-side token generation for the UID2/EUID service specified in UID_BASE_URL. | Your assigned server public key |
+| `UID_CSTG_SUBSCRIPTION_ID` | Your subscription ID for client-side token generation for the UID2/EUID service specified in UID_BASE_URL. | Your assigned subscription ID |
 | `UID_JS_SDK_URL` | URL to the JavaScript SDK | UID2: `https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js`<br/>EUID: `https://cdn.integ.euid.eu/euid-sdk-4.0.1.js` |
 | `UID_JS_SDK_NAME` | Global variable name for the SDK | UID2: `__uid2`<br/>EUID: `__euid` |
 | `UID_SECURE_SIGNALS_SDK_URL` | URL to the Secure Signals SDK | UID2: `https://cdn.integ.uidapi.com/uid2SecureSignal.js`<br/>EUID: `https://cdn.integ.euid.eu/euidSecureSignal.js` |

@@ -65,8 +65,8 @@ docker run -it --rm -p 3043:3043 --env-file .env google-secure-signals-server-si
 | Variable | Description | Example Values |
 |:---------|:------------|:---------------|
 | `UID_SERVER_BASE_URL` | The base URL of the UID2/EUID service for server-side API calls | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu` |
-| `UID_API_KEY` | Authentication key for accessing UID2/EUID services. Provided via the UID2 Portal or your integration representative. | Your assigned API key |
-| `UID_CLIENT_SECRET` | Private key used with your API key to authenticate your app with UID2/EUID services. Provided via the UID2 Portal or your integration representative. | Your assigned client secret |
+| `UID_API_KEY` | Your UID2/EUID authentication key for the UID2/EUID service specified in UID_SERVER_BASE_URL. | Your assigned API key |
+| `UID_CLIENT_SECRET` | Your UID2/EUID client secret for the UID2/EUID service specified in UID_SERVER_BASE_URL. | Your assigned client secret |
 | `SESSION_KEY` | The key to the encryption session data stored in the application's session cookie | Any secure random string |
 | `UID_SECURE_SIGNALS_SDK_URL` | URL to the Secure Signals SDK | UID2: `https://cdn.integ.uidapi.com/uid2SecureSignal.js`<br/>EUID: `https://cdn.integ.euid.eu/euidSecureSignal.js` |
 | `IDENTITY_NAME` | Identity name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
