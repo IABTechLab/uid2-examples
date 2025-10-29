@@ -1,45 +1,66 @@
-# Client-Side UID2 Integration Example using JavaScript SDK
+# Client-Side UID2 or EUID Integration Example using JavaScript SDK
 
-This example demonstrates how a content publisher can follow the [Client-Side Integration Guide for JavaScript](https://unifiedid.com/docs/guides/integration-javascript-client-side) to implement UID2 integration and generate UID2 tokens.
+This example demonstrates how a content publisher can follow the Client-Side Integration Guide for JavaScript to implement either a UID2 or EUID integration and generate tokens on the client side.
+
+- For UID2: [Client-Side Integration Guide for JavaScript](https://unifiedid.com/docs/guides/integration-javascript-client-side), [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript)
+- For EUID: [EUID Client-Side Integration Guide for JavaScript](https://euid.eu/docs/guides/integration-javascript-client-side), [EUID SDK for JavaScript](https://euid.eu/docs/sdks/sdk-ref-javascript)
+
+This example can be configured for either UID2 or EUID — the behavior is determined by your environment variable configuration. You cannot use both simultaneously.
 
 ## Running with Docker
 
 ### Using Docker Compose (Recommended)
 
-From the base directory:
+From the repository root directory:
 
 ```bash
 # Start the service
-docker-compose up -d javascript-sdk-client-side
-
-# View logs
-docker-compose logs javascript-sdk-client-side
-
-# Stop the service
-docker-compose down javascript-sdk-client-side
+docker compose up javascript-sdk-client-side
 ```
 
-### Using Docker directly
+The application will be available at http://localhost:3031
 
-From the base directory:
+To view logs or stop the service:
+
+```bash
+# View logs (in another terminal)
+docker compose logs javascript-sdk-client-side
+
+# Stop the service
+docker compose stop javascript-sdk-client-side
+```
+
+### Using Docker Build
 
 ```bash
 # Build the image
 docker build -f web-integrations/javascript-sdk/client-side/Dockerfile -t javascript-sdk-client-side .
 
 # Run the container
-docker run -p 3032:3032 --env-file .env javascript-sdk-client-side
+docker run -it --rm -p 3031:3031 --env-file .env javascript-sdk-client-side
 ```
 
 ## Environment Variables
 
 The application uses environment variables from the `.env` file in the base directory:
 
-- `UID_JS_SDK_URL` - URL to the UID2 JavaScript SDK (default: https://cdn.uidapi.com/sdk/uid2-sdk-3.3.0.js)
-- `UID_JS_SDK_NAME` - Global variable name for the SDK (default: __uid2)
-- `UID_BASE_URL` - UID2 base URL (default: https://operator-integ.uidapi.com)
-- `SERVER_PUBLIC_KEY` - Server public key for UID2
-- `SUBSCRIPTION_ID` - UID2 subscription ID
+### Core Configuration
+
+| Variable | Description | Example Values |
+|:---------|:------------|:---------------|
+| `UID_JS_SDK_URL` | URL to the UID2/EUID JavaScript SDK | UID2: `https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js`<br/>EUID: `https://cdn.integ.euid.eu/euid-sdk-4.0.1.js` |
+| `UID_JS_SDK_NAME` | Global variable name for the SDK | UID2: `__uid2`<br/>EUID: `__euid` |
+| `UID_CLIENT_BASE_URL` | API base URL for client-side/browser calls | UID2: `https://operator-integ.uidapi.com` or `http://localhost:8080`<br/>EUID: `https://integ.euid.eu/v2` |
+| `UID_BASE_URL` | Fallback API base URL (used if `UID_CLIENT_BASE_URL` not set) | Same as above |
+| `UID_CSTG_SERVER_PUBLIC_KEY` | Your server public key for client-side token generation for the UID2/EUID service specified in UID_BASE_URL. | Your assigned server public key |
+| `UID_CSTG_SUBSCRIPTION_ID` | Your subscription ID for client-side token generation for the UID2/EUID service specified in UID_BASE_URL. | Your assigned subscription ID |
+
+### Display/UI Configuration
+
+| Variable | Description | Example Values |
+|:---------|:------------|:---------------|
+| `IDENTITY_NAME` | Identity name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
+| `DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
 
 ## Accessing the Application
 
@@ -47,8 +68,9 @@ Once running, access the application at: http://localhost:3032
 
 ## Features
 
-- **Client-side UID2 integration** using the UID2 JavaScript SDK
-- **Environment variable substitution** for configuration
+- **Client-side UID2/EUID integration** using the UID2/EUID JavaScript SDK
+- **Dynamic product configuration** - supports both UID2 and EUID via environment variables
+- **Environment variable substitution** for all configuration and UI text
 - **Nginx-based static file serving**
 - **Docker containerization** for easy deployment
 

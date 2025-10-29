@@ -77,15 +77,32 @@ docker-compose up -d --build prebid-client
 
 ### Environment Configuration
 
-Edit the `.env` file in the base directory to configure your UID2 settings:
-```
-# UID2 Configuration for all services
-UID2_BASE_URL="http://localhost:8080"
-SERVER_PUBLIC_KEY="your-public-key"
-SUBSCRIPTION_ID="your-subscription-id"
+This repository includes sample environment files for both UID2 and EUID configurations:
 
-# Additional variables for client-server example
-UID2_API_KEY="your-api-key"
-UID2_CLIENT_SECRET="your-client-secret"
-```
+- **`.env.sample.uid2`** - UID2 configuration template
+- **`.env.sample.euid`** - EUID configuration template
+
+**To get started:**
+
+1. Copy the appropriate sample file to `.env`:
+   ```bash
+   # For UID2
+   cp .env.sample.uid2 .env
+   
+   # For EUID
+   cp .env.sample.euid .env
+   ```
+
+2. Update the `.env` file with your credentials:
+   - Replace `your-api-key` with your actual API key
+   - Replace `your-client-secret` with your actual client secret
+   - Update other placeholder values as needed
+
+The sample files include all necessary environment variables for running the examples, including configuration for:
+- Core API endpoints
+- JavaScript SDK settings
+- Google Secure Signals integration
+- Prebid integration
+- React client examples
+- UI/Display preferences
 

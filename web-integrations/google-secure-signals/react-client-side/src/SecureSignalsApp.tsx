@@ -3,7 +3,7 @@ import './styles/app.css';
 import './styles/ads.css';
 declare global {
   interface Window {
-    __uid2: any;
+    [key: string]: any;
     getAdvertisingToken: any;
     google: any;
     googletag: any;
@@ -13,9 +13,17 @@ declare global {
 // Declare global variables
 declare const google: any;
 
+// Set default to uid2 configuration 
+const UID_JS_SDK_NAME = process.env.REACT_APP_UID_JS_SDK_NAME || '__uid2';
+const UID_BASE_URL = process.env.REACT_APP_UID_CLIENT_BASE_URL || 'https://operator-integ.uidapi.com';
+const SECURE_SIGNALS_SDK_URL = process.env.REACT_APP_UID_SECURE_SIGNALS_SDK_URL || 'https://cdn.integ.uidapi.com/uid2SecureSignal.js';
+const SECURE_SIGNALS_STORAGE_KEY = process.env.REACT_APP_UID_SECURE_SIGNALS_STORAGE_KEY || '_GESPSK-uidapi.com';
+const IDENTITY_NAME = process.env.REACT_APP_IDENTITY_NAME;
+const DOCS_BASE_URL = process.env.REACT_APP_DOCS_BASE_URL;
+
 const clientSideIdentityOptions = {
-  subscriptionId: process.env.REACT_APP_UID2_CSTG_SUBSCRIPTION_ID || 'toPh8vgJgt',
-  serverPublicKey: process.env.REACT_APP_UID2_CSTG_SERVER_PUBLIC_KEY ||
+  subscriptionId: process.env.REACT_APP_UID_CSTG_SUBSCRIPTION_ID || 'toPh8vgJgt',
+  serverPublicKey: process.env.REACT_APP_UID_CSTG_SERVER_PUBLIC_KEY ||
     'UID2-X-I-MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEKAbPfOz7u25g1fL6riU7p2eeqhjmpALPeYoyjvZmZ1xM2NM8UeOmDZmCIBnKyRZ97pz5bMCjrs38WM22O7LJuw==',
 };
 
@@ -29,7 +37,6 @@ const SecureSignalsApp = () => {
   const [identityState, setIdentityState] = useState('');
   const [email, setEmail] = useState('');
   const [identity, setIdentity] = useState(null);
-  const [isUid2Enabled, setIsUid2Enabled] = useState(true);
   const [adsLoaded, setAdsLoaded] = useState(false);
   const [isOptedOut, setIsOptedOut] = useState(false);
 
@@ -42,21 +49,25 @@ const SecureSignalsApp = () => {
   // Track whether user has attempted to generate a token
   const loginAttemptedRef = useRef(false);
 
+  // Helper function to get SDK instance
+  const getSDK = () => window[UID_JS_SDK_NAME];
+
   const updateElements = useCallback((status) => {
-    const token = window.__uid2.getAdvertisingToken();
+    const sdk = getSDK();
+    const token = sdk.getAdvertisingToken();
     
     // Check for opt-out: only if user attempted login, and we got identity null with no token
     const optedOut = loginAttemptedRef.current && !token && status?.identity === null;
     setIsOptedOut(optedOut);
 
-    if (window.__uid2.getAdvertisingToken()) {
+    if (sdk.getAdvertisingToken()) {
       setTargetedAdvertisingReady(true);
     } else {
       setTargetedAdvertisingReady(false);
     }
-    setAdvertisingToken(String(window.__uid2.getAdvertisingToken()));
+    setAdvertisingToken(String(sdk.getAdvertisingToken()));
 
-    if (window.__uid2.isLoginRequired() === true) {
+    if (sdk.isLoginRequired() === true) {
       setLoginRequired(true);
       setIsLoggedIn(false);
     } else {
@@ -70,16 +81,9 @@ const SecureSignalsApp = () => {
     setTimeout(updateSecureSignals, 500);
   }, []);
 
-  const isEnabled = (product: string): boolean => {
-    if (product === 'uid2') {
-      return isUid2Enabled;
-    }
-    return false;
-  };
-
-  const onUid2IdentityUpdated = useCallback(
+  const onIdentityUpdated = useCallback(
     (eventType, payload) => {
-      console.log('UID2 Callback', payload);
+          console.log(`${IDENTITY_NAME} Callback`, payload);
       updateElements(payload);
     },
     [updateElements]
@@ -173,23 +177,24 @@ const SecureSignalsApp = () => {
   );
 
   useEffect(() => {
-    // Add callbacks for UID2 JS SDK
-    window.__uid2.callbacks.push(onUid2IdentityUpdated);
-    window.__uid2.callbacks.push((eventType, payload) => {
-      let __uid2 = window.__uid2;
+    // Add callbacks for UID2/EUID JS SDK
+    let sdk = getSDK();
+    sdk = sdk || { callbacks: [] };
+    sdk.callbacks.push(onIdentityUpdated);
+    sdk.callbacks.push((eventType, payload) => {
       if (eventType === 'SdkLoaded') {
-        __uid2.init({
-          baseUrl: process.env.REACT_APP_UID2_BASE_URL ||'https://operator-integ.uidapi.com',
+        sdk.init({
+          baseUrl: UID_BASE_URL,
         });
       }
       if (eventType === 'InitCompleted') {
-        if (__uid2.isLoginRequired()) {
-          __uid2.setIdentity(identity);
+        if (sdk.isLoginRequired()) {
+          sdk.setIdentity(identity);
           setIdentity(identity);
         }
       }
     });
-  }, [identity, onUid2IdentityUpdated]);
+  }, [identity, onIdentityUpdated]);
 
   useEffect(() => {
     // initialize ads manager
@@ -243,7 +248,7 @@ const SecureSignalsApp = () => {
 
   const loadSecureSignals = () => {
     const script2 = document.createElement('script');
-    script2.src = 'https://cdn.integ.uidapi.com/uid2SecureSignal.js';
+    script2.src = SECURE_SIGNALS_SDK_URL;
     script2.async = true;
     script2.onload = () => {
       console.log('secure signals script loaded');
@@ -256,10 +261,9 @@ const SecureSignalsApp = () => {
     loginAttemptedRef.current = true; // Mark that user attempted to generate a token
 
     try {
-      if (isEnabled('uid2')) {
-        await window.__uid2.setIdentityFromEmail(email, clientSideIdentityOptions);
-        loadSecureSignals();
-      }
+      const sdk = getSDK();
+      await sdk.setIdentityFromEmail(email, clientSideIdentityOptions);
+      loadSecureSignals();
     } catch (e) {
       console.error('setIdentityFromEmail failed', e);
     }
@@ -267,18 +271,16 @@ const SecureSignalsApp = () => {
 
   const handleLogout = () => {
     window.googletag.secureSignalProviders.clearAllCache();
-    if (isEnabled('uid2')) {
-      window.__uid2.disconnect();
-    }
+    const sdk = getSDK();
+    sdk.disconnect();
     loginAttemptedRef.current = false; // Reset flag
     setIsOptedOut(false);
   };
 
   const handleTryAnother = () => {
     window.googletag.secureSignalProviders.clearAllCache();
-    if (isEnabled('uid2')) {
-      window.__uid2.disconnect();
-    }
+    const sdk = getSDK();
+    sdk.disconnect();
     setEmail('');
     loginAttemptedRef.current = false; // Reset flag
     setIsOptedOut(false);
@@ -294,7 +296,7 @@ const SecureSignalsApp = () => {
   };
 
   const updateSecureSignals = () => {
-    const secureSignalsStorage = localStorage['_GESPSK-uidapi.com'];
+    const secureSignalsStorage = localStorage[SECURE_SIGNALS_STORAGE_KEY];
     const secureSignalsStorageJson = secureSignalsStorage && JSON.parse(secureSignalsStorage);
     if (secureSignalsStorageJson && secureSignalsStorageJson[1]) {
       setSecureSignalsLoaded(true);
@@ -305,21 +307,17 @@ const SecureSignalsApp = () => {
     }
   };
 
-  const handleCheckboxChange = (e: any) => {
-    setIsUid2Enabled(e.target.checked);
-  };
-
   return (
     <div>
       <h1>
-        React Client-Side UID2 SDK Integration Example with Google Secure Signals
+        React Client-Side {IDENTITY_NAME} SDK Integration Example with Google Secure Signals
       </h1>
       <p>
         This example demonstrates how a content publisher can follow the{' '}
-        <a href='https://unifiedid.com/docs/guides/integration-javascript-client-side'>
+        <a href={`${DOCS_BASE_URL}/guides/integration-javascript-client-side`}>
           Client-Side Integration Guide for JavaScript
         </a>{' '}
-        to implement UID2 integration and generate UID2 tokens. Secure Signals is updated when the
+          to implement {IDENTITY_NAME} integration and generate {IDENTITY_NAME} tokens. Secure Signals is updated when the
         page is reloaded. Reload the page in order to update Secure Signals in local storage.
       </p>
 
@@ -340,15 +338,7 @@ const SecureSignalsApp = () => {
         <table id='uid2_state'>
           <thead>
             <tr>
-              <th>
-                UID2 Enabled{' '}
-                <input
-                  type='checkbox'
-                  checked={isUid2Enabled}
-                  readOnly
-                  onChange={handleCheckboxChange}
-                />
-              </th>
+              <th>{IDENTITY_NAME} Status</th>
             </tr>
           </thead>
           <tbody>
@@ -359,19 +349,19 @@ const SecureSignalsApp = () => {
               </td>
             </tr>
             <tr>
-              <td className='label'>UID2 Advertising Token:</td>
+                      <td className='label'>{IDENTITY_NAME} Advertising Token:</td>
               <td className='value'>
                 <pre>{advertisingToken}</pre>
               </td>
             </tr>
             <tr>
-              <td className='label'>Is UID2 Login Required?</td>
+                      <td className='label'>Is {IDENTITY_NAME} Login Required?</td>
               <td className='value'>
                 <pre>{loginRequired ? 'yes' : 'no'}</pre>
               </td>
             </tr>
             <tr>
-              <td className='label'>UID2 Identity Callback State:</td>
+                      <td className='label'>{IDENTITY_NAME} Identity Callback State:</td>
               <td className='value'>
                 <pre>{identityState}</pre>
               </td>
@@ -395,7 +385,7 @@ const SecureSignalsApp = () => {
       {isOptedOut ? (
         <>
           <div id='optout_banner' style={{ border: '3px solid #ffc107', padding: '15px', margin: '20px 0' }}>
-            <p style={{ margin: 0 }}>The email address you entered has opted out of UID2.</p>
+                <p style={{ margin: 0 }}>The email address you entered has opted out of {IDENTITY_NAME}.</p>
           </div>
           <div id='optout_message' className='form'>
             <button type='button' className='button' onClick={handleTryAnother}>
@@ -418,7 +408,7 @@ const SecureSignalsApp = () => {
           </div>
           <div>
             <button type='button' className='button' onClick={handleLogin}>
-              Generate UID2
+                  Generate {IDENTITY_NAME}
             </button>
           </div>
         </div>
@@ -426,7 +416,7 @@ const SecureSignalsApp = () => {
         <div id='logout_form' className='form'>
           <form>
             <button type='button' className='button' onClick={handleLogout}>
-              Clear UID2
+                  Clear {IDENTITY_NAME}
             </button>
           </form>
         </div>

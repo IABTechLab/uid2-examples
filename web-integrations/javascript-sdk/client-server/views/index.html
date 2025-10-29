@@ -2,23 +2,25 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Client-Server UID2 Integration Example using JavaScript SDK</title>
+    <title>Client-Server <%- identityName %> Integration Example using JavaScript SDK</title>
     <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
     <link rel="shortcut icon" href="/images/favicon.png" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js"></script>
+    <script src="<%- uidJsSdkUrl %>"></script>
     <script>
       $(document).ready(() => {
         let callbackCounter = 0;
+        const sdkName = '<%- uidJsSdkName %>';
+        const sdk = window[sdkName];
 
         function updateGuiElements(state) {
-          $('#targeted_advertising_ready').html(__uid2.getAdvertisingToken() ? 'yes' : 'no');
-          $('#advertising_token').html(String(__uid2.getAdvertisingToken()));
-          $('#login_required').html(__uid2.isLoginRequired() ? 'yes' : 'no');
+          $('#targeted_advertising_ready').html(sdk.getAdvertisingToken() ? 'yes' : 'no');
+          $('#advertising_token').html(String(sdk.getAdvertisingToken()));
+          $('#login_required').html(sdk.isLoginRequired() ? 'yes' : 'no');
           $('#update_counter').html(callbackCounter);
           $('#identity_state').html(String(JSON.stringify(state, null, 2)));
 
-          if (__uid2.isLoginRequired()) {
+          if (sdk.isLoginRequired()) {
             $('#login_form').show();
             $('#logout_form').hide();
           } else {
@@ -27,23 +29,23 @@
           }
         }
 
-        function onUid2IdentityUpdated(state) {
+        function onIdentityUpdated(state) {
           ++callbackCounter;
           updateGuiElements(state);
         }
 
         $('#logout').click(() => {
-          __uid2.disconnect();
+          sdk.disconnect();
           updateGuiElements(undefined);
         });
 
         updateGuiElements(undefined);
 
-        __uid2.init({
-          baseUrl: '<%- uid2BaseUrl %>',
+        sdk.init({
+          baseUrl: '<%- uidBaseUrl %>',
         });
 
-        __uid2.callbacks.push(onUid2IdentityUpdated);
+        sdk.callbacks.push(onIdentityUpdated);
       });
     </script>
   </head>
@@ -60,19 +62,19 @@
         <td class="value"><pre id="targeted_advertising_ready"></pre></td>
       </tr>
       <tr>
-        <td class="label">UID2 Advertising Token:</td>
+        <td class="label"><%- identityName %> Advertising Token:</td>
         <td class="value"><pre id="advertising_token"></pre></td>
       </tr>
       <tr>
-        <td class="label">Is UID2 Login Required?</td>
+        <td class="label">Is <%- identityName %> Login Required?</td>
         <td class="value"><pre id="login_required"></pre></td>
       </tr>
       <tr>
-        <td class="label">UID2 Identity Updated Counter:</td>
+        <td class="label"><%- identityName %> Identity Updated Counter:</td>
         <td class="value"><pre id="update_counter"></pre></td>
       </tr>
       <tr>
-        <td class="label">UID2 Identity Callback State:</td>
+        <td class="label"><%- identityName %> Identity Callback State:</td>
         <td class="value"><pre id="identity_state"></pre></td>
       </tr>
     </table>
@@ -87,12 +89,12 @@
             style="border-style: none"
           />
         </div>
-        <div><input type="submit" value="Generate UID2" class="button" /></div>
+        <div><input type="submit" value="Generate <%- identityName %>" class="button" /></div>
       </form>
     </div>
     <div id="logout_form" style="display: none" class="form">
       <form>
-        <button type="button" class="button" id="logout">Clear UID2</button>
+        <button type="button" class="button" id="logout">Clear <%- identityName %></button>
       </form>
     </div>
   </body>

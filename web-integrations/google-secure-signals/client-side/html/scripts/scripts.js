@@ -1,3 +1,7 @@
+const sdkName = '${UID_JS_SDK_NAME}';
+let sdk = window[sdkName];
+sdk = sdk || { callbacks: [] };
+
 const clientSideIdentityOptions = {
   subscriptionId: '${SUBSCRIPTION_ID}',
   serverPublicKey: '${SERVER_PUBLIC_KEY}',
@@ -7,15 +11,15 @@ const clientSideIdentityOptions = {
 let loginAttempted = false;
 
 function updateGuiElements(state) {
-  $('#targeted_advertising_ready').text(__uid2.getAdvertisingToken() ? 'yes' : 'no');
-  const token = __uid2.getAdvertisingToken();
+  $('#targeted_advertising_ready').text(sdk.getAdvertisingToken() ? 'yes' : 'no');
+  const token = sdk.getAdvertisingToken();
   $('#advertising_token').text(String(token));
   $('#login_required').text(
-    __uid2.isLoginRequired() || __uid2.isLoginRequired() === undefined ? 'yes' : 'no'
+    sdk.isLoginRequired() || sdk.isLoginRequired() === undefined ? 'yes' : 'no'
   );
   $('#identity_state').text(String(JSON.stringify(state, null, 2)));
 
-  const uid2LoginRequired = __uid2.isLoginRequired();
+  const loginRequired = sdk.isLoginRequired();
   
   // Check for opt-out: only if user attempted login, and we got identity null with no token
   const isOptedOut = loginAttempted && !token && state?.identity === null;
@@ -25,7 +29,7 @@ function updateGuiElements(state) {
     $('#logout_form').hide();
     $('#optout_message').show();
     $('#optout_banner').show();
-  } else if (uid2LoginRequired) {
+  } else if (loginRequired) {
     $('#login_form').show();
     $('#logout_form').hide();
     $('#optout_message').hide();
@@ -37,7 +41,8 @@ function updateGuiElements(state) {
     $('#optout_banner').hide();
   }
 
-  const secureSignalsStorage = localStorage['_GESPSK-uidapi.com'];
+  const secureSignalsStorageKey = '${UID_SECURE_SIGNALS_STORAGE_KEY}';
+  const secureSignalsStorage = localStorage[secureSignalsStorageKey];
   if (token && !secureSignalsStorage) {
     //Token is valid but Secure Signals has not been refreshed. Reload the page.
     location.reload();
@@ -52,8 +57,8 @@ function updateGuiElements(state) {
   }
 }
 
-function onUid2IdentityUpdated(eventType, payload) {
-  console.log('UID2 Callback', payload);
+function onIdentityUpdated(eventType, payload) {
+  console.log('Identity Callback', payload);
   // allow secure signals time to load
   setTimeout(() => updateGuiElements(payload), 1000);
 }
@@ -61,7 +66,7 @@ function onUid2IdentityUpdated(eventType, payload) {
 function onDocumentReady() {
   $('#logout').click(() => {
     window.googletag.secureSignalProviders.clearAllCache();
-    __uid2.disconnect();
+    sdk.disconnect();
     loginAttempted = false; // Reset flag
   });
 
@@ -71,7 +76,7 @@ function onDocumentReady() {
     loginAttempted = true; // Mark that user attempted to generate a token
 
     try {
-        await __uid2.setIdentityFromEmail(email, clientSideIdentityOptions);
+        await sdk.setIdentityFromEmail(email, clientSideIdentityOptions);
     } catch (e) {
       console.error('setIdentityFromEmail failed', e);
     }
@@ -79,28 +84,26 @@ function onDocumentReady() {
 
   $('#try_another').click(() => {
     window.googletag.secureSignalProviders.clearAllCache();
-    __uid2.disconnect();
+    sdk.disconnect();
     $('#email').val('');
     loginAttempted = false; // Reset flag
   });
 }
 
-window.__uid2 = window.__uid2 || {};
-window.__uid2.callbacks = window.__uid2.callbacks || [];
-
-window.__uid2.callbacks.push(onUid2IdentityUpdated);
-window.__uid2.callbacks.push((eventType, payload) => {
+sdk.callbacks.push(onIdentityUpdated);
+sdk.callbacks.push((eventType, payload) => {
   if (eventType === 'SdkLoaded') {
-    window.__uid2.init({
+    sdk.init({
       baseUrl: '${UID_BASE_URL}',
     });
     $(document).ready(() => {
       // Clear any existing identity on page load for clean state
-      __uid2.disconnect();
+      sdk.disconnect();
       loginAttempted = false;
       
       onDocumentReady();
-      // Always show login form on initial page load
+      
+      // Set initial UI state - updateGuiElements will adjust based on actual identity state
       $('#login_form').show();
       $('#logout_form').hide();
       $('#optout_message').hide();

@@ -10,9 +10,13 @@ const crypto = require('crypto');
 const app = express();
 const port = process.env.PORT || 3033;
 
-const uid2BaseUrl = process.env.UID2_BASE_URL;
-const uid2ApiKey = process.env.UID2_API_KEY;
-const uid2ClientSecret = process.env.UID2_CLIENT_SECRET;
+const uidBaseUrl = process.env.UID_SERVER_BASE_URL;
+const uidApiKey = process.env.UID_API_KEY;
+const uidClientSecret = process.env.UID_CLIENT_SECRET;
+
+// UI/Display configuration
+const identityName = process.env.IDENTITY_NAME;
+const docsBaseUrl = process.env.DOCS_BASE_URL;
 
 const ivLength = 12;
 const nonceLength = 8;
@@ -83,7 +87,7 @@ function createEnvelope(payload) {
   const payloadEncoded = new TextEncoder().encode(payload);
   const body = Buffer.concat([Buffer.from(new Uint8Array(bufferMillisec)), nonce, payloadEncoded]);
 
-  const { ciphertext, iv } = encryptRequest(body, uid2ClientSecret);
+  const { ciphertext, iv } = encryptRequest(body, uidClientSecret);
 
   const envelopeVersion =  Buffer.alloc(1, 1);
   const envelope = bufferToBase64(Buffer.concat([envelopeVersion, iv, Buffer.from( new Uint8Array(ciphertext))]));
@@ -116,11 +120,11 @@ function isRefreshableIdentity(identity){
 
 async function refreshIdentity(identity) {
   const headers = {
-    headers: { 'Authorization': 'Bearer ' + uid2ApiKey  }
+    headers: { 'Authorization': 'Bearer ' + uidApiKey  }
   };
 
   try {
-    const encryptedResponse = await axios.post(uid2BaseUrl + '/v2/token/refresh', identity.refresh_token, headers); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
+    const encryptedResponse = await axios.post(uidBaseUrl + '/v2/token/refresh', identity.refresh_token, headers); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
 
     let response;
     if (identity.refresh_response_key) {
@@ -163,38 +167,70 @@ async function protect(req, res, next){
 }
 
 app.get('/', protect, (req, res) => {
-  res.render('index', { identity: req.session.identity });
+  res.render('index', { 
+    identity: req.session.identity,
+    identityName,
+    docsBaseUrl
+  });
 });
 app.get('/content1', protect, (req, res) => {
-  res.render('content', { identity: req.session.identity, content: 'First Sample Content' });
+  res.render('content', { 
+    identity: req.session.identity, 
+    content: 'First Sample Content',
+    identityName,
+    docsBaseUrl
+  });
 });
 app.get('/content2', protect, (req, res) => {
-  res.render('content', { identity: req.session.identity, content: 'Second Sample Content' });
+  res.render('content', { 
+    identity: req.session.identity, 
+    content: 'Second Sample Content',
+    identityName,
+    docsBaseUrl
+  });
 });
 app.get('/login', async (req, res) => {
   if (await verifyIdentity(req)) {
     res.redirect('/');
   } else {
     req.session = null;
-    res.render('login');
+    res.render('login', {
+      identityName,
+      docsBaseUrl
+    });
   }
 });
 
 
 function _GenerateTokenV1(req, res) {
-  axios.get(uid2BaseUrl + '/v1/token/generate?email=' + encodeURIComponent(req.body.email), { headers: { 'Authorization': 'Bearer ' + uid2ApiKey } })
+  axios.get(uidBaseUrl + '/v1/token/generate?email=' + encodeURIComponent(req.body.email), { headers: { 'Authorization': 'Bearer ' + uidApiKey } })
       .then((response) => {
         if (response.data.status !== 'success') {
-          res.render('error', { error: 'Got unexpected token generate status: ' + response.data.status, response: response });
+          res.render('error', { 
+            error: 'Got unexpected token generate status: ' + response.data.status, 
+            response,
+            identityName,
+            docsBaseUrl
+          });
         } else if (typeof response.data.body !== 'object') {
-          res.render('error', { error: 'Unexpected token generate response format: ' + response.data, response: response });
+          res.render('error', { 
+            error: 'Unexpected token generate response format: ' + response.data, 
+            response,
+            identityName,
+            docsBaseUrl
+          });
         } else {
           req.session.identity = response.data.body;
           res.redirect('/');
         }
       })
       .catch((error) => {
-        res.render('error', { error: error, response: error.response });
+        res.render('error', { 
+          error, 
+          response: error.response,
+          identityName,
+          docsBaseUrl
+        });
       });
 }
 
@@ -206,23 +242,38 @@ app.post('/login', async (req, res) => {
   const { envelope, nonce } = createEnvelope(jsonEmail);
 
   const headers = {
-    headers: { 'Authorization': 'Bearer ' + uid2ApiKey  }
+    headers: { 'Authorization': 'Bearer ' + uidApiKey  }
   };
 
   try {
-    const encryptedResponse = await axios.post(uid2BaseUrl + '/v2/token/generate', envelope, headers); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
-    const response = decrypt(encryptedResponse.data, uid2ClientSecret, false, nonce);
+    const encryptedResponse = await axios.post(uidBaseUrl + '/v2/token/generate', envelope, headers); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
+    const response = decrypt(encryptedResponse.data, uidClientSecret, false, nonce);
 
-    if (response.status !== 'success') {
-      res.render('error', { error: 'Got unexpected token generate status in decrypted response: ' + response.status, response: response });
+        if (response.status !== 'success') {
+      res.render('error', { 
+        error: 'Got unexpected token generate status in decrypted response: ' + response.status, 
+        response,
+        identityName,
+        docsBaseUrl
+      });
     } else if (typeof response.body !== 'object') {
-      res.render('error', { error: 'Unexpected token generate response format in decrypted response: ' + response, response: response });
+      res.render('error', { 
+        error: 'Unexpected token generate response format in decrypted response: ' + response, 
+        response,
+        identityName,
+        docsBaseUrl
+      });
     } else {
       req.session.identity = response.body;
       res.redirect('/');
     }
   } catch (error) {
-    res.render('error', { error: error, response: error.response });
+    res.render('error', { 
+      error, 
+      response: error.response,
+      identityName,
+      docsBaseUrl
+    });
   }
 
 });

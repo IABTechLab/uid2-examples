@@ -2,35 +2,37 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Login - Client-Server UID2 SDK Integration Example with Google Secure Signals</title>
+    <title>Login - Client-Server <%- identityName %> SDK Integration Example with Google Secure Signals</title>
     <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
     <link rel="shortcut icon" href="/images/favicon.png" />
-    <script async src="https://cdn.integ.uidapi.com/uid2SecureSignal.js"></script>
-    <script async src="<%- uid2JsSdkUrl %>"></script>
+    <script async src="<%- secureSignalsSdkUrl %>"></script>
+    <script async src="<%- uidJsSdkUrl %>"></script>
     <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
 
     <script>
-      window.__uid2 = window.__uid2 || { callbacks: [] };
-      window.__uid2.callbacks.push((eventType, payload) => {
+      const sdkName = '<%- uidJsSdkName %>';
+      let sdk = window[sdkName];
+      sdk = sdk || { callbacks: [] };
+      sdk.callbacks.push((eventType, payload) => {
         if (eventType === 'SdkLoaded') {
-          __uid2.init({
-            baseUrl: "<%- uid2BaseUrl %>",
+          sdk.init({
+            baseUrl: "<%- uidBaseUrl %>",
           });
         }
         if (eventType === 'InitCompleted') {
-          if (__uid2.isLoginRequired()) __uid2.setIdentity(<%- JSON.stringify(identity) %>)
+          if (sdk.isLoginRequired()) sdk.setIdentity(<%- JSON.stringify(identity) %>)
         }
       });
     </script>
   </head>
   <body>
     <%- include('intro.html'); -%>
-    <p class="message">Generate UID2 completed</p>
-    <p>UID2 identity:</p>
+    <p class="message">Generate <%- identityName %> completed</p>
+    <p><%- identityName %> identity:</p>
     <pre><%- JSON.stringify(identity, null, 2) %></pre>
     <p><a href="/">Back to the main page</a></p>
     <p>
-      Normally user would be redirected automatically, but this example demonstrates one way UID2
+      Normally user would be redirected automatically, but this example demonstrates one way <%- identityName %>
       generation could be handled.
     </p>
   </body>
