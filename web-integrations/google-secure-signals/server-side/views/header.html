@@ -20,9 +20,10 @@
       window.getAdvertisingToken = getAdvertisingToken;
 
       // If secureSignalProvider is initialized before getAdvertisingToken is assigned, call registerSecureSignalProvider
-      if (window.__uid2SecureSignalProvider || window.__euidSecureSignalProvider) {
-        const provider = window.__uid2SecureSignalProvider || window.__euidSecureSignalProvider;
-        provider.registerSecureSignalProvider();
+      const productId = '<%- identityName %>'.toLowerCase(); // 'uid2' or 'euid'
+      const providerName = '__' + productId + 'SecureSignalProvider';
+      if (window[providerName]) {
+        window[providerName].registerSecureSignalProvider();
       }
     </script>
   </head>
