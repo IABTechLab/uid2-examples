@@ -48,8 +48,8 @@ The application uses environment variables from the `.env` file in the base dire
 | `UID_JS_SDK_NAME` | Global variable name for the SDK | UID2: `__uid2`<br/>EUID: `__euid` |
 | `UID_CLIENT_BASE_URL` | API base URL for client-side/browser calls | UID2: `https://operator-integ.uidapi.com` or `http://localhost:8080`<br/>EUID: `https://integ.euid.eu/v2` |
 | `UID_BASE_URL` | Fallback API base URL (used if `UID_CLIENT_BASE_URL` not set) | Same as above |
-| `UID_CSTG_SERVER_PUBLIC_KEY` | Server public key for client-side token generation. Provided via the UID2 Partner Portal or your integration representative. | Your assigned server public key |
-| `UID_CSTG_SUBSCRIPTION_ID` | Subscription ID for client-side token generation. Provided via the UID2 Partner Portal or your integration representative. | Your assigned subscription ID |
+| `UID_CSTG_SERVER_PUBLIC_KEY` | Server public key for client-side token generation. Provided via the UID2 Portal or your integration representative. | Your assigned server public key |
+| `UID_CSTG_SUBSCRIPTION_ID` | Subscription ID for client-side token generation. Provided via the UID2 Portal or your integration representative. | Your assigned subscription ID |
 
 ### Display/UI Configuration
 
