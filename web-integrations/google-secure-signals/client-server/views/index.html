@@ -52,7 +52,6 @@
         });
         $("#login").click(() => {
           window.googletag.secureSignalProviders.clearAllCache();
-          updateGuiElements(undefined);
         });
         sdk.callbacks.push((eventType, payload) => {
           if (eventType === "SdkLoaded") {
