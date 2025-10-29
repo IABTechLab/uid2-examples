@@ -97,6 +97,10 @@ sdk.callbacks.push((eventType, payload) => {
       baseUrl: '${UID_BASE_URL}',
     });
     $(document).ready(() => {
+      // Clear any existing identity on page load for clean state
+      sdk.disconnect();
+      loginAttempted = false;
+      
       onDocumentReady();
       
       // Set initial UI state - updateGuiElements will adjust based on actual identity state
