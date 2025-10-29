@@ -20,6 +20,7 @@ const SECURE_SIGNALS_SDK_URL = process.env.REACT_APP_UID_SECURE_SIGNALS_SDK_URL 
 const SECURE_SIGNALS_STORAGE_KEY = process.env.REACT_APP_UID_SECURE_SIGNALS_STORAGE_KEY || '_GESPSK-uidapi.com';
 const IDENTITY_NAME = process.env.REACT_APP_IDENTITY_NAME;
 const DOCS_BASE_URL = process.env.REACT_APP_DOCS_BASE_URL;
+const PRODUCT_ID = UID_JS_SDK_NAME.replace('__', ''); // 'uid2' or 'euid'
 
 const clientSideIdentityOptions = {
   subscriptionId: process.env.REACT_APP_UID_CSTG_SUBSCRIPTION_ID || 'toPh8vgJgt',
@@ -269,7 +270,7 @@ const SecureSignalsApp = () => {
     loginAttemptedRef.current = true; // Mark that user attempted to generate a token
 
     try {
-      if (isEnabled('uid2')) {
+      if (isEnabled(PRODUCT_ID)) {
         const sdk = getSDK();
         await sdk.setIdentityFromEmail(email, clientSideIdentityOptions);
         loadSecureSignals();
@@ -281,7 +282,7 @@ const SecureSignalsApp = () => {
 
   const handleLogout = () => {
     window.googletag.secureSignalProviders.clearAllCache();
-    if (isEnabled('uid2')) {
+    if (isEnabled(PRODUCT_ID)) {
       const sdk = getSDK();
       sdk.disconnect();
     }
@@ -291,7 +292,7 @@ const SecureSignalsApp = () => {
 
   const handleTryAnother = () => {
     window.googletag.secureSignalProviders.clearAllCache();
-    if (isEnabled('uid2')) {
+    if (isEnabled(PRODUCT_ID)) {
       const sdk = getSDK();
       sdk.disconnect();
     }
