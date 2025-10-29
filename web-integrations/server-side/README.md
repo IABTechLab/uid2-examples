@@ -31,7 +31,7 @@ To view logs or stop the service:
 docker compose logs server-side
 
 # Stop the service
-docker compose down
+docker compose stop server-side
 ```
 
 ### Using Docker Build

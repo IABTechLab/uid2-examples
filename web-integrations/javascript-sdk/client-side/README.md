@@ -27,7 +27,7 @@ To view logs or stop the service:
 docker compose logs javascript-sdk-client-side
 
 # Stop the service
-docker compose down
+docker compose stop javascript-sdk-client-side
 ```
 
 ### Using Docker Build

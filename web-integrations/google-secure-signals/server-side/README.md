@@ -47,7 +47,7 @@ To view logs or stop the service:
 docker compose logs google-secure-signals-server-side
 
 # Stop the service
-docker compose down
+docker compose stop google-secure-signals-server-side
 ```
 
 #### Using Docker Build
