@@ -61,6 +61,8 @@ The easiest way to try the example is to do the following:
 | `IDENTITY_NAME` | Identity name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
 | `DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
 
+**Note:** The example uses a Google IMA sample ad tag URL in `public/ads.js`. To test with your own ad tag, edit line 56 in `public/ads.js` to use your ad tag URL.
+
 Output similar to the following indicates that the example application is up and running.
 
 ```
