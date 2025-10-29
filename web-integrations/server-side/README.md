@@ -18,15 +18,29 @@ For an example application using the SDK, see [Client-Server UID2 or EUID Integr
 From the repository root directory:
 
 ```bash
+# Start the service
 docker compose up server-side
 ```
 
 The application will be available at http://localhost:3033
 
+To view logs or stop the service:
+
+```bash
+# View logs (in another terminal)
+docker compose logs server-side
+
+# Stop the service
+docker compose down
+```
+
 ### Using Docker Build
 
 ```bash
+# Build the image
 docker build -f web-integrations/server-side/Dockerfile -t server-side .
+
+# Run the container
 docker run -it --rm -p 3033:3033 --env-file .env server-side
 ```
 

@@ -34,15 +34,29 @@ Then update the `.env` file with your credentials.
 From the repository root directory:
 
 ```bash
+# Start the service
 docker compose up google-secure-signals-server-side
 ```
 
 The application will be available at http://localhost:3043
 
+To view logs or stop the service:
+
+```bash
+# View logs (in another terminal)
+docker compose logs google-secure-signals-server-side
+
+# Stop the service
+docker compose down
+```
+
 #### Using Docker Build
 
 ```bash
+# Build the image
 docker build -f web-integrations/google-secure-signals/server-side/Dockerfile -t google-secure-signals-server-side .
+
+# Run the container
 docker run -it --rm -p 3043:3043 --env-file .env google-secure-signals-server-side
 ```
 

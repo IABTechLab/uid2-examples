@@ -11,29 +11,33 @@ This example can be configured for either UID2 or EUID — the behavior is deter
 
 ### Using Docker Compose (Recommended)
 
-From the base directory:
+From the repository root directory:
 
 ```bash
 # Start the service
-docker-compose up -d javascript-sdk-client-side
-
-# View logs
-docker-compose logs javascript-sdk-client-side
-
-# Stop the service
-docker-compose down javascript-sdk-client-side
+docker compose up javascript-sdk-client-side
 ```
 
-### Using Docker directly
+The application will be available at http://localhost:3031
 
-From the base directory:
+To view logs or stop the service:
+
+```bash
+# View logs (in another terminal)
+docker compose logs javascript-sdk-client-side
+
+# Stop the service
+docker compose down
+```
+
+### Using Docker Build
 
 ```bash
 # Build the image
 docker build -f web-integrations/javascript-sdk/client-side/Dockerfile -t javascript-sdk-client-side .
 
 # Run the container
-docker run -p 3032:3032 --env-file .env javascript-sdk-client-side
+docker run -it --rm -p 3031:3031 --env-file .env javascript-sdk-client-side
 ```
 
 ## Environment Variables

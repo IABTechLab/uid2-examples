@@ -19,15 +19,29 @@ For an example application without using the SDK, see [Server-Side UID2 or EUID 
 From the repository root directory:
 
 ```bash
+# Start the service
 docker compose up javascript-sdk-client-server
 ```
 
 The application will be available at http://localhost:3032
 
+To view logs or stop the service:
+
+```bash
+# View logs (in another terminal)
+docker compose logs javascript-sdk-client-server
+
+# Stop the service
+docker compose down
+```
+
 ### Using Docker Build
 
 ```bash
+# Build the image
 docker build -f web-integrations/javascript-sdk/client-server/Dockerfile -t javascript-sdk-client-server .
+
+# Run the container
 docker run -it --rm -p 3032:3032 --env-file .env javascript-sdk-client-server
 ```
 

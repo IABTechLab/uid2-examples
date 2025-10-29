@@ -18,15 +18,29 @@ For an example application without using the SDK, see [Server-Side UID2 or EUID 
 From the repository root directory:
 
 ```bash
+# Start the service
 docker compose up google-secure-signals-client-server
 ```
 
 The application will be available at http://localhost:3041
 
+To view logs or stop the service:
+
+```bash
+# View logs (in another terminal)
+docker compose logs google-secure-signals-client-server
+
+# Stop the service
+docker compose down
+```
+
 ### Using Docker Build
 
 ```bash
+# Build the image
 docker build -f web-integrations/google-secure-signals/client-server/Dockerfile -t google-secure-signals-client-server .
+
+# Run the container
 docker run -it --rm -p 3041:3041 --env-file .env google-secure-signals-client-server
 ```
 
