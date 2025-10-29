@@ -1,5 +1,6 @@
 const sdkName = '${UID_JS_SDK_NAME}';
-const sdk = window[sdkName];
+let sdk = window[sdkName];
+sdk = sdk || { callbacks: [] };
 
 const clientSideIdentityOptions = {
   subscriptionId: '${SUBSCRIPTION_ID}',
@@ -88,8 +89,6 @@ function onDocumentReady() {
     loginAttempted = false; // Reset flag
   });
 }
-
-sdk.callbacks = sdk.callbacks || [];
 
 sdk.callbacks.push(onIdentityUpdated);
 sdk.callbacks.push((eventType, payload) => {
