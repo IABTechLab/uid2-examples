@@ -1,51 +1,108 @@
-# Client-Side UID2 SDK Integration Example with Prebid.js
+# Client-Side UID2 or EUID Integration Example with Prebid.js
+
+This example demonstrates how to integrate UID2 or EUID with Prebid.js using client-side token generation (CSTG), where tokens are generated directly in the browser.
+
+- For UID2: [UID2 Client-Side Integration Guide for Prebid.js](https://unifiedid.com/docs/guides/integration-prebid-client-side)
+- For EUID: [EUID Client-Side Integration Guide for Prebid.js](https://euid.eu/docs/guides/integration-prebid-client-side)
+
+This example can be configured for either UID2 or EUID — the behavior is determined by your environment variable configuration. You cannot use both simultaneously.
 
 ## Viewing live site
 
-This example demonstrates the [UID2 Client-Side Integration Guide for Prebid.js](https://unifiedid.com/docs/guides/integration-prebid-client-side). 
+To view the UID2 version of this site running, navigate to [https://unifiedid.com/examples/cstg-prebid-example/](https://unifiedid.com/examples/cstg-prebid-example/).
 
-To view the site running, navigate to [https://unifiedid.com/examples/cstg-prebid-example/](https://unifiedid.com/examples/cstg-prebid-example/).
+## Build and Run the Example Application
 
-## Running with Docker
+### Using Docker Compose (Recommended)
 
-To run this example using Docker:
+From the repository root directory:
 
 ```bash
-# Build the Docker image
-docker build -t prebid-client-side .
-
-# Run the container on port 3031
-docker run -p 3031:3031 prebid-client-side
+# Start the service
+docker compose up prebid-client-side
 ```
 
-Then navigate to [http://localhost:3031](http://localhost:3031) to view the application.
+The application will be available at http://localhost:3051
 
-### Local Development with Custom Settings
+To view logs or stop the service:
 
-The application automatically reads configuration from the `.env` file in the sample directory and substitutes the values into the HTML:
+```bash
+# View logs (in another terminal)
+docker compose logs prebid-client-side
 
-1. **Edit the `env` file** in the sample directory (`.env`) to set your local values:
-   ```
-   UID2_BASE_URL="http://localhost:8080"
-   SERVER_PUBLIC_KEY="your-local-public-key"
-   SUBSCRIPTION_ID="your-local-subscription-id"
-   ```
+# Stop the service
+docker compose stop prebid-client-side
+```
 
-2. **Build and run the Docker container:**
-   ```bash
-   docker build -t prebid-client-side .
-   docker run -p 3031:3031 prebid-client-side
-   ```
+### Using Docker Build
 
-3. **Alternative: Use browser dev tools** (for quick testing):
-   ```javascript
-   // In browser console before page load
-   window.uid2_example_settings.UID2_BASE_URL = 'https://your-local-uid2-operator.com';
-   ```
+```bash
+# Build the image
+docker build -f web-integrations/prebid-integrations/client-side/Dockerfile -t prebid-client-side .
 
-The Docker build process automatically reads the `.env` file and substitutes the values into the HTML using `envsubst`. If a variable is not set in the `env` file, it uses the default values (after the `:-` in the substitution syntax).
+# Run the container
+docker run -it --rm -p 3051:3051 --env-file .env prebid-client-side
+```
 
+The following table lists the environment variables that you must specify to start the application.
+
+### Core Configuration
+
+| Variable | Description | Example Values |
+|:---------|:------------|:---------------|
+| `BASE_URL` | The base URL of the UID2/EUID service. For details, see [Environments](https://unifiedid.com/docs/getting-started/gs-environments) (UID2) or [Environments](https://euid.eu/docs/getting-started/gs-environments) (EUID). | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu` |
+| `SUBSCRIPTION_ID` | Your subscription ID for client-side token generation. | Your assigned subscription ID |
+| `SERVER_PUBLIC_KEY` | Your public key for client-side token generation. | UID2: `UID2-X-L-...`<br/>EUID: `EUID-X-I-...` |
+
+### Display/UI Configuration
+
+| Variable | Description | Example Values |
+|:---------|:------------|:---------------|
+| `IDENTITY_NAME` | Identity name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
+| `DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
+| `UID_STORAGE_KEY` | localStorage key for storing tokens | `__uid2_advertising_token` or `__euid_advertising_token` |
+
+**Note:** These variables are substituted into the HTML during the Docker build process using `envsubst`. If a variable is not set in the `.env` file, default values are used.
+
+## Test the Example Application
+
+The example application illustrates the steps documented in the integration guides. For an overview of the high-level workflow, API reference, and integration details, see:
+- UID2: [UID2 Client-Side Integration Guide for Prebid.js](https://unifiedid.com/docs/guides/integration-prebid-client-side)
+- EUID: [EUID Client-Side Integration Guide for Prebid.js](https://euid.eu/docs/guides/integration-prebid-client-side)
+
+**Note:** This example uses client-side token generation (CSTG), where Prebid handles token generation directly in the browser. For API endpoint documentation, see the UID2 or EUID docs based on your configuration.
+
+| Step | Description | Comments |
+| :--: | :---------- | :------- |
+| 1 | In your browser, navigate to the application main page at `http://localhost:3051`. | The displayed main ([index.html](index.html)) page provides a form for the user to enter their email and generate an identity token. |
+| 2 | Enter an email address and click **Generate UID2** or **Generate EUID**. | Prebid.js handles token generation using the configured CSTG parameters. The token is generated client-side and stored in localStorage. |
+| 3 | Open the browser console (F12 or right-click > Inspect) and run `pbjs.getUserIds()`. | You should see the identity object with either a `uid2` or `euid` property containing the advertising token. |
+| 4 | Refresh the page and note the token persists. | The identity is loaded from localStorage on page load and automatically configured in Prebid. |
+| 5 | To exit the application, click **Clear UID2** or **Clear EUID**. | This clears the identity from localStorage and resets the UI. |
+
+## How It Works
+
+This example uses **client-side token generation (CSTG)**, where Prebid.js handles the entire token generation process in the browser:
+
+1. User enters their email address
+2. Prebid.js is configured with CSTG parameters (`subscriptionId`, `serverPublicKey`, `email`)
+3. Prebid automatically generates the token by calling the UID2/EUID service
+4. The token is stored in localStorage
+5. Prebid includes the identity in all bid requests
+
+For EUID, TCF2 consent management is also configured to ensure GDPR compliance.
 
 ## Prebid.js
 
 This file is a build of Prebid.js with the userId, uid2IdSystem and appnexusBidAdapter modules included.
+
+## Additional Resources
+
+- UID2:
+  - [UID2 Client-Side Integration Guide for Prebid.js](https://unifiedid.com/docs/guides/integration-prebid-client-side)
+  - [UID2 Documentation](https://unifiedid.com/docs)
+- EUID:
+  - [EUID Client-Side Integration Guide for Prebid.js](https://euid.eu/docs/guides/integration-prebid-client-side)
+  - [EUID Documentation](https://euid.eu/docs)
+- General:
+  - [Prebid.js Documentation](https://docs.prebid.org/)
