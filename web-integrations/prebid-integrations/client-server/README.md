@@ -217,10 +217,11 @@ This example implements the Client-Server Integration Guide for Prebid.js:
 
 ### Prebid Doesn't Have the Identity
 
-Run `pbjs.getUserIds()` in console:
-- If empty or missing `uid2`/`euid`, check console for Prebid errors
+Run `pbjs.getUserIds()` in console. If empty or missing `uid2`/`euid`:
+- Check console for Prebid errors
 - Verify Prebid.js loaded correctly (check Network tab)
-- Ensure `setPrebidConfig()` is being called after token generation
+- Ensure `pbjs.setConfig()` is being called after token generation to pass the token to Prebid
+- Check the browser console for "Configuring Prebid.js with..." message to confirm configuration
 - Check that `IDENTITY_NAME` matches the expected identity type (UID2 or EUID)
 
 ## Additional Resources

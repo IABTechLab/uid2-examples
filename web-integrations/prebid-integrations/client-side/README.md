@@ -23,7 +23,7 @@ From the repository root directory:
 
 ```bash
 # Start the service
-docker compose up prebid-client-side
+docker compose up prebid-client
 ```
 
 The application will be available at http://localhost:3051
@@ -32,10 +32,10 @@ To view logs or stop the service:
 
 ```bash
 # View logs (in another terminal)
-docker compose logs prebid-client-side
+docker compose logs prebid-client
 
 # Stop the service
-docker compose stop prebid-client-side
+docker compose stop prebid-client
 ```
 
 ### Using Docker Build
