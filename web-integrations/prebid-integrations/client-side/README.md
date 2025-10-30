@@ -1,15 +1,17 @@
 # Client-Side UID2 or EUID Integration Example with Prebid.js
 
-This example demonstrates how to integrate UID2 or EUID with Prebid.js using client-side token generation (CSTG), where tokens are generated directly in the browser.
+This example demonstrates how to integrate UID2 or EUID with Prebid.js using client-side token generation (CSTG), where tokens are generated directly in the browser. For additional documentation, see:
 
-- For UID2: [UID2 Client-Side Integration Guide for Prebid.js](https://unifiedid.com/docs/guides/integration-prebid-client-side)
-- For EUID: [EUID Client-Side Integration Guide for Prebid.js](https://euid.eu/docs/guides/integration-prebid-client-side)
+- UID2: [UID2 Client-Side Integration Guide for Prebid.js](https://unifiedid.com/docs/guides/integration-prebid-client-side)
+- EUID: [EUID Client-Side Integration Guide for Prebid.js](https://euid.eu/docs/guides/integration-prebid-client-side)
 
 This example can be configured for either UID2 or EUID — the behavior is determined by your environment variable configuration. You cannot use both simultaneously.
 
 ## Viewing live site
 
-To view the UID2 version of this site running, navigate to [https://unifiedid.com/examples/cstg-prebid-example/](https://unifiedid.com/examples/cstg-prebid-example/).
+To view this example running live:
+- UID2: [https://unifiedid.com/examples/cstg-prebid-example/](https://unifiedid.com/examples/cstg-prebid-example/)
+- EUID: [https://euid.eu/examples/cstg-prebid-example/](https://euid.eu/examples/cstg-prebid-example/)
 
 ## Build and Run the Example Application
 
@@ -50,9 +52,9 @@ The following table lists the environment variables that you must specify to sta
 
 | Variable | Description | Example Values |
 |:---------|:------------|:---------------|
-| `BASE_URL` | The base URL of the UID2/EUID service. For details, see [Environments](https://unifiedid.com/docs/getting-started/gs-environments) (UID2) or [Environments](https://euid.eu/docs/getting-started/gs-environments) (EUID). | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu` |
-| `SUBSCRIPTION_ID` | Your subscription ID for client-side token generation. | Your assigned subscription ID |
-| `SERVER_PUBLIC_KEY` | Your public key for client-side token generation. | UID2: `UID2-X-L-...`<br/>EUID: `EUID-X-I-...` |
+| `UID_CLIENT_BASE_URL` | The base URL of the UID2/EUID service. For details, see [Environments](https://unifiedid.com/docs/getting-started/gs-environments) (UID2) or [Environments](https://euid.eu/docs/getting-started/gs-environments) (EUID). | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu` |
+| `UID_CSTG_SUBSCRIPTION_ID` | Your subscription ID for client-side token generation. | Your assigned subscription ID |
+| `UID_CSTG_SERVER_PUBLIC_KEY` | Your public key for client-side token generation. | UID2: `UID2-X-L-...`<br/>EUID: `EUID-X-I-...` |
 
 ### Display/UI Configuration
 
@@ -94,7 +96,7 @@ For EUID, TCF2 consent management is also configured to ensure GDPR compliance.
 
 ## Prebid.js
 
-This file is a build of Prebid.js with the userId, uid2IdSystem and appnexusBidAdapter modules included.
+This example includes a custom build of Prebid.js with the necessary modules for UID2/EUID integration. The `uid2IdSystem` module in Prebid supports both UID2 and EUID identities.
 
 ## Additional Resources
 
