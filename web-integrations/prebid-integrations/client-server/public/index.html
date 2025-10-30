@@ -9,6 +9,8 @@
     <script>
       console.log('Initializing example.');
 
+      const identityName = '<%- identityName %>';  // 'UID2' or 'EUID'
+      const userIdName = identityName.toLowerCase();  // 'uid2' or 'euid'
       const uidStorageKey = '<%- uidStorageKey %>';
       let currentIdentity = null;
 
@@ -17,18 +19,18 @@
 
       function setPrebidConfig() {
         if (!currentIdentity) {
-          console.log('No UID2 identity available for Prebid configuration');
+          console.log(`No ${identityName} identity available for Prebid configuration`);
           return;
         }
 
         window.pbjs.que.push(function() {
-          console.log('Configuring Prebid.js with UID2 token');
+          console.log(`Configuring Prebid.js with ${identityName} token`);
           window.pbjs.setConfig({
             userSync: {
               userIds: [{
-                name: "uid2",
+                name: userIdName,
                 value: {
-                  uid2: {
+                  [userIdName]: {
                     id: currentIdentity.advertising_token,
                     ...(currentIdentity.refresh_token && {
                       refresh_token: currentIdentity.refresh_token,
@@ -43,7 +45,7 @@
             }
           });
           
-          console.log('Prebid UID2 configuration set:', window.pbjs.getUserIds());
+          console.log(`Prebid ${identityName} configuration set:`, window.pbjs.getUserIds());
         });
       }
 
@@ -87,7 +89,7 @@
           return;
         }
 
-        console.log('Generating UID2 token for email:', email);
+        console.log(`Generating ${identityName} token for email:`, email);
 
         try {
           const response = await fetch('/login', {
@@ -101,7 +103,7 @@
           const data = await response.json();
 
           if (data.status === 'optout') {
-            console.log('UID2 status: optout');
+            console.log(`${identityName} status: optout`);
             localStorage.setItem(uidStorageKey, JSON.stringify({ status: 'optout' }));
             currentIdentity = null;
             updateGuiElements();
@@ -113,7 +115,7 @@
             return;
           }
 
-          console.log('UID2 token received:', data);
+          console.log(`${identityName} token received:`, data);
 
           if (data.identity) {
             currentIdentity = data.identity;
@@ -130,7 +132,7 @@
       }
 
       function handleClearStorage() {
-        console.log('Clearing UID2 storage.');
+        console.log(`Clearing ${identityName} storage.`);
         localStorage.removeItem(uidStorageKey);
         currentIdentity = null;
         location.reload();
@@ -143,7 +145,7 @@
             const tokenData = JSON.parse(storedToken);
             if (tokenData.status !== 'optout' && tokenData.advertising_token) {
               currentIdentity = tokenData;
-              console.log('Loaded stored UID2 identity');
+              console.log(`Loaded stored ${identityName} identity`);
               setPrebidConfig();
             }
           } catch (e) {
@@ -175,7 +177,7 @@
       It does not perform real user authentication or generate production-level tokens.
       Do not use real user data on this page.
     </p>
-    <table id="uid2_state">
+    <table id="identity_state">
       <tr>
         <td class="label">Ready for Targeted Advertising:</td>
         <td class="value"><pre id="targeted_advertising_ready"></pre></td>

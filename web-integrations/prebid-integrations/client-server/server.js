@@ -1,5 +1,5 @@
-// UID2 Prebid.js Client-Server Integration - Server
-// Generates UID2 tokens server-side for use with Prebid.js
+// UID2/EUID Prebid.js Client-Server Integration - Server
+// Generates UID2/EUID tokens server-side for use with Prebid.js
 
 require('dotenv').config({path: '../../../.env'});
 
@@ -11,10 +11,10 @@ const ejs = require('ejs');
 const app = express();
 const port = 3052;
 
-// UID2 API Configuration (set via .env file)
-const uid2BaseUrl = process.env.UID_SERVER_BASE_URL || process.env.UID2_BASE_URL || 'https://operator-integ.uidapi.com';
-const uid2ApiKey = process.env.UID_API_KEY || process.env.UID2_API_KEY;
-const uid2ClientSecret = process.env.UID_CLIENT_SECRET || process.env.UID2_CLIENT_SECRET;
+// UID2/EUID API Configuration (set via .env file)
+const uidBaseUrl = process.env.UID_SERVER_BASE_URL || process.env.UID2_BASE_URL || 'https://operator-integ.uidapi.com';
+const uidApiKey = process.env.UID_API_KEY || process.env.UID2_API_KEY;
+const uidClientSecret = process.env.UID_CLIENT_SECRET || process.env.UID2_CLIENT_SECRET;
 const uidStorageKey = process.env.UID_STORAGE_KEY || '__uid2_advertising_token';
 const identityName = process.env.IDENTITY_NAME || 'UID2';
 const docsBaseUrl = process.env.DOCS_BASE_URL || 'https://unifiedid.com/docs';
@@ -88,7 +88,7 @@ function decrypt(base64Response, base64Key, nonceInRequest) {
     return JSON.parse(responseString);
 }
 
-// Creates encrypted envelope for UID2 API request
+// Creates encrypted envelope for UID2/EUID API request
 function createEnvelope(payload) {
     const millisec = BigInt(Date.now());
     const bufferMillisec = new ArrayBuffer(timestampLength);
@@ -98,7 +98,7 @@ function createEnvelope(payload) {
     const payloadEncoded = new TextEncoder().encode(payload);
     const body = Buffer.concat([Buffer.from(new Uint8Array(bufferMillisec)), nonce, payloadEncoded]);
 
-    const { ciphertext, iv } = encryptRequest(body, uid2ClientSecret);
+    const { ciphertext, iv } = encryptRequest(body, uidClientSecret);
 
     const envelopeVersion = Buffer.alloc(1, 1);
     const envelope = bufferToBase64(Buffer.concat([envelopeVersion, iv, Buffer.from(new Uint8Array(ciphertext))]));
@@ -118,22 +118,34 @@ app.get('/', (req, res) => {
     });
 });
 
-// POST /login - Generates UID2 token for email address
+// POST /login - Generates UID2/EUID token for email address
 app.post('/login', async (req, res) => {
     const jsonEmail = JSON.stringify({ email: req.body.email });
     const { envelope, nonce } = createEnvelope(jsonEmail);
 
     const headers = {
-        headers: { Authorization: 'Bearer ' + uid2ApiKey },
+        headers: { Authorization: 'Bearer ' + uidApiKey },
     };
+
+    console.log('=== Token Generation Request ===');
+    console.log('Email:', req.body.email);
+    console.log('URL:', uidBaseUrl + '/v2/token/generate');
+    console.log('API Key (first 20 chars):', uidApiKey ? uidApiKey.substring(0, 20) + '...' : 'NOT SET');
+    console.log('Client Secret (first 20 chars):', uidClientSecret ? uidClientSecret.substring(0, 20) + '...' : 'NOT SET');
+    console.log('Identity Scope:', identityName);
 
     try {
         const encryptedResponse = await axios.post(
-            uid2BaseUrl + '/v2/token/generate',
+            uidBaseUrl + '/v2/token/generate',
             envelope,
             headers
         );
-        const response = decrypt(encryptedResponse.data, uid2ClientSecret, nonce);
+        
+        console.log('Response status:', encryptedResponse.status);
+        console.log('Response headers:', encryptedResponse.headers);
+        
+        const response = decrypt(encryptedResponse.data, uidClientSecret, nonce);
+        console.log('Decrypted response status:', response.status);
 
         if (response.status === 'optout') {
             res.json({ status: 'optout' });
@@ -145,8 +157,25 @@ app.post('/login', async (req, res) => {
             res.json({ identity: response.body });
         }
     } catch (error) {
-        console.error('Error generating token:', error.message);
-        res.status(500).json({ error: 'Failed to generate UID2 token', details: error.message });
+        console.error('=== Token Generation Error ===');
+        console.error('Error message:', error.message);
+        console.error('Error code:', error.code);
+        
+        if (error.response) {
+            console.error('Response status:', error.response.status);
+            console.error('Response headers:', error.response.headers);
+            console.error('Response data:', error.response.data);
+        }
+        
+        console.error('Full error:', error);
+        console.error('================================');
+        
+        res.status(500).json({ 
+            error: `Failed to generate ${identityName} token`, 
+            details: error.message,
+            responseStatus: error.response?.status,
+            responseData: error.response?.data
+        });
     }
 });
 
@@ -155,5 +184,5 @@ app.post('/login', async (req, res) => {
 // ============================================================================
 
 app.listen(port, () => {
-    console.log(`UID2 Prebid Client-Server example listening at http://localhost:${port}`);
+    console.log(`${identityName} Prebid Client-Server example listening at http://localhost:${port}`);
 });
