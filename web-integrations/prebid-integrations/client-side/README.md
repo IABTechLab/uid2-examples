@@ -100,11 +100,8 @@ This example includes a custom build of Prebid.js with the necessary modules for
 
 ## Additional Resources
 
-- UID2:
-  - [UID2 Client-Side Integration Guide for Prebid.js](https://unifiedid.com/docs/guides/integration-prebid-client-side)
-  - [UID2 Documentation](https://unifiedid.com/docs)
-- EUID:
-  - [EUID Client-Side Integration Guide for Prebid.js](https://euid.eu/docs/guides/integration-prebid-client-side)
-  - [EUID Documentation](https://euid.eu/docs)
-- General:
-  - [Prebid.js Documentation](https://docs.prebid.org/)
+To see all UID2 integration options with Prebid.js, see [UID2 Integration Overview for Prebid](https://unifiedid.com/docs/guides/integration-prebid).
+
+To see all EUID integration options with Prebid.js, see [EUID Integration Overview for Prebid](https://euid.eu/docs/guides/integration-prebid).
+
+For general Prebid.js information, see [Prebid.js Documentation](https://docs.prebid.org/).
