@@ -60,7 +60,7 @@ The following table lists the environment variables that you must specify to sta
 |:---------|:------------|:---------------|
 | `IDENTITY_NAME` | Identity name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
 | `DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
-| `UID_STORAGE_KEY` | localStorage key for storing tokens | `__uid2_advertising_token` or `__euid_advertising_token` |
+| `UID_STORAGE_KEY` | localStorage key for storing tokens in browser | UID2: `__uid2_advertising_token`<br/>EUID: `__euid_advertising_token` |
 
 **Note:** For Docker, use `http://host.docker.internal:8080` instead of `http://localhost:8080` to access services running on your host machine.
 
