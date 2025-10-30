@@ -50,21 +50,25 @@ docker run -it --rm -p 3051:3051 --env-file .env prebid-client-side
 
 The following table lists the environment variables that you must specify to start the application.
 
-### Core Configuration
+### UID2/EUID Configuration
+
+These variables configure the connection to UID2/EUID services for token generation.
 
 | Variable | Description | Example Values |
 |:---------|:------------|:---------------|
-| `UID_CLIENT_BASE_URL` | The base URL of the UID2/EUID service. For details, see [Environments](https://unifiedid.com/docs/getting-started/gs-environments) (UID2) or [Environments](https://euid.eu/docs/getting-started/gs-environments) (EUID). | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu` |
-| `UID_CSTG_SUBSCRIPTION_ID` | Your subscription ID for client-side token generation. | Your assigned subscription ID |
-| `UID_CSTG_SERVER_PUBLIC_KEY` | Your public key for client-side token generation. | UID2: `UID2-X-L-...`<br/>EUID: `EUID-X-I-...` |
+| `UID_CLIENT_BASE_URL` | API base URL for client-side/browser calls. For details, see [Environments](https://unifiedid.com/docs/getting-started/gs-environments) (UID2) or [Environments](https://euid.eu/docs/getting-started/gs-environments) (EUID). | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu` |
+| `UID_CSTG_SUBSCRIPTION_ID` | Your subscription ID for client-side token generation for the UID2/EUID service specified in UID_CLIENT_BASE_URL. | Your assigned subscription ID |
+| `UID_CSTG_SERVER_PUBLIC_KEY` | Your server public key for client-side token generation for the UID2/EUID service specified in UID_CLIENT_BASE_URL. | Your assigned server public key |
 
-### Display/UI Configuration
+### Display/Prebid Configuration
+
+These variables control UI display and how Prebid stores/retrieves tokens.
 
 | Variable | Description | Example Values |
 |:---------|:------------|:---------------|
 | `IDENTITY_NAME` | Identity name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
 | `DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
-| `UID_STORAGE_KEY` | localStorage key for storing tokens in browser | UID2: `__uid2_advertising_token`<br/>EUID: `__euid_advertising_token` |
+| `UID_STORAGE_KEY` | localStorage key where Prebid stores and retrieves tokens in the browser | UID2: `__uid2_advertising_token`<br/>EUID: `__euid_advertising_token` |
 
 **Note:** These variables are substituted into the HTML during the Docker build process using `envsubst`. If a variable is not set in the `.env` file, default values are used.
 

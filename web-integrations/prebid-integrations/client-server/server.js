@@ -127,13 +127,6 @@ app.post('/login', async (req, res) => {
         headers: { Authorization: 'Bearer ' + uidApiKey },
     };
 
-    console.log('=== Token Generation Request ===');
-    console.log('Email:', req.body.email);
-    console.log('URL:', uidBaseUrl + '/v2/token/generate');
-    console.log('API Key (first 20 chars):', uidApiKey ? uidApiKey.substring(0, 20) + '...' : 'NOT SET');
-    console.log('Client Secret (first 20 chars):', uidClientSecret ? uidClientSecret.substring(0, 20) + '...' : 'NOT SET');
-    console.log('Identity Scope:', identityName);
-
     try {
         const encryptedResponse = await axios.post(
             uidBaseUrl + '/v2/token/generate',
@@ -141,11 +134,7 @@ app.post('/login', async (req, res) => {
             headers
         );
         
-        console.log('Response status:', encryptedResponse.status);
-        console.log('Response headers:', encryptedResponse.headers);
-        
         const response = decrypt(encryptedResponse.data, uidClientSecret, nonce);
-        console.log('Decrypted response status:', response.status);
 
         if (response.status === 'optout') {
             res.json({ status: 'optout' });
@@ -157,25 +146,8 @@ app.post('/login', async (req, res) => {
             res.json({ identity: response.body });
         }
     } catch (error) {
-        console.error('=== Token Generation Error ===');
-        console.error('Error message:', error.message);
-        console.error('Error code:', error.code);
-        
-        if (error.response) {
-            console.error('Response status:', error.response.status);
-            console.error('Response headers:', error.response.headers);
-            console.error('Response data:', error.response.data);
-        }
-        
-        console.error('Full error:', error);
-        console.error('================================');
-        
-        res.status(500).json({ 
-            error: `Failed to generate ${identityName} token`, 
-            details: error.message,
-            responseStatus: error.response?.status,
-            responseData: error.response?.data
-        });
+        console.error('Token generation failed:', error.message);
+        res.status(500).json({ error: `Failed to generate ${identityName} token` });
     }
 });
 

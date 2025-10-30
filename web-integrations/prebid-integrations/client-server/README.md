@@ -1,9 +1,9 @@
 # Client-Server UID2 or EUID Integration Example with Prebid.js
 
-This example demonstrates how to integrate UID2 or EUID with Prebid.js using client-server integration, where tokens are generated on the server side and passed to Prebid for use in header bidding auctions.
+This example demonstrates how to integrate UID2 or EUID with Prebid.js using client-server integration, where tokens are generated on the server side and passed to Prebid for use in header bidding auctions. For an overview of the high-level workflow, API reference, and integration details, see:
 
-- For UID2: [UID2 with Prebid.js Client-Server Integration](https://unifiedid.com/docs/guides/integration-prebid-client-server)
-- For EUID: [EUID with Prebid.js Client-Server Integration](https://euid.eu/docs/guides/integration-prebid-client-server)
+- UID2: [UID2 Client-Server Integration Guide for Prebid.js](https://unifiedid.com/docs/guides/integration-prebid-client-server)
+- EUID: [EUID Client-Server Integration Guide for Prebid.js](https://euid.eu/docs/guides/integration-prebid-client-server)
 
 This example can be configured for either UID2 or EUID — the behavior is determined by your environment variable configuration. You cannot use both simultaneously.
 
@@ -44,9 +44,11 @@ docker build -f web-integrations/prebid-integrations/client-server/Dockerfile -t
 docker run -it --rm -p 3052:3052 --env-file .env prebid-client-server
 ```
 
-The following table lists the environment variables that you must specify to start the application.
+The following table lists the environment variables needed to run the application.
 
-### Core Configuration
+### UID2/EUID Configuration
+
+These variables configure the connection to UID2/EUID services for token generation.
 
 | Variable | Description | Example Values |
 |:---------|:------------|:---------------|
@@ -54,13 +56,15 @@ The following table lists the environment variables that you must specify to sta
 | `UID_API_KEY` | Your UID2/EUID authentication key for the UID2/EUID service specified in UID_SERVER_BASE_URL. | Your assigned API key |
 | `UID_CLIENT_SECRET` | Your UID2/EUID client secret for the UID2/EUID service specified in UID_SERVER_BASE_URL. | Your assigned client secret |
 
-### Display/UI Configuration
+### Display/Prebid Configuration
+
+These variables control UI display and how Prebid stores/retrieves tokens.
 
 | Variable | Description | Example Values |
 |:---------|:------------|:---------------|
 | `IDENTITY_NAME` | Identity name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
 | `DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
-| `UID_STORAGE_KEY` | localStorage key for storing tokens in browser | UID2: `__uid2_advertising_token`<br/>EUID: `__euid_advertising_token` |
+| `UID_STORAGE_KEY` | localStorage key where Prebid stores and retrieves tokens in the browser | UID2: `__uid2_advertising_token`<br/>EUID: `__euid_advertising_token` |
 
 **Note:** For Docker, use `http://host.docker.internal:8080` instead of `http://localhost:8080` to access services running on your host machine.
 
@@ -157,12 +161,6 @@ UID_STORAGE_KEY=__euid_advertising_token
 
 
 ## Test the Example Application
-
-The example application illustrates the steps documented in the integration guides. For an overview of the high-level workflow, API reference, and integration details, see:
-- UID2: [UID2 Client-Server Integration Guide for Prebid.js](https://unifiedid.com/docs/guides/integration-prebid-client-server)
-- EUID: [EUID Client-Server Integration Guide for Prebid.js](https://euid.eu/docs/guides/integration-prebid-client-server)
-
-**Note:** For API endpoint documentation, see the UID2 or EUID docs based on your configuration.
 
 The following table outlines and annotates the steps you may take to test and explore the example application.
 
