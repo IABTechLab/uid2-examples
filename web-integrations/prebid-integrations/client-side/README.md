@@ -7,6 +7,8 @@ This example demonstrates how to integrate UID2 or EUID with Prebid.js using cli
 
 This example can be configured for either UID2 or EUID — the behavior is determined by your environment variable configuration. You cannot use both simultaneously.
 
+> **NOTE:** This example uses Prebid.js v8.37.0.
+
 ## Viewing live site
 
 To view this example running live:
