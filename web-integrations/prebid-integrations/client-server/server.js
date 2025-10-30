@@ -147,7 +147,7 @@ app.post('/login', async (req, res) => {
         }
     } catch (error) {
         console.error('Token generation failed:', error.message);
-        res.status(500).json({ error: `Failed to generate ${identityName} token` });
+        res.status(500).json({ error: `Failed to generate ${identityName} token`, details: error.message });
     }
 });
 

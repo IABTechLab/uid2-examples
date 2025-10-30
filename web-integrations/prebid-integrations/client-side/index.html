@@ -17,7 +17,6 @@
       function updateGuiElements() {
         console.log('Updating displayed values.');
         const identity = pbjs.getUserIds()[userIdName];
-        console.log('Identity:', identity);
         
         let isOptedOut = false;
         const storedToken = localStorage.getItem('${UID_STORAGE_KEY}');
