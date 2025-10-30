@@ -83,11 +83,11 @@ h1 {
   padding-bottom: 20px;
 }
 
-#uid2_state .label {
+#identity_state .label {
   white-space: nowrap;
   padding-right: 20px;
 }
-#uid2_state tr {
+#identity_state tr {
   margin-top: 10px;
 }
 

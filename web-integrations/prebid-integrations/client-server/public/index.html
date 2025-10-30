@@ -2,14 +2,16 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Client-Server UID2 SDK Integration Example with Prebid.js</title>
+    <title>Client-Server <%- identityName %> SDK Integration Example with Prebid.js</title>
     <link rel="stylesheet" type="text/css" href="./app.css" />
     <script async src="./prebid.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
       console.log('Initializing example.');
 
-      const UID2_STORAGE_KEY = '<%= UID2_STORAGE_KEY %>';
+      const identityName = '<%- identityName %>';  // 'UID2' or 'EUID'
+      const userIdName = identityName.toLowerCase();  // 'uid2' or 'euid'
+      const uidStorageKey = '<%- uidStorageKey %>';
       let currentIdentity = null;
 
       window.pbjs = window.pbjs || {};
@@ -17,18 +19,18 @@
 
       function setPrebidConfig() {
         if (!currentIdentity) {
-          console.log('No UID2 identity available for Prebid configuration');
+          console.log(`No ${identityName} identity available for Prebid configuration`);
           return;
         }
 
         window.pbjs.que.push(function() {
-          console.log('Configuring Prebid.js with UID2 token');
+          console.log(`Configuring Prebid.js with ${identityName} token`);
           window.pbjs.setConfig({
             userSync: {
               userIds: [{
-                name: "uid2",
+                name: userIdName,
                 value: {
-                  uid2: {
+                  [userIdName]: {
                     id: currentIdentity.advertising_token,
                     ...(currentIdentity.refresh_token && {
                       refresh_token: currentIdentity.refresh_token,
@@ -43,14 +45,14 @@
             }
           });
           
-          console.log('Prebid UID2 configuration set:', window.pbjs.getUserIds());
+          console.log(`Prebid ${identityName} configuration set:`, window.pbjs.getUserIds());
         });
       }
 
       function updateGuiElements() {
         console.log('Updating displayed values.');
         
-        const storedToken = localStorage.getItem(UID2_STORAGE_KEY);
+        const storedToken = localStorage.getItem(uidStorageKey);
         let isOptedOut = false;
         
         if (storedToken) {
@@ -87,7 +89,7 @@
           return;
         }
 
-        console.log('Generating UID2 token for email:', email);
+        console.log(`Generating ${identityName} token for email:`, email);
 
         try {
           const response = await fetch('/login', {
@@ -101,8 +103,8 @@
           const data = await response.json();
 
           if (data.status === 'optout') {
-            console.log('UID2 status: optout');
-            localStorage.setItem(UID2_STORAGE_KEY, JSON.stringify({ status: 'optout' }));
+            console.log(`${identityName} status: optout`);
+            localStorage.setItem(uidStorageKey, JSON.stringify({ status: 'optout' }));
             currentIdentity = null;
             updateGuiElements();
             return;
@@ -113,11 +115,11 @@
             return;
           }
 
-          console.log('UID2 token received:', data);
+          console.log(`${identityName} token received:`, data);
 
           if (data.identity) {
             currentIdentity = data.identity;
-            localStorage.setItem(UID2_STORAGE_KEY, JSON.stringify(currentIdentity));
+            localStorage.setItem(uidStorageKey, JSON.stringify(currentIdentity));
             
             setPrebidConfig();
           }
@@ -130,25 +132,25 @@
       }
 
       function handleClearStorage() {
-        console.log('Clearing UID2 storage.');
-        localStorage.removeItem(UID2_STORAGE_KEY);
+        console.log(`Clearing ${identityName} storage.`);
+        localStorage.removeItem(uidStorageKey);
         currentIdentity = null;
         location.reload();
       }
 
       function loadStoredIdentity() {
-        const storedToken = localStorage.getItem(UID2_STORAGE_KEY);
+        const storedToken = localStorage.getItem(uidStorageKey);
         if (storedToken) {
           try {
             const tokenData = JSON.parse(storedToken);
             if (tokenData.status !== 'optout' && tokenData.advertising_token) {
               currentIdentity = tokenData;
-              console.log('Loaded stored UID2 identity');
+              console.log(`Loaded stored ${identityName} identity`);
               setPrebidConfig();
             }
           } catch (e) {
             console.error('Failed to parse stored identity:', e);
-            localStorage.removeItem(UID2_STORAGE_KEY);
+            localStorage.removeItem(uidStorageKey);
           }
         }
       }
@@ -168,20 +170,20 @@
     </script>
   </head>
   <body>
-    <h1>Client-Server UID2 SDK Integration Example with Prebid.js</h1>
+    <h1>Client-Server <%- identityName %> SDK Integration Example with Prebid.js</h1>
     <p class="intro">
-      This example demonstrates how a content publisher can integrate with UID2 and Prebid.js using the <a href="https://unifiedid.com/docs/guides/integration-prebid-client-server">UID2 Client-Server Integration Guide for Prebid.js</a>, where tokens are generated on the server and passed to Prebid.js on the client side.
+      This example demonstrates how a content publisher can integrate with <%- identityName %> and Prebid.js using the <a href="<%- docsBaseUrl %>/guides/integration-prebid-client-server"><%- identityName %> Client-Server Integration Guide for Prebid.js</a>, where tokens are generated on the server and passed to Prebid.js on the client side.
       <strong>Note:</strong> This is a <em>test-only</em> integration environment—not for production use.
       It does not perform real user authentication or generate production-level tokens.
       Do not use real user data on this page.
     </p>
-    <table id="uid2_state">
+    <table id="identity_state">
       <tr>
         <td class="label">Ready for Targeted Advertising:</td>
         <td class="value"><pre id="targeted_advertising_ready"></pre></td>
       </tr>
       <tr>
-        <td class="label">UID2 Advertising Token:</td>
+        <td class="label"><%- identityName %> Advertising Token:</td>
         <td class="value"><pre id="advertising_token"></pre></td>
       </tr>
     </table>
@@ -197,11 +199,11 @@
           style="border-style: none"
         />
       </div>
-      <div><button type="button" class="button" id="login">Generate UID2</button></div>
+      <div><button type="button" class="button" id="login">Generate <%- identityName %></button></div>
     </div>
     <div id="clear_storage_form" style="display: none" class="form">
       <form>
-        <button type="button" class="button" id="clear_storage">Clear UID2</button>
+        <button type="button" class="button" id="clear_storage">Clear <%- identityName %></button>
       </form>
     </div>
   </body>
