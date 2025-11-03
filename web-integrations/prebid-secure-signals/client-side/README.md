@@ -47,6 +47,9 @@ pbjs.setConfig({
       encrypt: false
     }]
   }
+  // Note: If using EUID, you must configure consent management for GDPR compliance.
+  // See index.html lines 183-185 and 191+ for an example implementation using consentManagementObj.
+  // For more details, see https://euid.eu/docs/getting-started/gs-permissions
 });
 ```
 

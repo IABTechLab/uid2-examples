@@ -108,7 +108,7 @@
             `The presence of ad requests from Google confirms the integration is working.`
           ).show();
         } else if (uidToken && !isConfigured) {
-          $('#secure_signals_configured').text('misconfigured (token exists but encryptedSignalSources not set)');
+          $('#secure_signals_configured').text('misconfigured (token exists but something is wrong with the secure signals integration. Check that encryptedSignalSources is set in your Prebid config.)');
           $('#verification_instructions').hide();
         } else {
           $('#secure_signals_configured').text('no (no token available)');
