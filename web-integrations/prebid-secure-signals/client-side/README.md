@@ -135,16 +135,6 @@ The example application illustrates the steps documented in the integration guid
 | 6 | Check token persistence | Refresh the page - the token should persist from `localStorage` and both Prebid and Secure Signals continue working. |
 | 7 | To exit, click **Clear UID2** or **Clear EUID**. | This clears the identity from localStorage. |
 
-## How the Integration Works
-
-### Token Flow
-
-1. **Token Generation**: Prebid's UID2/EUID module generates the token via CSTG
-2. **Prebid Storage**: Token stored in localStorage at `__uid2_advertising_token` or `__euid_advertising_token`
-3. **Prebid Usage**: 
-   - Prebid automatically includes token in all bid requests to SSPs
-   - Prebid sends encrypted signals directly to Google Ad Manager via the Prebid User ID Module (configured with `encryptedSignalSources`)
-4. **Google Ad Manager**: Receives encrypted UID2/EUID token for targeting and measurement
 
 ### Manual Testing & Debugging
 
@@ -170,6 +160,16 @@ window.googletag
 // Expected: Object with googletag API methods
 
 ```
+## How the Integration Works
+
+### Token Flow
+
+1. **Token Generation**: Prebid's UID2/EUID module generates the token via CSTG
+2. **Prebid Storage**: Token stored in localStorage at `__uid2_advertising_token` or `__euid_advertising_token`
+3. **Prebid Usage**: 
+   - Prebid automatically includes token in all bid requests to SSPs
+   - Prebid sends encrypted signals directly to Google Ad Manager via the Prebid User ID Module (configured with `encryptedSignalSources`)
+4. **Google Ad Manager**: Receives encrypted UID2/EUID token for targeting and measurement
 
 ### Key Benefits
 
