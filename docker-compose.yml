@@ -93,3 +93,14 @@ services:
     env_file:
       - .env
 
+  # prebid + secure signals integrations
+  prebid-secure-signals-client-side:
+    build:
+      context: .
+      dockerfile: web-integrations/prebid-secure-signals/client-side/Dockerfile
+    ports:
+      - "3061:3061"
+    container_name: prebid-secure-signals-client-side
+    env_file:
+      - .env
+
