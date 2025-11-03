@@ -183,14 +183,3 @@ window.googletag
 
 This example includes a custom build of Prebid.js with the necessary modules for UID2/EUID integration. The `uid2IdSystem` module in Prebid supports both UID2 and EUID identities.
 
-## Additional Resources
-
-**UID2:**
-- [UID2 Integration Overview for Prebid](https://unifiedid.com/docs/guides/integration-prebid)
-- [Google Ad Manager Secure Signals Integration Guide](https://unifiedid.com/docs/guides/integration-google-ss)
-- [Prebid.js Documentation](https://docs.prebid.org/)
-
-**EUID:**
-- [EUID Integration Overview for Prebid](https://euid.eu/docs/guides/integration-prebid)
-- [EUID Google Ad Manager Secure Signals Integration Guide](https://euid.eu/docs/guides/integration-google-ss)
-
