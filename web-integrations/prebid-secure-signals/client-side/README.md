@@ -121,19 +121,6 @@ These variables control UI display and storage keys.
 
 **Note:** These variables are substituted into the HTML during the Docker build process using `envsubst`. If a variable is not set in the `.env` file, default values are used.
 
-## Important: Verifying Secure Signals
-
-Unlike standalone Secure Signals integrations, Prebid's native Secure Signals integration does NOT create a `_GESPSK-*` localStorage entry. This is expected behavior because:
-
-1. **Prebid manages the token** in its own storage (`__uid2_advertising_token` or `__euid_advertising_token`)
-2. **Prebid sends encrypted signals directly** to Google Ad Manager via the Prebid User ID Module
-3. **No separate Secure Signals SDK is needed** or used
-
-To verify Secure Signals are actually being sent to Google Ad Manager:
-- Use the Network tab in browser DevTools
-- Look for ad requests to `doubleclick.net` or `googlesyndication.com`
-- Check the request payload for encrypted signal data containing your UID2/EUID token
-
 ## Test the Example Application
 
 The example application illustrates the steps documented in the integration guides.
@@ -144,7 +131,7 @@ The example application illustrates the steps documented in the integration guid
 | 2 | Enter an email address and click **Generate UID2** or **Generate EUID**. | Prebid.js handles token generation using CSTG parameters. The token is generated client-side and stored in localStorage. |
 | 3 | Observe both status sections | You should see:<br/>- **Prebid Status**: Shows the advertising token<br/>- **Google Secure Signals Status**: Shows "yes (configured via Prebid)" with the token value displayed |
 | 4 | Verify Prebid configuration | Open browser console and run:<br/>`pbjs.getUserIds()` - Shows the token<br/>`pbjs.getConfig('encryptedSignalSources')` - Confirms encrypted signal sources configuration |
-| 5 | **Verify Secure Signals in ad requests** | Open Network tab in DevTools, click **Play** on the video ad, and inspect ad requests to `doubleclick.net`. Look for the encrypted UID2/EUID signal in the request payload - this confirms Prebid is actually sending the token to Google Ad Manager. |
+| 5 | **Verify Secure Signals in ad requests** | Open Network tab in DevTools, click **Play** on the video ad, and inspect ad requests to `doubleclick.net`. Look for the encrypted UID2/EUID signal in the request payload - this confirms Prebid is actually sending the token to Google Ad Manager.<br/><br/>**Note:** Unlike standalone Secure Signals integrations, Prebid's native integration does NOT create a `_GESPSK-*` localStorage entry. Prebid sends encrypted signals directly via the Prebid User ID Module, requiring manual verification via Network tab inspection. |
 | 6 | Check token persistence | Refresh the page - the token should persist from `localStorage` and both Prebid and Secure Signals continue working. |
 | 7 | To exit, click **Clear UID2** or **Clear EUID**. | This clears the identity from localStorage. |
 
@@ -159,11 +146,30 @@ The example application illustrates the steps documented in the integration guid
    - Prebid sends encrypted signals directly to Google Ad Manager via the Prebid User ID Module (configured with `encryptedSignalSources`)
 4. **Google Ad Manager**: Receives encrypted UID2/EUID token for targeting and measurement
 
-### Automatic Token Refresh
+### Manual Testing & Debugging
 
-- Prebid manages token refresh automatically using the refresh token
-- When Prebid updates the token, it automatically sends the updated encrypted signal to Google Ad Manager via the Prebid User ID Module
-- **Single source of truth**: Prebid owns the token, Secure Signals is a reader
+Use these commands in the browser console to verify the integration:
+
+```javascript
+// Check if Prebid has the UID2/EUID token
+pbjs.getUserIds()
+// Expected: { uid2: "..." } or { euid: "..." }
+
+// Verify Prebid's Secure Signals configuration
+pbjs.getConfig('encryptedSignalSources')
+// Expected: { sources: [{ domain: "uidapi.com" }] } or similar for EUID
+
+// Check localStorage for Prebid's token storage
+localStorage.getItem('__uid2_advertising_token')
+// or for EUID:
+localStorage.getItem('__euid_advertising_token')
+// Expected: JSON object with token data
+
+// Verify Google Ad Manager tag is loaded
+window.googletag
+// Expected: Object with googletag API methods
+
+```
 
 ### Key Benefits
 
