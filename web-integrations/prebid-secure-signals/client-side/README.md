@@ -118,6 +118,7 @@ These variables control UI display and storage keys.
 | `IDENTITY_NAME` | Identity name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
 | `DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
 | `UID_STORAGE_KEY` | localStorage key where Prebid stores tokens | UID2: `__uid2_advertising_token`<br/>EUID: `__euid_advertising_token` |
+| `UID_SECURE_SIGNALS_STORAGE_KEY` | localStorage key for Secure Signals (used for debugging) | UID2: `_GESPSK-uidapi.com`<br/>EUID: `_GESPSK-euid.eu` |
 
 **Note:** These variables are substituted into the HTML during the Docker build process using `envsubst`. If a variable is not set in the `.env` file, default values are used.
 

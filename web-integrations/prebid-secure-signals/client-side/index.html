@@ -17,7 +17,7 @@
       const apiBaseKey = identityName === 'EUID' ? 'euidApiBase' : 'uid2ApiBase';
       const userIdName = identityName.toLowerCase();  // 'uid2' or 'euid'
       const storageKey = '${UID_STORAGE_KEY}';  // '__uid2_advertising_token' or '__euid_advertising_token'
-      const secureSignalsStorageKey = identityName === 'EUID' ? '_GESPSK-euid.eu' : '_GESPSK-uidapi.com';
+      const secureSignalsStorageKey = '${UID_SECURE_SIGNALS_STORAGE_KEY}';  // '_GESPSK-uidapi.com' or '_GESPSK-euid.eu'
 
       function updateGuiElements() {
         console.log('Updating displayed values.');
