@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Client-Side ${IDENTITY_NAME} Integration with Prebid.js and Google Secure Signals</title>
+    <link rel="stylesheet" type="text/css" href="./app.css" />
+    <link rel="stylesheet" type="text/css" href="./ads.css" />
+    <link rel="shortcut icon" href="/img/favicon.ico" />
+    <script async src="../prebid.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+    <script>
+      console.log('Initializing Prebid + Secure Signals example.');
+
+      const identityName = '${IDENTITY_NAME}';  // 'UID2' or 'EUID'
+      const apiBaseKey = identityName === 'EUID' ? 'euidApiBase' : 'uid2ApiBase';
+      const userIdName = identityName.toLowerCase();  // 'uid2' or 'euid'
+      const storageKey = '${UID_STORAGE_KEY}';  // '__uid2_advertising_token' or '__euid_advertising_token'
+      const secureSignalsStorageKey = '${UID_SECURE_SIGNALS_STORAGE_KEY}';  // '_GESPSK-uidapi.com' or '_GESPSK-euid.eu'
+
+      function updateGuiElements() {
+        console.log('Updating displayed values.');
+        const identity = pbjs.getUserIds()[userIdName];
+        
+        let isOptedOut = false;
+        const storedToken = localStorage.getItem(storageKey);
+        if (storedToken) {
+          try {
+            const tokenData = JSON.parse(storedToken);
+            isOptedOut = tokenData.latestToken === 'optout';
+          } catch (e) {
+            console.log('Could not parse stored token');
+          }
+        }
+        
+        $('#targeted_advertising_ready').text(identity ? 'yes' : 'no');
+        $('#login_required').text(identity ? 'no' : 'yes');
+        
+        if (isOptedOut) {
+          $('#advertising_token').text('This email has opted out.');
+          $('#prebid_storage').text('N/A (opted out)');
+          $('#login_form').hide();
+          $('#clear_storage_form').show();
+          $('#page-content').hide();
+        } else {
+          // Show "undefined" if no token, otherwise show the token
+          $('#advertising_token').text(identity ? String(identity.id) : 'undefined');
+          
+          // Update the label to include the storage key name
+          $('#prebid_storage_label').text(`Prebid Token Storage ('${UID_STORAGE_KEY}' in localStorage):`);
+          
+          // Show localStorage content with formatted structure
+          const localStorageValue = localStorage.getItem(storageKey);
+          if (localStorageValue) {
+            try {
+              const parsedToken = JSON.parse(localStorageValue);
+              // Wrap in an object structure to match google-secure-signals format
+              const displayObject = { latestToken: parsedToken.latestToken };
+              if (parsedToken.originalIdentity) {
+                displayObject.originalIdentity = parsedToken.originalIdentity;
+              }
+              $('#prebid_storage').text(JSON.stringify(displayObject, null, 2));
+            } catch (e) {
+              // If parsing fails, just show the raw value
+              $('#prebid_storage').text(localStorageValue);
+            }
+          } else {
+            $('#prebid_storage').text('No token stored yet.');
+          }
+          
+          if (!identity) {
+            $('#login_form').show();
+            $('#clear_storage_form').hide();
+            $('#page-content').hide();
+          } else {
+            $('#login_form').hide();
+            $('#clear_storage_form').show();
+            $('#page-content').show();
+          }
+        }
+
+        // Update Secure Signals status
+        updateSecureSignalsStatus();
+      }
+
+      function updateSecureSignalsStatus() {
+        // Check if Prebid has the token and encryptedSignalSources is configured
+        const prebidUserIds = pbjs.getUserIds();
+        const uidToken = prebidUserIds[userIdName];
+        
+        // Check if encryptedSignalSources is configured
+        const prebidConfig = pbjs.getConfig('encryptedSignalSources');
+        const isConfigured = prebidConfig && prebidConfig.sources && prebidConfig.sources.length > 0;
+        
+        if (uidToken && isConfigured) {
+          $('#secure_signals_configured').text('yes');
+          
+          // Set verification instructions
+          $('#verification_instructions').html(
+            `<strong>To verify that encrypted signals are being sent to Google Ad Manager:</strong><br/><br/>` +
+            `1. Click the Play button on the video ad below<br/>` +
+            `2. Open the Network tab in your browser's Developer Tools<br/>` +
+            `3. Filter network requests for: <strong>doubleclick.net</strong> or <strong>googlesyndication.com</strong><br/>` +
+            `4. Select a corresponding request and verify paths like /gampad/ads or /pagead/interaction are included<br/>` +
+            `5. These are the INITIAL ad requests where Prebid sends the encrypted ${IDENTITY_NAME} signals to Google Ad Manager<br/><br/>` +
+            `<strong>Note:</strong> The signals are encrypted, so you won't see the raw token in the request. ` +
+            `The presence of ad requests from Google confirms the integration is working.`
+          ).show();
+        } else if (uidToken && !isConfigured) {
+          $('#secure_signals_configured').text('misconfigured (token exists but something is wrong with the secure signals integration. Check that encryptedSignalSources is set in your Prebid config.)');
+          $('#verification_instructions').hide();
+        } else {
+          $('#secure_signals_configured').text('no (no token available)');
+          $('#verification_instructions').hide();
+        }
+      }
+
+      async function handleLogin() {
+        const email = $('#email').val();
+        setUidConfig(email);
+        await pbjs.refreshUserIds();
+        
+        // Wait for token to update
+        setTimeout(() => {
+          updateGuiElements();
+        }, 2000);
+      }
+
+      function handleClearStorage() {
+        console.log('Clearing storage.');
+        
+        // Clear Prebid storage
+        localStorage.removeItem(storageKey);
+        
+        location.reload();
+      }
+
+      function onDocumentReady() {
+        console.log('Setting up interface handlers.');
+        $('#login').click(handleLogin);
+        $('#clear_storage').click(handleClearStorage);
+        
+        updateGuiElements();
+        
+        // Periodically check for Secure Signals updates
+        setInterval(updateSecureSignalsStatus, 2000);
+      }
+
+      function setUidConfig(email) {
+        const uidParams = email ? {
+          [apiBaseKey]: '${BASE_URL}',
+          email,
+          subscriptionId: '${SUBSCRIPTION_ID}',
+          serverPublicKey: '${SERVER_PUBLIC_KEY}',
+        } : {
+          [apiBaseKey]: '${BASE_URL}',
+        };
+        
+        const config = {
+          debug: true,
+          userSync: {
+            userIds: [
+              {
+                name: userIdName,
+                params: uidParams,
+              },
+            ],
+            syncDelay: 5000,
+            auctionDelay: 1000,
+          },
+          // Add Google Secure Signals integration
+          encryptedSignalSources: {
+            sources: [
+              {
+                source: [identityName === 'EUID' ? 'euid.eu' : 'uidapi.com'],
+                encrypt: false
+              }
+            ]
+          }
+        };
+        
+        // Only add consent management for EUID (GDPR compliance)
+        if (identityName === 'EUID') {
+          config.consentManagement = consentManagementObj;
+        }
+        
+        pbjs.setConfig(config);
+      }
+
+      // Consent management for GDPR compliance (required for EUID)
+      const consentManagementObj = {
+        "cmpApi": "static",
+        "consentData": {
+          "getTCData": {
+            "tcString": "CO-HDlqO-HDlqAKAXCENBDCsAP_AAH_AACiQHKNd_X_fb39j-_59_9t0eY1f9_7_v20zjgeds-8Nyd_X_L8X42M7vF36pq4KuR4Eu3LBIQFlHOHcTUmw6IkVqTPsak2Mr7NKJ7PEinMbe2dYGHtfn9VTuZKYr97s___z__-__v__75f_r-3_3_vp9V---_fA5QAkw1L4CLMSxwJJo0qhRAhCuJDoAQAUUIwtE1hASuCnZXAR-ggYAIDUBGBECDEFGLIIAAAAAkoiAkAPBAIgCIBAACAFSAhAARoAgsAJAwCAAUA0LACKAIQJCDI4KjlMCAiRaKCeSMASi72MMIQyigBoFH4AAAAA.cAAAAAAAAAAA",
+            "cmpId": 10,
+            "cmpVersion": 23,
+            "tcfPolicyVersion": 2,
+            "gdprApplies": true, 
+            "cmpStatus": "loaded",
+            "eventStatus": "tcloaded",
+            "purpose": {
+              "consents": {
+                "1": true,
+                "2": true
+              }
+            },
+            "vendor": {
+              "consents": {
+                "52": true,
+                "21": true,
+                "131": true,
+                "929": true,
+                "97": true,
+                "887": true,
+                "95": true,
+                "301": true,
+                "91": true,
+                "737": true,
+                "58": true,
+              }
+            }
+          }
+        }
+      };
+
+      var adUnits = [
+        {
+          code: 'test-div',
+          mediaTypes: {
+            banner: {
+              sizes: [
+                [300, 250],
+                [300, 600],
+                [728, 90],
+              ],
+            },
+          },
+          bids: [
+            {
+              bidder: 'appnexus',
+              params: {
+                placementId: 13144370,
+              },
+            },
+          ],
+        },
+      ];
+
+      var pbjs = pbjs || {};
+      pbjs.que = pbjs.que || [];
+      pbjs.que.push(function () {
+        setUidConfig();
+        pbjs.addAdUnits(adUnits);
+        pbjs.requestBids();
+
+        $(document).ready(onDocumentReady);
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Client-Side ${IDENTITY_NAME} Integration with Prebid.js and Google Secure Signals</h1>
+    <p class="intro">
+      This example demonstrates how a content publisher can integrate ${IDENTITY_NAME} with both 
+      <strong>Prebid.js</strong> (for header bidding) and <strong>Google Secure Signals</strong> 
+      (for Google Ad Manager), using client-side token generation. Prebid manages the ${IDENTITY_NAME} token, 
+      and Google Secure Signals reads from Prebid's storage automatically. For documentation, see:
+      <ul>
+        <li><a href="${DOCS_BASE_URL}/guides/integration-prebid-client-side">${IDENTITY_NAME} Client-Side Integration Guide for Prebid.js</a></li>
+        <li><a href="${DOCS_BASE_URL}/guides/integration-google-ss">Google Ad Manager Secure Signals Integration Guide</a></li>
+      </ul>
+      <strong>Note:</strong> This is a <em>test-only</em> integration environment—not for production use.
+      It does not perform real user authentication or generate production-level tokens.
+      Do not use real user data on this page.
+    </p>
+
+    <h2>${IDENTITY_NAME} Integration Status</h2>
+
+    <table id="integration_state">
+      <tr>
+        <td class="label">Ready for Targeted Advertising:</td>
+        <td class="value"><pre id="targeted_advertising_ready"></pre></td>
+      </tr>
+      <tr>
+        <td class="label">${IDENTITY_NAME} Advertising Token (from Prebid):</td>
+        <td class="value"><pre id="advertising_token"></pre></td>
+      </tr>
+      <tr>
+        <td class="label">Is ${IDENTITY_NAME} Login Required?</td>
+        <td class="value"><pre id="login_required"></pre></td>
+      </tr>
+      <tr>
+        <td class="label" id="prebid_storage_label">Prebid Token Storage:</td>
+        <td class="value"><pre id="prebid_storage"></pre></td>
+      </tr>
+      <tr>
+        <td class="label">Secure Signals Configured via Prebid?</td>
+        <td class="value"><pre id="secure_signals_configured"></pre></td>
+      </tr>
+    </table>
+
+    <div id="verification_instructions"></div>
+
+    <div id="page-content" style="display: none;">
+      <div id="video-container">
+        <video id="video-element">
+          <source src="https://storage.googleapis.com/interactive-media-ads/media/android.mp4">
+          <source src="https://storage.googleapis.com/interactive-media-ads/media/android.webm">
+        </video>
+        <div id="ad-container"></div>
+      </div>
+      <button id="play-button">Play</button>
+    </div>
+
+    <div id="login_form" style="display: none" class="form">
+      <div class="email_prompt">
+        <input
+          type="text"
+          id="email"
+          name="email"
+          placeholder="Enter an email address"
+          style="border-style: none"
+        />
+      </div>
+      <div><button type="button" class="button" id="login">Generate ${IDENTITY_NAME}</button></div>
+    </div>
+    <div id="clear_storage_form" style="display: none" class="form">
+      <form>
+        <button type="button" class="button" id="clear_storage">Clear ${IDENTITY_NAME}</button>
+      </form>
+    </div>
+
+    <script type="text/javascript" src="./ads.js"></script>
+  </body>
+</html>
+
