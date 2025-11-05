@@ -94,43 +94,50 @@
         
         // Only add consent management for EUID (GDPR compliance)
         if (identityName === 'EUID') {
-          config.consentManagement = consentManagementObj;
+          console.log('[DEBUG] Adding consent management:', consentManagementObj);
+          config.consentManagement = { gdpr: consentManagementObj };
+          console.log('[DEBUG] Final config with consentManagement:', JSON.stringify(config, null, 2));
         }
         
         pbjs.setConfig(config);
+        
+        // Check what consent data Prebid has after config
+        setTimeout(() => {
+          console.log('[DEBUG] Consent data after setConfig:', pbjs.getConfig('consentManagement'));
+        }, 100);
       }
 
       // Consent management for GDPR compliance (required for EUID)
       const consentManagementObj = {
-        "cmpApi": "static",
-        "consentData": {
-          "getTCData": {
-            "tcString": "CO-HDlqO-HDlqAKAXCENBDCsAP_AAH_AACiQHKNd_X_fb39j-_59_9t0eY1f9_7_v20zjgeds-8Nyd_X_L8X42M7vF36pq4KuR4Eu3LBIQFlHOHcTUmw6IkVqTPsak2Mr7NKJ7PEinMbe2dYGHtfn9VTuZKYr97s___z__-__v__75f_r-3_3_vp9V---_fA5QAkw1L4CLMSxwJJo0qhRAhCuJDoAQAUUIwtE1hASuCnZXAR-ggYAIDUBGBECDEFGLIIAAAAAkoiAkAPBAIgCIBAACAFSAhAARoAgsAJAwCAAUA0LACKAIQJCDI4KjlMCAiRaKCeSMASi72MMIQyigBoFH4AAAAA.cAAAAAAAAAAA",
-            "cmpId": 10,
-            "cmpVersion": 23,
-            "tcfPolicyVersion": 2,
-            "gdprApplies": true, 
-            "cmpStatus": "loaded",
-            "eventStatus": "tcloaded",
-            "purpose": {
-              "consents": {
-                "1": true,
-                "2": true
-              }
-            },
-            "vendor": {
-              "consents": {
-                "52": true,     // rubicon for adserving
-                "21": true,     // unifiedId
-                "131": true,    // id5Id
-                "929": true,    // parrableId
-                "97": true,     // identityLink
-                "887": true,    // uid2
-                "95": true,     // lotamePanoramaId
-                "301": true,    // zeotapIdPlus
-                "91": true,     // criteo
-                "737": true,    // amxId
-                "58": true,     // 33acrossId
+          "cmpApi": "static",
+          "consentData": {
+              "getTCData": {
+              "tcString": "CO-HDlqO-HDlqAKAXCENBDCsAP_AAH_AACiQHKNd_X_fb39j-_59_9t0eY1f9_7_v20zjgeds-8Nyd_X_L8X42M7vF36pq4KuR4Eu3LBIQFlHOHcTUmw6IkVqTPsak2Mr7NKJ7PEinMbe2dYGHtfn9VTuZKYr97s___z__-__v__75f_r-3_3_vp9V---_fA5QAkw1L4CLMSxwJJo0qhRAhCuJDoAQAUUIwtE1hASuCnZXAR-ggYAIDUBGBECDEFGLIIAAAAAkoiAkAPBAIgCIBAACAFSAhAARoAgsAJAwCAAUA0LACKAIQJCDI4KjlMCAiRaKCeSMASi72MMIQyigBoFH4AAAAA.cAAAAAAAAAAA",
+              "cmpId": 10,
+              "cmpVersion": 23,
+              "tcfPolicyVersion": 2,
+              "gdprApplies": true, 
+              "cmpStatus": "loaded",
+              "eventStatus": "tcloaded",
+              "purpose": {
+                "consents": {
+                  "1": true,
+                  "2": true
+                }
+              },
+              "vendor": {
+                "consents": {
+                  "52": true,     // rubicon for adserving
+                  "21": true,     // unifiedId
+                  "131": true,    // id5Id
+                  "929": true,    // parrableId
+                  "97": true,     // identityLink
+                  "887": true,    // uid2
+                  "95": true,     // lotamePanoramaId
+                  "301": true,    // zeotapIdPlus
+                  "91": true,     // criteo
+                  "737": true,    // amxId
+                  "58": true,     // 33acrossId
               }
             }
           }
