@@ -7,8 +7,6 @@ This example demonstrates how to integrate UID2 or EUID with Prebid.js using cli
 
 This example can be configured for either UID2 or EUID — the behavior is determined by your environment variable configuration. You cannot use both simultaneously.
 
-> **NOTE:** This example uses Prebid.js v10.15.0.
->
 > **IMPORTANT:** This implementation requires Prebid.js version **8.42.0 or later**.
 >
 > **NOTE:** While the server side of this example is implemented in JavaScript using Node.js, it is not a requirement. You can use any technology of your choice and refer to this example for illustration of the functionality that needs to be implemented.
@@ -228,7 +226,7 @@ Run `pbjs.getUserIds()` in console. If empty or missing `uid2`/`euid`:
 
 ## Prebid.js
 
-This example includes a custom build of Prebid.js with the necessary modules for UID2/EUID integration:
+This example includes a custom build of Prebid.js v10.15.0 with the necessary modules for UID2/EUID integration:
 
 - [Unified ID 2.0](https://docs.prebid.org/dev-docs/modules/userid-submodules/unified2.html)
 - [European Unified ID](https://docs.prebid.org/dev-docs/modules/userid-submodules/euid.html)
