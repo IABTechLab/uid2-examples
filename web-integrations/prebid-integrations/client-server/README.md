@@ -226,12 +226,12 @@ Run `pbjs.getUserIds()` in console. If empty or missing `uid2`/`euid`:
 - Check the browser console for "Configuring Prebid.js with..." message to confirm configuration
 - Check that `IDENTITY_NAME` matches the expected identity type (UID2 or EUID)
 
-## Additional Resources
+## Prebid.js
 
-To see all UID2 integration options with Prebid.js, see [UID2 Integration Overview for Prebid](https://unifiedid.com/docs/guides/integration-prebid).
+This example includes a custom build of Prebid.js with the necessary modules for UID2/EUID integration:
 
-To see all EUID integration options with Prebid.js, see [EUID Integration Overview for Prebid](https://euid.eu/docs/guides/integration-prebid).
-
-For information about running a local operator, see [UID2 Operator Repository](https://github.com/IABTechLab/uid2-operator).
+- [Unified ID 2.0](https://docs.prebid.org/dev-docs/modules/userid-submodules/unified2.html)
+- [European Unified ID](https://docs.prebid.org/dev-docs/modules/userid-submodules/euid.html)
+- [TCF Consent Management Module](https://docs.prebid.org/dev-docs/modules/consentManagementTcf.html)
 
 For general Prebid.js information, see [Prebid.js Documentation](https://docs.prebid.org/).
