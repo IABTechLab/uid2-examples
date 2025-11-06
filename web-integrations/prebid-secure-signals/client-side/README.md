@@ -13,7 +13,7 @@ For additional documentation, see:
 
 This example can be configured for either UID2 or EUID — the behavior is determined by your environment variable configuration. You cannot use both simultaneously.
 
-> **NOTE:** This example uses Prebid.js v8.37.0.
+> **IMPORTANT:** This implementation requires Prebid.js version **8.42.0 or later**.
 
 ## How It Works
 
@@ -185,5 +185,11 @@ window.googletag
 
 ## Prebid.js
 
-This example includes a custom build of Prebid.js with the necessary modules for UID2/EUID integration. The `uid2IdSystem` module in Prebid supports both UID2 and EUID identities.
+This example includes a custom build of Prebid.js v10.15.0 with the necessary modules for UID2/EUID integration:
+
+- [Unified ID 2.0](https://docs.prebid.org/dev-docs/modules/userid-submodules/unified2.html)
+- [European Unified ID](https://docs.prebid.org/dev-docs/modules/userid-submodules/euid.html)
+- [TCF Consent Management Module](https://docs.prebid.org/dev-docs/modules/consentManagementTcf.html)
+
+For general Prebid.js information, see [Prebid.js Documentation](https://docs.prebid.org/).
 
