@@ -27,7 +27,7 @@ const docsBaseUrl = process.env.DOCS_BASE_URL;
 
 // Initialize UID JavaScript SDK in a simulated browser environment using jsdom
 // This demonstrates that the client-side SDK works in Node.js with jsdom
-let uid2Sdk = null;
+let uidSdk = null;
 let dom = null;
 
 async function initializeSDK() {
@@ -59,7 +59,7 @@ async function initializeSDK() {
   dom.window.TextEncoder = util.TextEncoder;
   dom.window.TextDecoder = util.TextDecoder;
   
-  // Load the UID2 SDK script from CDN
+  // Load the UID SDK script from CDN
   try {
     const response = await axios.get(uidJsSdkUrl);
     
@@ -72,15 +72,15 @@ async function initializeSDK() {
     await new Promise(resolve => setTimeout(resolve, 100));
     
     // Get reference to the SDK
-    uid2Sdk = dom.window[uidJsSdkName];
-    if (!uid2Sdk) {
+    uidSdk = dom.window[uidJsSdkName];
+    if (!uidSdk) {
       throw new Error(`SDK not found at window.${uidJsSdkName}`);
     }
     
     // Initialize the SDK
-    uid2Sdk.init({ baseUrl: uidBaseUrl });
+    uidSdk.init({ baseUrl: uidBaseUrl });
     
-    return uid2Sdk;
+    return uidSdk;
   } catch (error) {
     console.error('Failed to initialize SDK:', error);
     throw error;
@@ -119,7 +119,7 @@ app.get('/', (req, res) => {
  * Uses the JavaScript SDK's setIdentityFromEmail method on the server
  */
 app.post('/login', async (req, res) => {
-  if (!uid2Sdk) {
+  if (!uidSdk) {
     return res.render('error', {
       error: 'SDK not initialized. Server may still be starting up.',
       response: null,
@@ -138,20 +138,20 @@ app.post('/login', async (req, res) => {
       const callbackHandler = (eventType, payload) => {
         if ((eventType === 'InitCompleted' || eventType === 'IdentityUpdated') && payload?.identity) {
           clearTimeout(timeout);
-          uid2Sdk.callbacks.splice(uid2Sdk.callbacks.indexOf(callbackHandler), 1);
+          uidSdk.callbacks.splice(uidSdk.callbacks.indexOf(callbackHandler), 1);
           resolve(payload.identity);
         }
         
         if (eventType === 'OptoutReceived') {
           clearTimeout(timeout);
-          uid2Sdk.callbacks.splice(uid2Sdk.callbacks.indexOf(callbackHandler), 1);
+          uidSdk.callbacks.splice(uidSdk.callbacks.indexOf(callbackHandler), 1);
           reject(new Error('Got unexpected token generate status: optout'));
         }
       };
 
-      uid2Sdk.callbacks.push(callbackHandler);
+      uidSdk.callbacks.push(callbackHandler);
 
-      uid2Sdk.setIdentityFromEmail(
+      uidSdk.setIdentityFromEmail(
         req.body.email,
         {
           subscriptionId: subscriptionId,
@@ -186,8 +186,8 @@ app.post('/login', async (req, res) => {
  * Logout endpoint - clears session and returns to main page
  */
 app.get('/logout', (req, res) => {
-  if (uid2Sdk && uid2Sdk.disconnect) {
-    uid2Sdk.disconnect();
+  if (uidSdk && uidSdk.disconnect) {
+    uidSdk.disconnect();
   }
   req.session = null;
   res.redirect('/');
