@@ -1,0 +1,31 @@
+{
+  "name": "uid2-javascript-sdk-server-side",
+  "version": "1.0.0",
+  "description": "Server-Side UID2/EUID Integration Example using JavaScript SDK",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "uid2",
+    "euid",
+    "identity",
+    "server-side"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "cookie-session": "^2.0.0",
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "jsdom": "^23.0.0",
+    "nocache": "^4.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
+
