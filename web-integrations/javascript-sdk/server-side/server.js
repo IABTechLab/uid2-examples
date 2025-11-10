@@ -8,8 +8,9 @@ const ejs = require('ejs');
 const express = require('express');
 const nocache = require('nocache');
 const { JSDOM } = require('jsdom');
-const fs = require('fs');
-const path = require('path');
+const axios = require('axios');
+const crypto = require('crypto');
+const util = require('util');
 
 const app = express();
 const port = process.env.PORT || 3034;
@@ -30,8 +31,6 @@ let uid2Sdk = null;
 let dom = null;
 
 async function initializeSDK() {
-  const crypto = require('crypto');
-  
   // Create a virtual DOM environment
   dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
     url: 'http://localhost',
@@ -55,7 +54,6 @@ async function initializeSDK() {
   });
   
   // Polyfill TextEncoder and TextDecoder (required by the SDK)
-  const util = require('util');
   global.TextEncoder = util.TextEncoder;
   global.TextDecoder = util.TextDecoder;
   dom.window.TextEncoder = util.TextEncoder;
@@ -63,7 +61,6 @@ async function initializeSDK() {
   
   // Load the UID2 SDK script from CDN
   try {
-    const axios = require('axios');
     const response = await axios.get(uidJsSdkUrl);
     
     // Execute the SDK code in the jsdom context
