@@ -231,20 +231,30 @@ app.post('/login', async (req, res) => {
         reject(new Error('Token generation timed out after 10 seconds'));
       }, 10000);
 
-      // Add callback to capture the identity
+      // Add callback to capture the identity or optout
       const callbackHandler = (eventType, payload) => {
         console.log(`SDK Event: ${eventType}`, payload?.identity ? 'Identity received' : 'No identity');
         
-        if (eventType === 'InitCompleted' || eventType === 'IdentityUpdated') {
+        // Handle successful identity generation
+        if ((eventType === 'InitCompleted' || eventType === 'IdentityUpdated') && payload?.identity) {
           clearTimeout(timeout);
-          if (payload?.identity) {
-            // Remove this specific callback
-            const index = uid2Sdk.callbacks.indexOf(callbackHandler);
-            if (index > -1) {
-              uid2Sdk.callbacks.splice(index, 1);
-            }
-            resolve(payload.identity);
+          // Remove this specific callback
+          const index = uid2Sdk.callbacks.indexOf(callbackHandler);
+          if (index > -1) {
+            uid2Sdk.callbacks.splice(index, 1);
           }
+          resolve(payload.identity);
+        }
+        
+        // Handle optout - user has opted out of UID2
+        if (eventType === 'OptoutReceived') {
+          clearTimeout(timeout);
+          // Remove this specific callback
+          const index = uid2Sdk.callbacks.indexOf(callbackHandler);
+          if (index > -1) {
+            uid2Sdk.callbacks.splice(index, 1);
+          }
+          reject(new Error('User has opted out of UID2'));
         }
       };
 
