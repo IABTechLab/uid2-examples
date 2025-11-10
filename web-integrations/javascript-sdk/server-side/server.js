@@ -14,31 +14,22 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3034;
 
-// UID2/EUID Configuration
-// Note: Using UID_CLIENT_BASE_URL because we're using client-side SDK with CSTG credentials
-// When running in Docker, use host.docker.internal instead of localhost
-let uidBaseUrl = process.env.UID_CLIENT_BASE_URL;
-if (uidBaseUrl && uidBaseUrl.includes('localhost')) {
-  uidBaseUrl = uidBaseUrl.replace('localhost', 'host.docker.internal');
-  console.log(`Adjusted base URL for Docker: ${uidBaseUrl}`);
-}
+let uidBaseUrl = process.env.UID_SERVER_BASE_URL;
 const subscriptionId = process.env.UID_CSTG_SUBSCRIPTION_ID;
 const serverPublicKey = process.env.UID_CSTG_SERVER_PUBLIC_KEY;
-const uidJsSdkUrl = process.env.UID_JS_SDK_URL || 'https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js';
-const uidJsSdkName = process.env.UID_JS_SDK_NAME || '__uid2';
+const uidJsSdkUrl = process.env.UID_JS_SDK_URL;
+const uidJsSdkName = process.env.UID_JS_SDK_NAME;
 
 // UI/Display configuration
 const identityName = process.env.IDENTITY_NAME;
 const docsBaseUrl = process.env.DOCS_BASE_URL;
 
-// Initialize UID2 JavaScript SDK in a simulated browser environment using jsdom
+// Initialize UID JavaScript SDK in a simulated browser environment using jsdom
 // This demonstrates that the client-side SDK works in Node.js with jsdom
 let uid2Sdk = null;
 let dom = null;
 
 async function initializeSDK() {
-  console.log('Initializing UID2/EUID SDK in Node.js using jsdom...');
-  
   const crypto = require('crypto');
   
   // Create a virtual DOM environment
@@ -70,39 +61,24 @@ async function initializeSDK() {
   dom.window.TextEncoder = util.TextEncoder;
   dom.window.TextDecoder = util.TextDecoder;
   
-  // Load the UID2 SDK script
-  // First, try to load from local file, otherwise fetch from CDN
+  // Load the UID2 SDK script from CDN
   try {
-    let sdkCode;
-    const localSdkPath = path.join(__dirname, '../../../uid2-web-integrations/dist/uid2-sdk-4.0.1.js');
-    
-    if (fs.existsSync(localSdkPath)) {
-      console.log('Loading SDK from local file:', localSdkPath);
-      sdkCode = fs.readFileSync(localSdkPath, 'utf8');
-    } else {
-      console.log('Loading SDK from CDN:', uidJsSdkUrl);
-      const axios = require('axios');
-      const response = await axios.get(uidJsSdkUrl);
-      sdkCode = response.data;
-    }
+    const axios = require('axios');
+    const response = await axios.get(uidJsSdkUrl);
     
     // Execute the SDK code in the jsdom context
     const scriptEl = dom.window.document.createElement('script');
-    scriptEl.textContent = sdkCode;
+    scriptEl.textContent = response.data;
     dom.window.document.body.appendChild(scriptEl);
     
-    // Wait a bit for the SDK to initialize
+    // Wait for the SDK to initialize
     await new Promise(resolve => setTimeout(resolve, 100));
     
     // Get reference to the SDK
     uid2Sdk = dom.window[uidJsSdkName];
-    
     if (!uid2Sdk) {
       throw new Error(`SDK not found at window.${uidJsSdkName}`);
     }
-    
-    console.log('✓ SDK loaded successfully');
-    console.log(`✓ SDK available at window.${uidJsSdkName}`);
     
     // Initialize the SDK
     uid2Sdk.init({ baseUrl: uidBaseUrl });
@@ -233,8 +209,6 @@ app.post('/login', async (req, res) => {
 
       // Add callback to capture the identity or optout
       const callbackHandler = (eventType, payload) => {
-        console.log(`SDK Event: ${eventType}`, payload?.identity ? 'Identity received' : 'No identity');
-        
         // Handle successful identity generation
         if ((eventType === 'InitCompleted' || eventType === 'IdentityUpdated') && payload?.identity) {
           clearTimeout(timeout);
@@ -254,7 +228,7 @@ app.post('/login', async (req, res) => {
           if (index > -1) {
             uid2Sdk.callbacks.splice(index, 1);
           }
-          reject(new Error('User has opted out of UID2'));
+          reject(new Error('Got unexpected token generate status: optout'));
         }
       };
 
@@ -277,8 +251,6 @@ app.post('/login', async (req, res) => {
       throw new Error('No identity returned from SDK');
     }
 
-    console.log('✓ Token generated successfully');
-    console.log('Identity:', JSON.stringify(identity, null, 2));
     req.session.identity = identity;
     res.redirect('/');
     
@@ -304,22 +276,7 @@ app.get('/logout', (req, res) => {
 // Start server and initialize SDK
 initializeSDK().then(() => {
   app.listen(port, () => {
-    console.log('');
-    console.log('='.repeat(70));
-    console.log(`Server-Side ${identityName || 'UID2/EUID'} Integration Example using JavaScript SDK`);
-    console.log('='.repeat(70));
-    console.log(`✓ Server listening at http://localhost:${port}`);
-    console.log('');
-    console.log('Configuration:');
-    console.log(`  Base URL: ${uidBaseUrl}`);
-    console.log(`  Subscription ID: ${subscriptionId || 'NOT SET'}`);
-    console.log(`  Public Key: ${serverPublicKey ? serverPublicKey.substring(0, 30) + '...' : 'NOT SET'}`);
-    console.log(`  SDK Name: ${uidJsSdkName}`);
-    console.log('');
-    console.log('✓ JavaScript SDK initialized and ready!');
-    console.log('  The browser-based SDK is now running in Node.js via jsdom.');
-    console.log('='.repeat(70));
-    console.log('');
+    console.log(`Server listening at http://localhost:${port}`);
   });
 }).catch(error => {
   console.error('Failed to start server:', error);
