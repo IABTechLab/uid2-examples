@@ -197,53 +197,14 @@ async function protect(req, res, next) {
 // Routes
 
 /**
- * Main page - requires authentication
+ * Main page - shows login form or identity result
  */
-app.get('/', protect, (req, res) => {
+app.get('/', (req, res) => {
   res.render('index', {
-    identity: req.session.identity,
+    identity: req.session.identity || null,
     identityName,
     docsBaseUrl
   });
-});
-
-/**
- * Sample content page 1 - requires authentication
- */
-app.get('/content1', protect, (req, res) => {
-  res.render('content', {
-    identity: req.session.identity,
-    content: 'First Sample Content',
-    identityName,
-    docsBaseUrl
-  });
-});
-
-/**
- * Sample content page 2 - requires authentication
- */
-app.get('/content2', protect, (req, res) => {
-  res.render('content', {
-    identity: req.session.identity,
-    content: 'Second Sample Content',
-    identityName,
-    docsBaseUrl
-  });
-});
-
-/**
- * Login page
- */
-app.get('/login', async (req, res) => {
-  if (await verifyIdentity(req)) {
-    res.redirect('/');
-  } else {
-    req.session = null;
-    res.render('login', {
-      identityName,
-      docsBaseUrl
-    });
-  }
 });
 
 /**
@@ -307,6 +268,7 @@ app.post('/login', async (req, res) => {
     }
 
     console.log('✓ Token generated successfully');
+    console.log('Identity:', JSON.stringify(identity, null, 2));
     req.session.identity = identity;
     res.redirect('/');
     
@@ -322,11 +284,11 @@ app.post('/login', async (req, res) => {
 });
 
 /**
- * Logout endpoint
+ * Logout endpoint - clears session and returns to main page
  */
 app.get('/logout', (req, res) => {
   req.session = null;
-  res.redirect('/login');
+  res.redirect('/');
 });
 
 // Start server and initialize SDK
