@@ -104,72 +104,6 @@ app.set('view engine', 'html');
 
 app.use(nocache());
 
-/**
- * Check if an identity is still valid and refreshable
- */
-function isRefreshableIdentity(identity) {
-  if (!identity || typeof identity !== 'object') {
-    return false;
-  }
-  if (!identity.refresh_expires || Date.now() >= identity.refresh_expires) {
-    return false;
-  }
-  return !!identity.refresh_token;
-}
-
-/**
- * Refresh an identity token using the SDK
- * The SDK will automatically refresh tokens when initialized with an existing identity
- */
-async function refreshIdentity(identity) {
-  // TODO: Use JS SDK to refresh identity
-  // The SDK's init() with an existing identity will handle refresh automatically
-  // Example:
-  // const sdk = getUid2Sdk();
-  // return new Promise((resolve) => {
-  //   sdk.init({
-  //     baseUrl: uidBaseUrl,
-  //     identity: identity
-  //   });
-  //   sdk.callbacks.push((eventType, payload) => {
-  //     if (eventType === 'IdentityUpdated') {
-  //       resolve(payload.identity);
-  //     }
-  //   });
-  // });
-  
-  console.log('TODO: Implement SDK-based identity refresh');
-  return identity;
-}
-
-/**
- * Verify and refresh identity if needed
- */
-async function verifyIdentity(req) {
-  if (!isRefreshableIdentity(req.session.identity)) {
-    return false;
-  }
-
-  // Check if identity needs refresh
-  if (Date.now() >= req.session.identity.refresh_from || Date.now() >= req.session.identity.identity_expires) {
-    req.session.identity = await refreshIdentity(req.session.identity);
-  }
-
-  return !!req.session.identity;
-}
-
-/**
- * Middleware to protect routes that require authentication
- */
-async function protect(req, res, next) {
-  if (await verifyIdentity(req)) {
-    next();
-  } else {
-    req.session = null;
-    res.redirect('/login');
-  }
-}
-
 // Routes
 
 /**
@@ -198,43 +132,28 @@ app.post('/login', async (req, res) => {
   }
 
   try {
-    console.log(`Generating token for email: ${req.body.email}`);
-    
-    // Use the SDK's setIdentityFromEmail method
-    // This is the same method used in browser environments
+    // Call the SDK's setIdentityFromEmail method and wait for the result via callback
     const identity = await new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(new Error('Token generation timed out after 10 seconds'));
       }, 10000);
 
-      // Add callback to capture the identity or optout
       const callbackHandler = (eventType, payload) => {
-        // Handle successful identity generation
         if ((eventType === 'InitCompleted' || eventType === 'IdentityUpdated') && payload?.identity) {
           clearTimeout(timeout);
-          // Remove this specific callback
-          const index = uid2Sdk.callbacks.indexOf(callbackHandler);
-          if (index > -1) {
-            uid2Sdk.callbacks.splice(index, 1);
-          }
+          uid2Sdk.callbacks.splice(uid2Sdk.callbacks.indexOf(callbackHandler), 1);
           resolve(payload.identity);
         }
         
-        // Handle optout - user has opted out of UID2
         if (eventType === 'OptoutReceived') {
           clearTimeout(timeout);
-          // Remove this specific callback
-          const index = uid2Sdk.callbacks.indexOf(callbackHandler);
-          if (index > -1) {
-            uid2Sdk.callbacks.splice(index, 1);
-          }
+          uid2Sdk.callbacks.splice(uid2Sdk.callbacks.indexOf(callbackHandler), 1);
           reject(new Error('Got unexpected token generate status: optout'));
         }
       };
 
       uid2Sdk.callbacks.push(callbackHandler);
 
-      // Call setIdentityFromEmail
       uid2Sdk.setIdentityFromEmail(
         req.body.email,
         {
@@ -255,7 +174,8 @@ app.post('/login', async (req, res) => {
     res.redirect('/');
     
   } catch (error) {
-    console.error('Token generation failed:', error);
+    console.error('Token generation failed:', error.message);
+    req.session = null;
     res.render('error', {
       error: error.message || error.toString(),
       response: error.response || null,
@@ -269,6 +189,9 @@ app.post('/login', async (req, res) => {
  * Logout endpoint - clears session and returns to main page
  */
 app.get('/logout', (req, res) => {
+  if (uid2Sdk && uid2Sdk.disconnect) {
+    uid2Sdk.disconnect();
+  }
   req.session = null;
   res.redirect('/');
 });
