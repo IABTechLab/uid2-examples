@@ -62,7 +62,7 @@ The following table lists the environment variables that you must specify to sta
 | `UID_CSTG_SERVER_PUBLIC_KEY` | Your UID2/EUID server public key for Client-Side Token Generation. **These are public credentials.** | Your assigned public key |
 | `UID_JS_SDK_URL` | URL to the UID2/EUID JavaScript SDK | UID2: `https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js`<br/>EUID: `https://cdn.integ.euid.eu/euid-sdk-4.0.1.js` |
 | `UID_JS_SDK_NAME` | Global variable name for the SDK | UID2: `__uid2`<br/>EUID: `__euid` |
-| `SESSION_KEY` | The key to encrypt session data stored in the application session cookie. This can be any arbitrary string. | Any secure random string |
+| `SESSION_KEY` | Used by the cookie-session middleware to encrypt the session data stored in cookies. | Any secure random string |
 
 ### Display/UI Configuration
 
