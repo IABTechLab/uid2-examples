@@ -62,16 +62,8 @@ The following table lists the environment variables that you must specify to sta
 | `UID_SERVER_BASE_URL` | The base URL of the UID2/EUID service. For details, see [Environments](https://unifiedid.com/docs/getting-started/gs-environments) (UID2) or [Environments](https://euid.eu/docs/getting-started/gs-environments) (EUID). | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu/v2` |
 | `UID_CSTG_SUBSCRIPTION_ID` | Your UID2/EUID subscription ID for Client-Side Token Generation. **These are public credentials.** | Your assigned subscription ID (e.g., `DMr7uHxqLU`) |
 | `UID_CSTG_SERVER_PUBLIC_KEY` | Your UID2/EUID server public key for Client-Side Token Generation. **These are public credentials.** | Your assigned public key |
+| `UID_CSTG_ORIGIN` | The public URL where this application is deployed. Must match your CSTG subscription's allowed origins. | `https://your-domain.com` (production)<br/>`http://localhost:3034` (local dev default) |
 | `SESSION_KEY` | Used by the cookie-session middleware to encrypt the session data stored in cookies. | Any secure random string |
-
-### Optional Configuration
-
-| Variable | Description | Example Values |
-|:---------|:------------|:---------------|
-| `UID_CSTG_ORIGIN` | The public URL where this application is deployed. Must match your CSTG subscription's allowed origins. Defaults to `http://localhost:PORT`. | `https://your-domain.com` (production)<br/>`http://localhost:3034` (default) |
-| `PORT` | Port number for the server | `3034` (default) |
-
-> **⚠️ Important**: Your CSTG subscription must be configured with an allowed origin that matches where your application is deployed. For production deployments, set `UID_CSTG_ORIGIN` to your application's public URL (e.g., `https://your-domain.com`). For local development, it automatically defaults to `http://localhost:PORT`.
 
 ### Display/UI Configuration
 
