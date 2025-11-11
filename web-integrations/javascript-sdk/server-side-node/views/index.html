@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Server-Side <%- identityName %> Integration Example using JavaScript SDK via Node.js</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
+  <link rel="shortcut icon" href="/images/favicon.png" />
+</head>
+<body>
+  <h1>Server-Side <%- identityName %> Integration Example using JavaScript SDK</h1>
+  <p class="intro">
+    This example demonstrates how a content publisher can use <%- identityName %> services and the JavaScript SDK on the server to implement the
+    <a href="<%- docsBaseUrl %>/guides/integration-publisher-server-side">server-side <%- identityName %> integration workflow</a>. This showcases how the JavaScript SDK (designed for browsers) can also work in a Node.js server environment.
+    [<a href="https://github.com/IABTechLab/uid2-examples/tree/main/web-integrations/javascript-sdk/server-side">Source Code</a>]
+  </p>
+
+  <% if (identity) { %>
+    <!-- Show identity -->
+    <p>Current <%- identityName %> Identity:</p>
+    <pre><%= JSON.stringify(identity, null, 2) %></pre>
+    <div id="logout_form" class="form">
+      <form action="/logout" method="GET">
+        <input type="submit" value="Log Out" class="button">
+      </form>
+    </div>
+  <% } else { %>
+    <!-- Show login form -->
+    <div id="login_form" class="form">
+      <form action="/login" method="POST">
+        <div class="email_prompt">
+          <input type="text" id="email" name="email" placeholder="Enter an email address" style="border-style: none;">
+        </div>
+        <div><input type="submit" value="Log In" class="button"></div>
+      </form>
+    </div>
+  <% } %>
+
+</body>
+</html>
