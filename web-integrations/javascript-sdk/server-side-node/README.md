@@ -1,4 +1,4 @@
-# Server-Side UID2 or EUID Integration Example using JavaScript SDK
+# Server-Side UID2 or EUID Integration Example using JavaScript SDK via Node.js
 
 This example showcases how the UID2/EUID **JavaScript SDK works in Node.js** server environments. It uses the same `setIdentityFromEmail` method that runs in browsers, but executes it on the server. This uses **public credentials** (Subscription ID + Server Public Key) which are the same credentials used for client-side integrations.
 
