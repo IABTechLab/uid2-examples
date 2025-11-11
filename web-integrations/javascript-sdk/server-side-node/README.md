@@ -8,13 +8,16 @@ For more information on the JavaScript SDK, refer to the [UID2 SDK for JavaScrip
 
 This example can be configured for either UID2 or EUID — the behavior is determined by your environment variable configuration. You cannot use both simultaneously.
 
-## Key Benefits
+## How This Implementation Works
 
-This example demonstrates the advantages of using the JavaScript SDK on the server:
+Unlike the browser where the SDK runs natively in the DOM, this example uses **jsdom** to simulate a browser environment within Node.js:
 
-- **Secure credential handling**: Public credentials (server public key and subscription ID) remain on the server and are not exposed to the browser
-- **Simplified implementation**: The SDK handles the full token lifecycle including encryption, decryption, and refresh logic automatically
-- **No manual cryptography**: Unlike traditional server-side integrations, there's no need to manually implement encryption/decryption processes
+1. **Creates a virtual DOM**: Uses jsdom to provide `window`, `document`, and `navigator` objects that the SDK expects
+2. **Polyfills browser APIs**: Adds Node.js equivalents for Web Crypto API (`crypto.subtle`) and text encoding APIs (`TextEncoder`/`TextDecoder`)
+3. **Loads the SDK**: Fetches and executes the browser-based SDK code within the simulated environment
+4. **Runs SDK methods**: Calls `setIdentityFromEmail` just like in a browser, with the same public credentials
+
+This demonstrates that the client-side SDK can be compatible with server-side Node.js environments when given the proper browser-like context.
 
 ## Build and Run the Example Application
 
@@ -91,13 +94,10 @@ The following table outlines and annotates the steps you may take to test and ex
 |  3   | Review the displayed identity information. | The server reads the user session and extracts the current identity ([server.js](server.js)). The `advertising_token` on the identity can be used for targeted advertising. Note that the identity contains several timestamps that determine when the advertising token becomes invalid (`identity_expires`) and when the server should attempt to refresh it (`refresh_from`). The `verifyIdentity` function ([server.js](server.js)) uses the SDK to refresh the token as needed.<br/>The user is automatically logged out in the following cases:<br/>- If the identity expires without being refreshed and refresh attempt fails.<br/>- If the refresh token expires.<br/>- If the refresh attempt indicates that the user has opted out. |
 |  4   | To exit the application, click **Log Out**. | This calls the `/logout` endpoint on the server ([server.js](server.js)), which clears the session and presents the user with the login form again.<br/> NOTE: The page displays the **Log Out** button as long as the user is logged in. |
 
-## How This Implementation Works
+## Key Benefits
 
-Unlike the browser where the SDK runs natively in the DOM, this example uses **jsdom** to simulate a browser environment within Node.js:
+This example demonstrates the advantages of using the JavaScript SDK on the server:
 
-1. **Creates a virtual DOM**: Uses jsdom to provide `window`, `document`, and `navigator` objects that the SDK expects
-2. **Polyfills browser APIs**: Adds Node.js equivalents for Web Crypto API (`crypto.subtle`) and text encoding APIs (`TextEncoder`/`TextDecoder`)
-3. **Loads the SDK**: Fetches and executes the browser-based SDK code within the simulated environment
-4. **Runs SDK methods**: Calls `setIdentityFromEmail` just like in a browser, with the same public credentials
-
-This demonstrates that the client-side SDK is can be compatible with server-side Node.js environments when given the proper browser-like context.
+- **Secure credential handling**: Public credentials (server public key and subscription ID) remain on the server and are not exposed to the browser
+- **Simplified implementation**: The SDK handles the full token lifecycle including encryption, decryption, and refresh logic automatically
+- **No manual cryptography**: Unlike traditional server-side integrations, there's no need to manually implement encryption/decryption processes
