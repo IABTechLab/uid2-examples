@@ -10,7 +10,7 @@ For more information on the JavaScript SDK, refer to the [UID2 SDK for JavaScrip
 
 Unlike the browser where the SDK runs natively in the DOM, this example uses **jsdom** to simulate a browser environment within Node.js:
 
-1. **Imports the SDK**: Uses npm packages `@uid2/uid2-sdk` or `@unified-id/euid-sdk` (selected dynamically based on `IDENTITY_NAME`)
+1. **Imports the SDK**: Uses npm packages [`@uid2/uid2-sdk`](https://www.npmjs.com/package/@uid2/uid2-sdk) or [`@unified-id/euid-sdk`](https://www.npmjs.com/package/@unified-id/euid-sdk) (selected dynamically based on the `IDENTITY_NAME` environment variable)
 2. **Creates a virtual DOM**: Uses jsdom to provide `window`, `document`, and `navigator` objects that the SDK expects
 3. **Polyfills browser APIs**: Adds Node.js equivalents for Web Crypto API (`crypto.subtle`) and text encoding APIs (`TextEncoder`/`TextDecoder`)
 4. **Instantiates the SDK**: Creates a new instance of `UID2` or `EUID` class
