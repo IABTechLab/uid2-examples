@@ -64,7 +64,14 @@ The following table lists the environment variables that you must specify to sta
 | `UID_CSTG_SERVER_PUBLIC_KEY` | Your UID2/EUID server public key for Client-Side Token Generation. **These are public credentials.** | Your assigned public key |
 | `SESSION_KEY` | Used by the cookie-session middleware to encrypt the session data stored in cookies. | Any secure random string |
 
-> **⚠️ Important**: Your CSTG subscription must be configured with `http://localhost:3034` as an allowed origin. Contact your UID2/EUID representative to add this origin to your subscription's allowed origins list.
+### Optional Configuration
+
+| Variable | Description | Example Values |
+|:---------|:------------|:---------------|
+| `UID_CSTG_ORIGIN` | The public URL where this application is deployed. Must match your CSTG subscription's allowed origins. Defaults to `http://localhost:PORT`. | `https://your-domain.com` (production)<br/>`http://localhost:3034` (default) |
+| `PORT` | Port number for the server | `3034` (default) |
+
+> **⚠️ Important**: Your CSTG subscription must be configured with an allowed origin that matches where your application is deployed. For production deployments, set `UID_CSTG_ORIGIN` to your application's public URL (e.g., `https://your-domain.com`). For local development, it automatically defaults to `http://localhost:PORT`.
 
 ### Display/UI Configuration
 
