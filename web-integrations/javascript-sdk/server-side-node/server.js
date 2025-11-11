@@ -8,9 +8,9 @@ const ejs = require('ejs');
 const express = require('express');
 const nocache = require('nocache');
 const { JSDOM } = require('jsdom');
-const axios = require('axios');
 const crypto = require('crypto');
 const util = require('util');
+const XMLHttpRequest = require('xhr2');
 
 const app = express();
 const port = process.env.PORT || 3034;
@@ -18,12 +18,13 @@ const port = process.env.PORT || 3034;
 let uidBaseUrl = process.env.UID_SERVER_BASE_URL;
 const subscriptionId = process.env.UID_CSTG_SUBSCRIPTION_ID;
 const serverPublicKey = process.env.UID_CSTG_SERVER_PUBLIC_KEY;
-const uidJsSdkUrl = process.env.UID_JS_SDK_URL;
-const uidJsSdkName = process.env.UID_JS_SDK_NAME;
 
 // UI/Display configuration
 const identityName = process.env.IDENTITY_NAME;
 const docsBaseUrl = process.env.DOCS_BASE_URL;
+
+// SDK will be loaded dynamically (it's an ES module)
+let SdkClass = null;
 
 // Initialize UID JavaScript SDK in a simulated browser environment using jsdom
 // This demonstrates that the client-side SDK works in Node.js with jsdom
@@ -31,53 +32,70 @@ let uidSdk = null;
 let dom = null;
 
 async function initializeSDK() {
-  // Create a virtual DOM environment
+  // Create a virtual DOM environment for the SDK to run in
+  // NOTE: The origin 'http://localhost:3034' must be added to your CSTG subscription's
+  // allowed origins list by your UID2/EUID representative
   dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
-    url: 'http://localhost',
+    url: 'http://localhost:3034',
     runScripts: 'dangerously',
     resources: 'usable',
     pretendToBeVisual: true,
   });
   
-  // Set global variables for the SDK
+  // Set global variables for the SDK (SDK expects browser globals)
   global.window = dom.window;
   global.document = dom.window.document;
   global.navigator = dom.window.navigator;
   global.localStorage = dom.window.localStorage;
   
-  // Polyfill Web Crypto API for jsdom
-  // The SDK needs window.crypto.subtle for encryption
+  // Polyfill Web Crypto API for jsdom (SDK uses crypto.subtle for encryption)
   Object.defineProperty(dom.window, 'crypto', {
     value: crypto.webcrypto,
     writable: false,
     configurable: true
   });
   
-  // Polyfill TextEncoder and TextDecoder (required by the SDK)
+  // Polyfill TextEncoder and TextDecoder (required by SDK for string/byte conversion)
   global.TextEncoder = util.TextEncoder;
   global.TextDecoder = util.TextDecoder;
   dom.window.TextEncoder = util.TextEncoder;
   dom.window.TextDecoder = util.TextDecoder;
   
-  // Load the UID SDK script from CDN
-  try {
-    const response = await axios.get(uidJsSdkUrl);
-    
-    // Execute the SDK code in the jsdom context
-    const scriptEl = dom.window.document.createElement('script');
-    scriptEl.textContent = response.data;
-    dom.window.document.body.appendChild(scriptEl);
-    
-    // Wait for the SDK to initialize
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    // Get reference to the SDK
-    uidSdk = dom.window[uidJsSdkName];
-    if (!uidSdk) {
-      throw new Error(`SDK not found at window.${uidJsSdkName}`);
+  // Polyfill XMLHttpRequest with Origin header support
+  // The SDK needs the Origin header to be set for CSTG validation
+  const OriginalXHR = XMLHttpRequest;
+  class XMLHttpRequestWithOrigin extends OriginalXHR {
+    constructor() {
+      super();
+      this._origin = 'http://localhost:3034';
     }
     
-    // Initialize the SDK
+    open(method, url, async) {
+      const result = super.open(method, url, async);
+      // Set Origin header immediately after open (required for CSTG)
+      super.setRequestHeader('Origin', this._origin);
+      return result;
+    }
+  }
+  
+  global.XMLHttpRequest = XMLHttpRequestWithOrigin;
+  dom.window.XMLHttpRequest = XMLHttpRequestWithOrigin;
+  
+  try {
+    // Dynamically import the SDK (it's an ES module)
+    const isEUID = identityName && identityName.toUpperCase() === 'EUID';
+    if (isEUID) {
+      const { EUID } = await import('@unified-id/euid-sdk');
+      SdkClass = EUID;
+    } else {
+      const { UID2 } = await import('@uid2/uid2-sdk');
+      SdkClass = UID2;
+    }
+    
+    // Instantiate the SDK (UID2 or EUID based on config)
+    uidSdk = new SdkClass();
+    
+    // Initialize the SDK with base URL
     uidSdk.init({ baseUrl: uidBaseUrl });
     
     return uidSdk;

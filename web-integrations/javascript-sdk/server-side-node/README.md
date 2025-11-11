@@ -10,10 +10,11 @@ For more information on the JavaScript SDK, refer to the [UID2 SDK for JavaScrip
 
 Unlike the browser where the SDK runs natively in the DOM, this example uses **jsdom** to simulate a browser environment within Node.js:
 
-1. **Creates a virtual DOM**: Uses jsdom to provide `window`, `document`, and `navigator` objects that the SDK expects
-2. **Polyfills browser APIs**: Adds Node.js equivalents for Web Crypto API (`crypto.subtle`) and text encoding APIs (`TextEncoder`/`TextDecoder`)
-3. **Loads the SDK**: Fetches and executes the browser-based SDK code within the simulated environment
-4. **Runs SDK methods**: Calls `setIdentityFromEmail` just like in a browser, with the same public credentials
+1. **Imports the SDK**: Uses npm packages `@uid2/uid2-sdk` or `@unified-id/euid-sdk` (selected dynamically based on `IDENTITY_NAME`)
+2. **Creates a virtual DOM**: Uses jsdom to provide `window`, `document`, and `navigator` objects that the SDK expects
+3. **Polyfills browser APIs**: Adds Node.js equivalents for Web Crypto API (`crypto.subtle`) and text encoding APIs (`TextEncoder`/`TextDecoder`)
+4. **Instantiates the SDK**: Creates a new instance of `UID2` or `EUID` class
+5. **Runs SDK methods**: Calls `setIdentityFromEmail` just like in a browser, with the same public credentials
 
 This demonstrates that the client-side SDK can be compatible with server-side Node.js environments when given the proper browser-like context.
 
@@ -61,9 +62,9 @@ The following table lists the environment variables that you must specify to sta
 | `UID_SERVER_BASE_URL` | The base URL of the UID2/EUID service. For details, see [Environments](https://unifiedid.com/docs/getting-started/gs-environments) (UID2) or [Environments](https://euid.eu/docs/getting-started/gs-environments) (EUID). | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu/v2` |
 | `UID_CSTG_SUBSCRIPTION_ID` | Your UID2/EUID subscription ID for Client-Side Token Generation. **These are public credentials.** | Your assigned subscription ID (e.g., `DMr7uHxqLU`) |
 | `UID_CSTG_SERVER_PUBLIC_KEY` | Your UID2/EUID server public key for Client-Side Token Generation. **These are public credentials.** | Your assigned public key |
-| `UID_JS_SDK_URL` | URL to the UID2/EUID JavaScript SDK | UID2: `https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js`<br/>EUID: `https://cdn.integ.euid.eu/euid-sdk-4.0.1.js` |
-| `UID_JS_SDK_NAME` | Global variable name for the SDK | UID2: `__uid2`<br/>EUID: `__euid` |
 | `SESSION_KEY` | Used by the cookie-session middleware to encrypt the session data stored in cookies. | Any secure random string |
+
+> **⚠️ Important**: Your CSTG subscription must be configured with `http://localhost:3034` as an allowed origin. Contact your UID2/EUID representative to add this origin to your subscription's allowed origins list.
 
 ### Display/UI Configuration
 

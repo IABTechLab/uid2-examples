@@ -23,7 +23,7 @@ services:
   javascript-sdk-server-side:
     build:
       context: .
-      dockerfile: web-integrations/javascript-sdk/server-side/Dockerfile
+      dockerfile: web-integrations/javascript-sdk/server-side-node/Dockerfile
     ports:
       - "3034:3034"
     container_name: javascript-sdk-server-side
