@@ -20,6 +20,16 @@ services:
     env_file:
       - .env
 
+  javascript-sdk-react-client-side:
+    build:
+      context: .
+      dockerfile: web-integrations/javascript-sdk/react-client-side/Dockerfile
+    ports:
+      - "3034:3034"
+    container_name: javascript-sdk-react-client-side
+    env_file:
+      - .env
+
   # server-side integration (no SDK)
   server-side:
     build:

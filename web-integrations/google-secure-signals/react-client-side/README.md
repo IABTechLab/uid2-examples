@@ -17,12 +17,7 @@ The fastest way to try the example is to run it locally:
 
 1. Ensure you have a local UID2 operator running at `http://localhost:8080`
 
-2. Add the following environment variables to the `.env` file at the root of the repository (`uid2-examples/.env`):
-   ```
-   REACT_APP_UID2_BASE_URL="http://localhost:8080"
-   REACT_APP_UID2_CSTG_SUBSCRIPTION_ID="<your_subscription_id>"
-   REACT_APP_UID2_CSTG_SERVER_PUBLIC_KEY="<your_server_public_key>"
-   ```
+2. Add the required environment variables to the `.env` file at the root of the repository (`uid2-examples/.env`). See [Configuration](#configuration) section below for all required variables.
 
 3. Run the application:
    ```bash
@@ -71,6 +66,22 @@ docker run -it --rm -p 3044:3044 --env-file .env google-secure-signals-react-cli
 ```
 
 If needed, to close the application, terminate the docker container or use the `Ctrl+C` keyboard shortcut.
+
+## Configuration
+
+The following environment variables must be set in your `.env` file:
+
+| Variable | Description | Example Values |
+|:---------|:------------|:---------------|
+| `REACT_APP_UID_JS_SDK_URL` | URL to the UID2/EUID JavaScript SDK | UID2: `https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js`<br/>EUID: `https://cdn.integ.euid.eu/euid-sdk-4.0.1.js` |
+| `REACT_APP_UID_CLIENT_BASE_URL` | Base URL for the UID2/EUID operator | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu` |
+| `REACT_APP_UID_CSTG_SUBSCRIPTION_ID` | Your CSTG subscription ID | Your assigned subscription ID |
+| `REACT_APP_UID_CSTG_SERVER_PUBLIC_KEY` | Your CSTG server public key | UID2: `UID2-X-...`<br/>EUID: `EUID-X-...` |
+| `REACT_APP_UID_JS_SDK_NAME` | Global variable name for the SDK | UID2: `__uid2`<br/>EUID: `__euid` |
+| `REACT_APP_UID_SECURE_SIGNALS_SDK_URL` | URL to the Secure Signals SDK | UID2: `https://cdn.integ.uidapi.com/uid2SecureSignal.js`<br/>EUID: `https://cdn.integ.euid.eu/euidSecureSignal.js` |
+| `REACT_APP_UID_SECURE_SIGNALS_STORAGE_KEY` | Storage key for Secure Signals | UID2: `_GESPSK-uidapi.com`<br/>EUID: `_GESPSK-euid.eu` |
+| `REACT_APP_IDENTITY_NAME` | Display name for the identity type | UID2: `UID2`<br/>EUID: `EUID` |
+| `REACT_APP_DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
 
 ## Test the Example Application
 
