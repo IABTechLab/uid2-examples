@@ -13,18 +13,17 @@ declare global {
 // Declare global variables
 declare const google: any;
 
-// Set default to uid2 configuration 
-const UID_JS_SDK_NAME = process.env.REACT_APP_UID_JS_SDK_NAME || '__uid2';
-const UID_BASE_URL = process.env.REACT_APP_UID_CLIENT_BASE_URL || 'https://operator-integ.uidapi.com';
-const SECURE_SIGNALS_SDK_URL = process.env.REACT_APP_UID_SECURE_SIGNALS_SDK_URL || 'https://cdn.integ.uidapi.com/uid2SecureSignal.js';
-const SECURE_SIGNALS_STORAGE_KEY = process.env.REACT_APP_UID_SECURE_SIGNALS_STORAGE_KEY || '_GESPSK-uidapi.com';
+// Environment variables - NO DEFAULTS
+const UID_JS_SDK_NAME = process.env.REACT_APP_UID_JS_SDK_NAME;
+const UID_BASE_URL = process.env.REACT_APP_UID_CLIENT_BASE_URL;
+const SECURE_SIGNALS_SDK_URL = process.env.REACT_APP_UID_SECURE_SIGNALS_SDK_URL;
+const SECURE_SIGNALS_STORAGE_KEY = process.env.REACT_APP_UID_SECURE_SIGNALS_STORAGE_KEY;
 const IDENTITY_NAME = process.env.REACT_APP_IDENTITY_NAME;
 const DOCS_BASE_URL = process.env.REACT_APP_DOCS_BASE_URL;
 
 const clientSideIdentityOptions = {
-  subscriptionId: process.env.REACT_APP_UID_CSTG_SUBSCRIPTION_ID || 'toPh8vgJgt',
-  serverPublicKey: process.env.REACT_APP_UID_CSTG_SERVER_PUBLIC_KEY ||
-    'UID2-X-I-MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEKAbPfOz7u25g1fL6riU7p2eeqhjmpALPeYoyjvZmZ1xM2NM8UeOmDZmCIBnKyRZ97pz5bMCjrs38WM22O7LJuw==',
+  subscriptionId: process.env.REACT_APP_UID_CSTG_SUBSCRIPTION_ID,
+  serverPublicKey: process.env.REACT_APP_UID_CSTG_SERVER_PUBLIC_KEY,
 };
 
 const SecureSignalsApp = () => {
@@ -179,13 +178,13 @@ const SecureSignalsApp = () => {
   useEffect(() => {
     // Add callbacks for UID2/EUID JS SDK
     let sdk = getSDK();
-    sdk = sdk || { callbacks: [] };
+    if (!sdk) return;
+    
+    sdk.callbacks = sdk.callbacks || [];
     sdk.callbacks.push(onIdentityUpdated);
     sdk.callbacks.push((eventType, payload) => {
       if (eventType === 'SdkLoaded') {
-        sdk.init({
-          baseUrl: UID_BASE_URL,
-        });
+        sdk.init({ baseUrl: UID_BASE_URL });
       }
       if (eventType === 'InitCompleted') {
         if (sdk.isLoginRequired()) {

@@ -8,7 +8,6 @@ declare global {
 }
 
 // Environment variables - NO DEFAULTS
-const UID_JS_SDK_URL = process.env.REACT_APP_UID_JS_SDK_URL;
 const UID_JS_SDK_NAME = process.env.REACT_APP_UID_JS_SDK_NAME;
 const UID_BASE_URL = process.env.REACT_APP_UID_CLIENT_BASE_URL;
 const IDENTITY_NAME = process.env.REACT_APP_IDENTITY_NAME;
@@ -61,31 +60,23 @@ const ClientSideApp = () => {
     [updateGuiElements]
   );
 
-  // Load SDK script dynamically and initialize
+  // Initialize SDK
   useEffect(() => {
-    if (window[UID_JS_SDK_NAME]) {
-      // SDK already loaded, initialize it
-      const sdk = window[UID_JS_SDK_NAME];
-      sdk.callbacks = sdk.callbacks || [];
-      sdk.callbacks.push(onIdentityUpdated);
-      if (sdk.init) {
-        sdk.init({ baseUrl: UID_BASE_URL });
-      }
-      return;
-    }
+    const sdk = getSDK();
+    if (!sdk) return;
 
-    // Load SDK script
-    const script = document.createElement('script');
-    script.src = UID_JS_SDK_URL;
-    script.onload = () => {
-      const sdk = window[UID_JS_SDK_NAME];
-      if (sdk) {
-        sdk.callbacks = sdk.callbacks || [];
-        sdk.callbacks.push(onIdentityUpdated);
+    sdk.callbacks = sdk.callbacks || [];
+    sdk.callbacks.push(onIdentityUpdated);
+    
+    sdk.callbacks.push((eventType: string) => {
+      if (eventType === 'SdkLoaded') {
         sdk.init({ baseUrl: UID_BASE_URL });
       }
-    };
-    document.head.appendChild(script);
+    });
+
+    if (sdk.init) {
+      sdk.init({ baseUrl: UID_BASE_URL });
+    }
   }, [onIdentityUpdated]);
 
   const handleLogin = async () => {
