@@ -3,59 +3,65 @@
 This example demonstrates how to integrate the UID2 or EUID JavaScript SDK into a React application using Client-Side Token Generation (CSTG).
 
 
-## Build and Run
+## Build and Run the Example Application
 
-You can run this example application in the following ways:
-- [Run Using Docker](#run-using-docker)
-- [Run Using npm](#run-using-npm)
+You can run this example in two ways:
 
-### Run Using Docker
+### Option 1: Running Locally with npm (Recommended)
 
-The easiest way to run the example is to use Docker Compose. To do this, follow the steps below:
+The fastest way to try the example is to run it locally:
 
-1. From the root directory (`uid2-examples/`), create a `.env` file based on the provided template `.env.sample.uid2` or `.env.sample.euid`.
+1. Ensure you have a local UID2 operator running at `http://localhost:8080`
 
-2. In the `.env` file, add your UID2 or EUID credentials (CSTG subscription ID and server public key).
+2. Add the required environment variables to the `.env` file at the root of the repository (`uid2-examples/.env`). See [Configuration](#configuration) section below for all required variables.
 
-3. Build and run the Docker Compose file `docker-compose.yml`:
-
-   ```sh
-   docker compose up --build javascript-sdk-react-client-side
-   ```
-
-4. Open your browser and navigate to `http://localhost:3034`.
-
-> **Note:** To stop the application, press Ctrl+C in the terminal where you ran `docker compose up`, then run `docker compose down` to remove the containers.
-
-### Run Using npm
-
-Alternatively, you can run the example using npm for faster development:
-
-1. From the root directory (`uid2-examples/`), create a `.env` file based on the provided template `.env.sample.uid2` or `.env.sample.euid`.
-
-2. In the `.env` file, add your UID2 or EUID credentials (CSTG subscription ID and server public key).
-
-3. Navigate to the example directory:
-
-   ```sh
+3. Run the application:
+   ```bash
    cd web-integrations/javascript-sdk/react-client-side
-   ```
-
-4. Install dependencies:
-
-   ```sh
    npm install
-   ```
-
-5. Start the application:
-
-   ```sh
    npm start
    ```
 
-6. Open your browser and navigate to `http://localhost:3034`.
+The example app will be up and running at `http://localhost:3034`
 
-> **Note:** When running with npm, the application automatically loads environment variables from the root `.env` file using `dotenv-cli`. This approach is faster for local development compared to Docker.
+**Note:** The React app uses `dotenv-cli` to load environment variables from the parent `.env` file. Environment variables for React must be prefixed with `REACT_APP_` to be accessible in the browser.
+
+### Option 2: Build and Run with Docker
+
+Alternatively, you can build and run the example using Docker (note: this may take several minutes):
+
+#### Using Docker Compose (Recommended)
+
+From the repository root directory:
+
+```bash
+# Start the service
+docker compose up javascript-sdk-react-client-side
+```
+
+The application will be available at http://localhost:3034
+
+To view logs or stop the service:
+
+```bash
+# View logs (in another terminal)
+docker compose logs javascript-sdk-react-client-side
+
+# Stop the service
+docker compose stop javascript-sdk-react-client-side
+```
+
+#### Using Docker Build
+
+```bash
+# Build the image
+docker build -f web-integrations/javascript-sdk/react-client-side/Dockerfile -t javascript-sdk-react-client-side .
+
+# Run the container
+docker run -it --rm -p 3034:3034 --env-file .env javascript-sdk-react-client-side
+```
+
+If needed, to close the application, terminate the docker container or use the `Ctrl+C` keyboard shortcut.
 
 ## Configuration
 
