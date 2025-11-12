@@ -7,7 +7,7 @@ declare global {
   }
 }
 
-// Environment variables - NO DEFAULTS
+// Environment variables 
 const UID_JS_SDK_NAME = process.env.REACT_APP_UID_JS_SDK_NAME;
 const UID_BASE_URL = process.env.REACT_APP_UID_CLIENT_BASE_URL;
 const IDENTITY_NAME = process.env.REACT_APP_IDENTITY_NAME;
