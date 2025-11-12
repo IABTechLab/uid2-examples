@@ -178,9 +178,7 @@ const SecureSignalsApp = () => {
   useEffect(() => {
     // Add callbacks for UID2/EUID JS SDK
     let sdk = getSDK();
-    if (!sdk) return;
-    
-    sdk.callbacks = sdk.callbacks || [];
+    sdk = sdk || { callbacks: [] };
     sdk.callbacks.push(onIdentityUpdated);
     sdk.callbacks.push((eventType, payload) => {
       if (eventType === 'SdkLoaded') {
