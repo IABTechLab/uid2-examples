@@ -98,7 +98,7 @@ const ClientSideApp = () => {
         <a href={`${DOCS_BASE_URL}/guides/integration-javascript-client-side`}>
           Client-Side Integration Guide for JavaScript
         </a>{' '}
-        to implement {IDENTITY_NAME} integration and generate {IDENTITY_NAME} tokens.{' '}
+        to implement {IDENTITY_NAME} integration and generate {IDENTITY_NAME} tokens using React.{' '}
         <strong>Note:</strong> This is a <em>test-only</em> integration environment—not for production
         use. It does not perform real user authentication or generate production-level tokens. Do not
         use real user data on this page.
