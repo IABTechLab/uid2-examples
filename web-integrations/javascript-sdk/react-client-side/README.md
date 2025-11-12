@@ -1,13 +1,7 @@
-# React Client-Side UID2/EUID Integration Example using JavaScript SDK
+# React Client-Side UID2 or EUID Integration Example using JavaScript SDK
 
-This example demonstrates how to integrate the UID2/EUID JavaScript SDK into a React application using Client-Side Token Generation (CSTG).
+This example demonstrates how to integrate the UID2 or EUID JavaScript SDK into a React application using Client-Side Token Generation (CSTG).
 
-## Features
-
-- **Client-Side Token Generation**: Uses public credentials (subscription ID and server public key) to generate tokens directly in the browser
-- **React Integration**: Demonstrates SDK usage within a modern React application
-- **Automatic Token Refresh**: The SDK handles token refresh automatically
-- **Identity Management**: Shows how to manage user identity lifecycle (login/logout)
 
 ## Build and Run
 
@@ -77,85 +71,22 @@ The following environment variables must be set in your `.env` file:
 | `REACT_APP_IDENTITY_NAME` | Display name for the identity type | UID2: `UID2`<br/>EUID: `EUID` |
 | `REACT_APP_DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
 
-## How It Works
+## Test the Example Application
 
-### SDK Loading and Initialization
+The example application illustrates the steps documented in the Client-Side Integration guides:
+- UID2: [Client-Side Integration Guide for JavaScript](https://unifiedid.com/docs/guides/integration-javascript-client-side)
+- EUID: [Client-Side Integration Guide for JavaScript](https://euid.eu/docs/guides/integration-javascript-client-side)
 
-The React application dynamically loads the SDK from a CDN and initializes it with the configured base URL:
+The following table outlines the steps you can take to test and explore the example application.
 
-```typescript
-// Load SDK script dynamically
-useEffect(() => {
-  if (window[UID_JS_SDK_NAME]) {
-    // SDK already loaded, initialize it
-    const sdk = window[UID_JS_SDK_NAME];
-    sdk.callbacks = sdk.callbacks || [];
-    sdk.callbacks.push(onIdentityUpdated);
-    if (sdk.init) {
-      sdk.init({ baseUrl: UID_BASE_URL });
-    }
-    return;
-  }
-
-  // Load SDK script
-  const script = document.createElement('script');
-  script.src = UID_JS_SDK_URL;
-  script.onload = () => {
-    const sdk = window[UID_JS_SDK_NAME];
-    if (sdk) {
-      sdk.callbacks = sdk.callbacks || [];
-      sdk.callbacks.push(onIdentityUpdated);
-      sdk.init({ baseUrl: UID_BASE_URL });
-    }
-  };
-  document.head.appendChild(script);
-}, [onIdentityUpdated]);
-```
-
-### Identity Management
-
-The application uses SDK callbacks to monitor identity changes:
-
-```typescript
-const onIdentityUpdated = useCallback(
-  (eventType, payload) => {
-    console.log(`${IDENTITY_NAME} Callback: ${eventType}`, payload);
-    if (
-      payload?.identity &&
-      (eventType === 'InitCompleted' || eventType === 'IdentityUpdated')
-    ) {
-      setUpdateCounter((prev) => prev + 1);
-    }
-    updateGuiElements(payload);
-  },
-  [updateGuiElements]
-);
-```
-
-### Token Generation
-
-To generate a token from an email address:
-
-```typescript
-const handleLogin = async () => {
-  try {
-    await getSDK().setIdentityFromEmail(email, clientSideIdentityOptions);
-  } catch (e) {
-    console.error('setIdentityFromEmail failed', e);
-  }
-};
-```
-
-### Logout
-
-To clear the identity and disconnect:
-
-```typescript
-const handleLogout = () => {
-  getSDK().disconnect();
-  updateGuiElements(undefined);
-};
-```
+| Step | Description | Comments |
+| :--: | :---------- | :------- |
+|  1   | In your browser, navigate to the application main page at `http://localhost:3034`. | The main page displays a login form for the user to complete the UID2/EUID login process.<br/>**IMPORTANT:** A real-life application must also display a form for the user to express their consent to targeted advertising. |
+|  2   | Enter an email address in the text field and click **Generate UID2** or **Generate EUID**. | The button label depends on your environment configuration. This makes a client-side call to the `setIdentityFromEmail` function of the JavaScript SDK. |
+|  3   | The page updates to display the established identity information. | The displayed identity information shows the advertising token and identity state. The SDK stores the identity in local storage or a first-party cookie for use on subsequent page loads. |
+|  4   | (Optional) Inspect the page state and console logs. | When SDK initialization is complete, the SDK invokes the callback function. The callback updates the page elements with the current state of the identity. This is where you should define your logic for initiating targeted advertising. |
+|  5   | Keep the page open or refresh it after a while and note the identity state and updated counter. | In the background, the SDK continuously validates whether the advertising token is up-to-date and refreshes it automatically when needed. If the refresh succeeds, the user opts out, or the refresh token expires, the callback function is invoked and the UI elements are updated. |
+|  6   | To clear the identity, click **Clear UID2** or **Clear EUID**. | This calls the SDK `disconnect()` function, which clears the session and the first-party cookie or local storage. The SDK `isLoginRequired()` function returns `true`, presenting the user with the login form again. |
 
 ## License
 
