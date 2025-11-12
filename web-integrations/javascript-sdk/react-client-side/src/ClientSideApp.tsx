@@ -29,10 +29,8 @@ const ClientSideApp = () => {
   const [identityState, setIdentityState] = useState('');
   const [showLoginForm, setShowLoginForm] = useState(true);
 
-  // Helper function to get SDK instance
   const getSDK = () => window[UID_JS_SDK_NAME];
 
-  // Update UI elements based on SDK state
   const updateGuiElements = useCallback((state: any) => {
     const sdk = getSDK();
     
@@ -42,7 +40,6 @@ const ClientSideApp = () => {
     setHasOptedOut(sdk.hasOptedOut() ? 'yes' : 'no');
     setIdentityState(String(JSON.stringify(state, null, 2)));
     
-    // Update form visibility
     if (sdk.isLoginRequired()) {
       setShowLoginForm(true);
     } else {
@@ -91,7 +88,6 @@ const ClientSideApp = () => {
     document.head.appendChild(script);
   }, [onIdentityUpdated]);
 
-  // Handle login
   const handleLogin = async () => {
     try {
       await getSDK().setIdentityFromEmail(email, clientSideIdentityOptions);
@@ -100,7 +96,6 @@ const ClientSideApp = () => {
     }
   };
 
-  // Handle logout
   const handleLogout = () => {
     getSDK().disconnect();
     updateGuiElements(undefined);
