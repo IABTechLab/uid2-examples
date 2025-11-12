@@ -182,7 +182,9 @@ const SecureSignalsApp = () => {
     sdk.callbacks.push(onIdentityUpdated);
     sdk.callbacks.push((eventType, payload) => {
       if (eventType === 'SdkLoaded') {
-        sdk.init({ baseUrl: UID_BASE_URL });
+        sdk.init({
+          baseUrl: UID_BASE_URL,	
+        });
       }
       if (eventType === 'InitCompleted') {
         if (sdk.isLoginRequired()) {
