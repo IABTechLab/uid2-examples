@@ -62,10 +62,8 @@ const ClientSideApp = () => {
 
   // Initialize SDK
   useEffect(() => {
-    const sdk = getSDK();
-    if (!sdk) return;
-
-    sdk.callbacks = sdk.callbacks || [];
+    let sdk = getSDK();
+    sdk = sdk || { callbacks: [] };
     sdk.callbacks.push(onIdentityUpdated);
     
     sdk.callbacks.push((eventType: string) => {
