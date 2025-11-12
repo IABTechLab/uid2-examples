@@ -67,15 +67,15 @@ Alternatively, you can run the example using npm for faster development:
 
 The following environment variables must be set in your `.env` file:
 
-| Variable | Description | Example (UID2) | Example (EUID) |
-|:---------|:------------|:---------------|:---------------|
-| `REACT_APP_UID_JS_SDK_URL` | URL to the UID2/EUID JavaScript SDK | `https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js` | `https://cdn.integ.euid.eu/euid-sdk-4.0.1.js` |
-| `REACT_APP_UID_CLIENT_BASE_URL` | Base URL for the UID2/EUID operator | `https://operator-integ.uidapi.com` | `https://integ.euid.eu` |
-| `REACT_APP_UID_CSTG_SUBSCRIPTION_ID` | Your CSTG subscription ID | `your-subscription-id` | `your-subscription-id` |
-| `REACT_APP_UID_CSTG_SERVER_PUBLIC_KEY` | Your CSTG server public key | `UID2-X-...` | `EUID-X-...` |
-| `REACT_APP_UID_JS_SDK_NAME` | Global variable name for the SDK | `__uid2` | `__euid` |
-| `REACT_APP_IDENTITY_NAME` | Display name for the identity type | `UID2` | `EUID` |
-| `REACT_APP_DOCS_BASE_URL` | Documentation base URL | `https://unifiedid.com/docs` | `https://euid.eu/docs` |
+| Variable | Description | Example Values |
+|:---------|:------------|:---------------|
+| `REACT_APP_UID_JS_SDK_URL` | URL to the UID2/EUID JavaScript SDK | UID2: `https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js`<br/>EUID: `https://cdn.integ.euid.eu/euid-sdk-4.0.1.js` |
+| `REACT_APP_UID_CLIENT_BASE_URL` | Base URL for the UID2/EUID operator | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu` |
+| `REACT_APP_UID_CSTG_SUBSCRIPTION_ID` | Your CSTG subscription ID | Your assigned subscription ID |
+| `REACT_APP_UID_CSTG_SERVER_PUBLIC_KEY` | Your CSTG server public key | UID2: `UID2-X-...`<br/>EUID: `EUID-X-...` |
+| `REACT_APP_UID_JS_SDK_NAME` | Global variable name for the SDK | UID2: `__uid2`<br/>EUID: `__euid` |
+| `REACT_APP_IDENTITY_NAME` | Display name for the identity type | UID2: `UID2`<br/>EUID: `EUID` |
+| `REACT_APP_DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
 
 ## How It Works
 

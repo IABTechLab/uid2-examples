@@ -13,7 +13,7 @@ declare global {
 // Declare global variables
 declare const google: any;
 
-// Environment variables - NO DEFAULTS
+// Environment variables
 const UID_JS_SDK_NAME = process.env.REACT_APP_UID_JS_SDK_NAME;
 const UID_BASE_URL = process.env.REACT_APP_UID_CLIENT_BASE_URL;
 const SECURE_SIGNALS_SDK_URL = process.env.REACT_APP_UID_SECURE_SIGNALS_SDK_URL;
