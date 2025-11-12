@@ -183,7 +183,7 @@ const SecureSignalsApp = () => {
     sdk.callbacks.push((eventType, payload) => {
       if (eventType === 'SdkLoaded') {
         sdk.init({
-          baseUrl: UID_BASE_URL,	
+          baseUrl: UID_BASE_URL,
         });
       }
       if (eventType === 'InitCompleted') {
