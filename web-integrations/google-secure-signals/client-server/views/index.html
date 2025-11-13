@@ -84,7 +84,7 @@
           ) {
             ++callbackCounter;
           }
-          // Allow time for secure signals to load
+          // Allow secure signals time to load
           setTimeout(() => updateGuiElements(payload), 1000);
         }
 
@@ -135,6 +135,12 @@
     </script>
   </head>
   <body>
+    <%- include('intro.html'); -%>
+    <p>
+      <strong>Note:</strong> This is a <em>test-only</em> integration environment—not for production
+      use. It does not perform real user authentication or generate production-level tokens. Do not
+      use real user data on this page.
+    </p>
     <div id="googleAdContainer" style="display: none">
       <div id="mainContainer">
         <div id="content">
@@ -148,12 +154,6 @@
       <script type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
       <script type="text/javascript" src="ads.js"></script>
     </div>
-    <%- include('intro.html'); -%>
-    <p>
-      <strong>Note:</strong> This is a <em>test-only</em> integration environment—not for production
-      use. It does not perform real user authentication or generate production-level tokens. Do not
-      use real user data on this page.
-    </p>
     <table id="uid2_state">
       <tr>
         <td class="label">Ready for Targeted Advertising:</td>
