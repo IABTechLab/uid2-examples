@@ -60,6 +60,15 @@
             });
           }
         });
+        sdk.callbacks.push((eventType, payload) => {
+          if (eventType === 'InitCompleted') {
+            <% if (typeof identity !== 'undefined') { %>
+            if (sdk.isLoginRequired()) {
+              sdk.setIdentity(<%- JSON.stringify(identity) %>);
+            }
+            <% } %>
+          }
+        });
         sdk.callbacks.push(onIdentityUpdated);
       });
     </script>

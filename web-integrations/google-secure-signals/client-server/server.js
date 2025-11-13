@@ -37,6 +37,7 @@ app.set('view engine', 'html');
 
 app.get('/', (req, res) => {
   res.render('index', {
+    identity: undefined,
     uidBaseUrl,
     uidJsSdkUrl,
     uidJsSdkName,
@@ -133,6 +134,7 @@ app.post('/login', async (req, res) => {
 
     if (response.status === 'optout') {
       res.render('optout', {
+        identity: undefined,
         uidBaseUrl,
         uidJsSdkUrl,
         uidJsSdkName,
@@ -142,6 +144,7 @@ app.post('/login', async (req, res) => {
       });
     } else if (response.status !== 'success') {
       res.render('error', {
+        identity: undefined,
         error: 'Got unexpected token generate status in decrypted response: ' + response.status,
         response,
         identityName,
@@ -149,13 +152,14 @@ app.post('/login', async (req, res) => {
       });
     } else if (typeof response.body !== 'object') {
       res.render('error', {
+        identity: undefined,
         error: 'Unexpected token generate response format in decrypted response: ' + response,
         response,
         identityName,
         docsBaseUrl
       });
     } else {
-      res.render('login', {
+      res.render('index', {
         identity: response.body,
         uidBaseUrl,
         uidJsSdkUrl,
@@ -167,6 +171,7 @@ app.post('/login', async (req, res) => {
     }
   } catch (error) {
     res.render('error', {
+      identity: undefined,
       error,
       response: error.response,
       identityName,
