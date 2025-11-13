@@ -57,7 +57,6 @@
           if (eventType === "SdkLoaded") {
             sdk.init({
               baseUrl: "<%- uidBaseUrl %>",
-              enableSecureSignals: true,
             });
           }
         });
@@ -77,9 +76,6 @@
       </div>
       <button id="playButton">Play</button>
       <script type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
-      <script async src="<%- secureSignalsSdkUrl %>"></script>
-      <script async src="<%- uidJsSdkUrl %>"></script>
-      <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
       <script type="text/javascript" src="ads.js"></script>
     </div>
     <%- include('intro.html'); -%>
@@ -129,5 +125,8 @@
         <button type="button" class="button" id="logout">Clear <%- identityName %></button>
       </form>
     </div>
+    <script src="<%- uidJsSdkUrl %>"></script>
+    <script src="<%- secureSignalsSdkUrl %>"></script>
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
   </body>
 </html>
