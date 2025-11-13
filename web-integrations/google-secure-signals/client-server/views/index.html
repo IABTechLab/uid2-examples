@@ -7,6 +7,9 @@
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
     <link rel="shortcut icon" href="/images/favicon.png" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="<%- uidJsSdkUrl %>"></script>
+    <script src="<%- secureSignalsSdkUrl %>"></script>
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
 
     <script>
       $(document).ready(() => {
@@ -23,15 +26,54 @@
           $("#login_required").html(sdk.isLoginRequired() ? "yes" : "no");
           $("#update_counter").html(callbackCounter);
           $("#identity_state").html(String(JSON.stringify(payload, null, 2)));
+          
+          // Update Secure Signals from localStorage (like client-side does)
+          updateSecureSignals();
 
+          <% if (isOptout) { %>
+          // Opt-out case - always show opt-out form regardless of loginRequired status
+          $("#login_form").hide();
+          $("#logout_form").hide();
+          $("#optout_form").show();
+          $("#optout_banner").show();
+          $('#googleAdContainer').hide();
+          <% } else { %>
+          // Non-opt-out case - check if login is required
           if (sdk.isLoginRequired()) {
             $("#login_form").show();
             $("#logout_form").hide();
+            $("#optout_form").hide();
+            $("#optout_banner").hide();
             $('#googleAdContainer').hide();
           } else {
+            // Success case
             $("#login_form").hide();
             $("#logout_form").show();
+            $("#optout_form").hide();
+            $("#optout_banner").hide();
             $('#googleAdContainer').show();
+          }
+          <% } %>
+        }
+        
+        function updateSecureSignals() {
+          try {
+            // Read from localStorage like client-side does
+            const secureSignalsStorageKey = '<%- secureSignalsStorageKey %>';
+            const secureSignalsStorage = localStorage[secureSignalsStorageKey];
+            const secureSignalsStorageJson = secureSignalsStorage && JSON.parse(secureSignalsStorage);
+            
+            if (secureSignalsStorageJson && secureSignalsStorageJson[1]) {
+              $("#secure_signals_loaded").html("yes");
+              $("#secure_signals_value").html(JSON.stringify(secureSignalsStorageJson, null, 2));
+            } else {
+              $("#secure_signals_loaded").html("no");
+              $("#secure_signals_value").html("undefined");
+            }
+          } catch (e) {
+            console.log("Secure signals not yet available", e);
+            $("#secure_signals_loaded").html("no");
+            $("#secure_signals_value").html("undefined");
           }
         }
 
@@ -42,17 +84,22 @@
           ) {
             ++callbackCounter;
           }
-          updateGuiElements(payload);
+          // Allow time for secure signals to load
+          setTimeout(() => updateGuiElements(payload), 1000);
         }
 
         $("#logout").click(() => {
+          window.googletag.secureSignalProviders.clearAllCache();
           sdk.disconnect();
-          window.googletag.secureSignalProviders.clearAllCache();
-          updateGuiElements(undefined);
+          window.location.href = '/';
         });
-        $("#login").click(() => {
+        
+        $("#try_another").click(() => {
           window.googletag.secureSignalProviders.clearAllCache();
+          sdk.disconnect();
+          window.location.href = '/';
         });
+
         sdk.callbacks.push((eventType, payload) => {
           if (eventType === "SdkLoaded") {
             sdk.init({
@@ -60,15 +107,29 @@
             });
           }
         });
+        
         sdk.callbacks.push((eventType, payload) => {
           if (eventType === 'InitCompleted') {
-            <% if (typeof identity !== 'undefined') { %>
+            <% if (identity !== null && typeof identity !== 'undefined') { %>
+            // Server provided an identity, set it
             if (sdk.isLoginRequired()) {
               sdk.setIdentity(<%- JSON.stringify(identity) %>);
+            } else {
+              // Identity already exists, just update GUI
+              updateGuiElements(payload);
             }
+            <% } else if (isOptout) { %>
+            // Opt-out case - set identity to null
+            sdk.setIdentity(null);
+            $("#optout_banner").show();
+            updateGuiElements(payload);
+            <% } else { %>
+            // No identity from server
+            updateGuiElements(payload);
             <% } %>
           }
         });
+        
         sdk.callbacks.push(onIdentityUpdated);
       });
     </script>
@@ -114,7 +175,18 @@
         <td class="label"><%- identityName %> Identity Callback State:</td>
         <td class="value"><pre id="identity_state"></pre></td>
       </tr>
+      <tr>
+        <td class="label">Secure Signals Loaded?</td>
+        <td class="value"><pre id="secure_signals_loaded"></pre></td>
+      </tr>
+      <tr>
+        <td class="label">Secure Signals Value:</td>
+        <td class="value"><pre id="secure_signals_value"></pre></td>
+      </tr>
     </table>
+    <div id="optout_banner" style="display: none; border: 3px solid #ffc107; padding: 15px; margin: 20px 0;">
+      <p style="margin: 0;">The email address you entered has opted out of <%- identityName %>.</p>
+    </div>
     <div id="login_form" style="display: none" class="form">
       <form action="/login" method="POST">
         <div class="email_prompt">
@@ -126,16 +198,14 @@
             style="border-style: none"
           />
         </div>
-        <div><input type="submit" value="Generate <%- identityName %>" class="button" id="login" /></div>
+        <div><input type="submit" value="Generate <%- identityName %>" class="button" /></div>
       </form>
     </div>
     <div id="logout_form" style="display: none" class="form">
-      <form>
-        <button type="button" class="button" id="logout">Clear <%- identityName %></button>
-      </form>
+      <button type="button" class="button" id="logout">Clear <%- identityName %></button>
     </div>
-    <script src="<%- uidJsSdkUrl %>"></script>
-    <script src="<%- secureSignalsSdkUrl %>"></script>
-    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+    <div id="optout_form" style="display: none" class="form">
+      <button type="button" class="button" id="try_another">Try Another Email</button>
+    </div>
   </body>
 </html>
