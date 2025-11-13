@@ -27,18 +27,17 @@
           $("#update_counter").html(callbackCounter);
           $("#identity_state").html(String(JSON.stringify(payload, null, 2)));
           
-          // Update Secure Signals from localStorage (like client-side does)
+          // Update Secure Signals values displayed in the GUI
           updateSecureSignals();
 
           <% if (isOptout) { %>
-          // Opt-out case - always show opt-out form regardless of loginRequired status
           $("#login_form").hide();
           $("#logout_form").hide();
           $("#optout_form").show();
           $("#optout_banner").show();
           $('#googleAdContainer').hide();
           <% } else { %>
-          // Non-opt-out case - check if login is required
+          // before token generation, show login form
           if (sdk.isLoginRequired()) {
             $("#login_form").show();
             $("#logout_form").hide();
@@ -46,7 +45,7 @@
             $("#optout_banner").hide();
             $('#googleAdContainer').hide();
           } else {
-            // Success case
+            // Success case - token generated, show logout form
             $("#login_form").hide();
             $("#logout_form").show();
             $("#optout_form").hide();
@@ -58,7 +57,7 @@
         
         function updateSecureSignals() {
           try {
-            // Read from localStorage like client-side does
+            // Read from localStorage 
             const secureSignalsStorageKey = '<%- secureSignalsStorageKey %>';
             const secureSignalsStorage = localStorage[secureSignalsStorageKey];
             const secureSignalsStorageJson = secureSignalsStorage && JSON.parse(secureSignalsStorage);
