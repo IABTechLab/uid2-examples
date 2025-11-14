@@ -2,8 +2,8 @@ services:
   # tools
   reverse-proxy:
     build:
-      context: .
-      dockerfile: tools/reverse-proxy/Dockerfile
+      context: tools/reverse-proxy
+      dockerfile: Dockerfile
     ports:
       - "3001:3001"
     container_name: reverse-proxy
