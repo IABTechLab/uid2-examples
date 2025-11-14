@@ -19,7 +19,6 @@ jobs:
     with:
       release_type: ${{ inputs.release_type }}
       working_dir: .
-      version_number_input: ./package.json
     secrets: inherit
     
   publishReverseProxyImage:
