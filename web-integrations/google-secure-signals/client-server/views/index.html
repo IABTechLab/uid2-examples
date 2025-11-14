@@ -63,7 +63,7 @@
             const token = sdk.getAdvertisingToken();
             
             // Safety net: If token exists but Secure Signals haven't loaded yet, reload the page
-            if (token && !secureSignalsStorage) {
+            if (token && !secureSignalsStorage && !<%= isOptout %>) {
               console.log("Token exists but Secure Signals not loaded yet, reloading page...");
               location.reload();
               return;
@@ -126,14 +126,13 @@
               // Identity already exists, just update GUI
               updateGuiElements(payload);
             }
-            <% } else if (isOptout) { %>
-            // Opt-out case - set identity to null
-            sdk.setIdentity(null);
-            $("#optout_banner").show();
-            updateGuiElements(payload);
             <% } else { %>
-            // No identity from server
+            // No identity from server (including opt-out case)
+            // SDK will naturally remain in "login required" state
             updateGuiElements(payload);
+            <% if (isOptout) { %>
+            $("#optout_banner").show();
+            <% } %>
             <% } %>
           }
         });
