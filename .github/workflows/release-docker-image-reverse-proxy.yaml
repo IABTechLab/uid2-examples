@@ -19,7 +19,7 @@ jobs:
       release_type: ${{ inputs.release_type }}
     secrets: inherit
     
-  publishToUID2:
+  publishReverseProxyImage:
     uses: IABTechLab/uid2-shared-actions/.github/workflows/shared-publish-to-docker-versioned.yaml@v3
     needs: incrementVersionNumber
     with: 
