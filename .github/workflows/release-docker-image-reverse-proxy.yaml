@@ -1,36 +1,32 @@
-name: Release UID2 Examples Image for Reverse Proxy
-run-name: ${{ inputs.release_type == 'Snapshot' && 'Publish Pre-release' || format('Release {0}', inputs.release_type)}} UID2 Examples Image for Reverse Proxy by @${{ github.actor }}  
+name: Release Reverse Proxy Image
+run-name: ${{ inputs.release_type == 'Snapshot' && 'Publish Pre-release' || format('Release {0}', inputs.release_type)}} Docker Image by @${{ github.actor }}  
 on:
   workflow_dispatch:
     inputs:
       release_type:
         type: choice
-        description: The type of release
+        description: 'The type of release'
         options:
         - Major
         - Minor
         - Patch
         - Snapshot
-        required: true
 
 jobs:
   incrementVersionNumber:
     uses: IABTechLab/uid2-shared-actions/.github/workflows/shared-increase-version-number.yaml@v2
     with:
       release_type: ${{ inputs.release_type }}
-      working_dir: .
     secrets: inherit
-
-  publishForReverseProxy:
-    uses: IABTechLab/uid2-shared-actions/.github/workflows/shared-publish-to-docker-versioned.yaml@v2
+    
+  publishToUID2:
+    uses: IABTechLab/uid2-shared-actions/.github/workflows/shared-publish-to-docker-versioned.yaml@v3
     needs: incrementVersionNumber
     with: 
       new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
       image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
       release_type: ${{ inputs.release_type }}
-      docker_file: tools/reverse-proxy/Dockerfile
-      docker_context: tools/reverse-proxy
-      docker_image_name: IABTechLab/uid2-examples
+      docker_file: Dockerfile_uid2
+      docker_image_name: iabtechlab/uid2-sample-reverse-proxy
       docker_registry: ghcr.io
     secrets: inherit
-
