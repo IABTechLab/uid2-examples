@@ -1,4 +1,13 @@
 services:
+  # tools
+  reverse-proxy:
+    build:
+      context: .
+      dockerfile: tools/reverse-proxy/Dockerfile
+    ports:
+      - "3001:3001"
+    container_name: reverse-proxy
+  
   # javascript sdk integrations
   javascript-sdk-client-side:
     build:
@@ -113,4 +122,5 @@ services:
     container_name: prebid-secure-signals-client-side
     env_file:
       - .env
+
 
