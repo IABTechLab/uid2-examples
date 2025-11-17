@@ -11,14 +11,12 @@ on:
         - Minor
         - Patch
         - Snapshot
-        required: true
 
 jobs:
   incrementVersionNumber:
     uses: IABTechLab/uid2-shared-actions/.github/workflows/shared-increase-version-number.yaml@v2
     with:
       release_type: ${{ inputs.release_type }}
-      working_dir: .
     secrets: inherit
     
   publishReverseProxyImage:
