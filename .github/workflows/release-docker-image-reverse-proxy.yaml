@@ -14,13 +14,14 @@ on:
 
 jobs:
   incrementVersionNumber:
-    uses: IABTechLab/uid2-shared-actions/.github/workflows/shared-increase-version-number.yaml@v2
+    uses: iabtechlab/uid2-shared-actions/.github/workflows/shared-increase-version-number.yaml@v2
     with:
       release_type: ${{ inputs.release_type }}
+      working_dir: .
     secrets: inherit
     
   publishReverseProxyImage:
-    uses: IABTechLab/uid2-shared-actions/.github/workflows/shared-publish-to-docker-versioned.yaml@v3
+    uses: iabtechlab/uid2-shared-actions/.github/workflows/shared-publish-to-docker-versioned.yaml@v3
     needs: incrementVersionNumber
     with: 
       new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
@@ -28,6 +29,6 @@ jobs:
       release_type: ${{ inputs.release_type }}
       docker_file: tools/reverse-proxy/Dockerfile
       docker_context: tools/reverse-proxy
-      docker_image_name: IABTechLab/uid2-reverse-proxy
+      docker_image_name: iabtechlab/uid2-reverse-proxy
       docker_registry: ghcr.io
     secrets: inherit
