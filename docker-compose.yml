@@ -5,7 +5,7 @@ services:
       context: tools/reverse-proxy
       dockerfile: Dockerfile
     ports:
-      - "3001:3001"
+      - "80:80"
     container_name: reverse-proxy
   
   # javascript sdk integrations
