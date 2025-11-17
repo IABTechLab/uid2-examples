@@ -7,6 +7,9 @@
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
     <link rel="shortcut icon" href="/images/favicon.png" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="<%- uidJsSdkUrl %>"></script>
+    <script src="<%- secureSignalsSdkUrl %>"></script>
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
 
     <script>
       $(document).ready(() => {
@@ -23,15 +26,62 @@
           $("#login_required").html(sdk.isLoginRequired() ? "yes" : "no");
           $("#update_counter").html(callbackCounter);
           $("#identity_state").html(String(JSON.stringify(payload, null, 2)));
+          
+          // Update Secure Signals values displayed in the GUI
+          updateSecureSignals();
 
+          <% if (isOptout) { %>
+          $("#login_form").hide();
+          $("#logout_form").hide();
+          $("#optout_form").show();
+          $("#optout_banner").show();
+          $('#googleAdContainer').hide();
+          <% } else { %>
+          // before token generation, show login form
           if (sdk.isLoginRequired()) {
             $("#login_form").show();
             $("#logout_form").hide();
+            $("#optout_form").hide();
+            $("#optout_banner").hide();
             $('#googleAdContainer').hide();
           } else {
+            // Success case - token generated, show logout form
             $("#login_form").hide();
             $("#logout_form").show();
+            $("#optout_form").hide();
+            $("#optout_banner").hide();
             $('#googleAdContainer').show();
+          }
+          <% } %>
+        }
+        
+        function updateSecureSignals() {
+          try {
+            // Read from localStorage 
+            const secureSignalsStorageKey = '<%- secureSignalsStorageKey %>';
+            const secureSignalsStorage = localStorage[secureSignalsStorageKey];
+            const token = sdk.getAdvertisingToken();
+            
+            // Safety net: If token exists but Secure Signals haven't loaded yet, reload the page
+            if (token && !secureSignalsStorage && !<%= isOptout %>) {
+              console.log("Token exists but Secure Signals not loaded yet, reloading page...");
+              location.reload();
+              return;
+            }
+            
+            const secureSignalsStorageJson = secureSignalsStorage && JSON.parse(secureSignalsStorage);
+            
+            if (secureSignalsStorageJson && secureSignalsStorageJson[1]) {
+              $("#secure_signals_loaded").html("yes");
+              $("#secure_signals_value").html(JSON.stringify(secureSignalsStorageJson, null, 2));
+            } else {
+              $("#secure_signals_loaded").html("no");
+              $("#secure_signals_value").html("undefined");
+            }
+          } catch (e) {
+            console.log("Secure signals not yet available", e);
+            $("#secure_signals_loaded").html("no");
+            $("#secure_signals_value").html("undefined");
           }
         }
 
@@ -42,30 +92,62 @@
           ) {
             ++callbackCounter;
           }
-          updateGuiElements(payload);
+          // Allow secure signals time to load
+          setTimeout(() => updateGuiElements(payload), 1000);
         }
 
         $("#logout").click(() => {
+          window.googletag.secureSignalProviders.clearAllCache();
           sdk.disconnect();
-          window.googletag.secureSignalProviders.clearAllCache();
-          updateGuiElements(undefined);
+          window.location.href = '/';
         });
-        $("#login").click(() => {
+        
+        $("#try_another").click(() => {
           window.googletag.secureSignalProviders.clearAllCache();
+          sdk.disconnect();
+          window.location.href = '/';
         });
+
         sdk.callbacks.push((eventType, payload) => {
           if (eventType === "SdkLoaded") {
             sdk.init({
               baseUrl: "<%- uidBaseUrl %>",
-              enableSecureSignals: true,
             });
           }
         });
+        
+        sdk.callbacks.push((eventType, payload) => {
+          if (eventType === 'InitCompleted') {
+            <% if (identity !== null && typeof identity !== 'undefined') { %>
+            // Server provided an identity, set it
+            if (sdk.isLoginRequired()) {
+              sdk.setIdentity(<%- JSON.stringify(identity) %>);
+            } else {
+              // Identity already exists, just update GUI
+              updateGuiElements(payload);
+            }
+            <% } else { %>
+            // No identity from server (including opt-out case)
+            // SDK will naturally remain in "login required" state
+            updateGuiElements(payload);
+            <% if (isOptout) { %>
+            $("#optout_banner").show();
+            <% } %>
+            <% } %>
+          }
+        });
+        
         sdk.callbacks.push(onIdentityUpdated);
       });
     </script>
   </head>
   <body>
+    <%- include('intro.html'); -%>
+    <p>
+      <strong>Note:</strong> This is a <em>test-only</em> integration environment—not for production
+      use. It does not perform real user authentication or generate production-level tokens. Do not
+      use real user data on this page.
+    </p>
     <div id="googleAdContainer" style="display: none">
       <div id="mainContainer">
         <div id="content">
@@ -77,17 +159,8 @@
       </div>
       <button id="playButton">Play</button>
       <script type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
-      <script async src="<%- secureSignalsSdkUrl %>"></script>
-      <script async src="<%- uidJsSdkUrl %>"></script>
-      <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
       <script type="text/javascript" src="ads.js"></script>
     </div>
-    <%- include('intro.html'); -%>
-    <p>
-      <strong>Note:</strong> This is a <em>test-only</em> integration environment—not for production
-      use. It does not perform real user authentication or generate production-level tokens. Do not
-      use real user data on this page.
-    </p>
     <table id="uid2_state">
       <tr>
         <td class="label">Ready for Targeted Advertising:</td>
@@ -109,7 +182,18 @@
         <td class="label"><%- identityName %> Identity Callback State:</td>
         <td class="value"><pre id="identity_state"></pre></td>
       </tr>
+      <tr>
+        <td class="label">Secure Signals Loaded?</td>
+        <td class="value"><pre id="secure_signals_loaded"></pre></td>
+      </tr>
+      <tr>
+        <td class="label">Secure Signals Value:</td>
+        <td class="value"><pre id="secure_signals_value"></pre></td>
+      </tr>
     </table>
+    <div id="optout_banner" style="display: none; border: 3px solid #ffc107; padding: 15px; margin: 20px 0;">
+      <p style="margin: 0;">The email address you entered has opted out of <%- identityName %>.</p>
+    </div>
     <div id="login_form" style="display: none" class="form">
       <form action="/login" method="POST">
         <div class="email_prompt">
@@ -121,13 +205,14 @@
             style="border-style: none"
           />
         </div>
-        <div><input type="submit" value="Generate <%- identityName %>" class="button" id="login" /></div>
+        <div><input type="submit" value="Generate <%- identityName %>" class="button" /></div>
       </form>
     </div>
     <div id="logout_form" style="display: none" class="form">
-      <form>
-        <button type="button" class="button" id="logout">Clear <%- identityName %></button>
-      </form>
+      <button type="button" class="button" id="logout">Clear <%- identityName %></button>
+    </div>
+    <div id="optout_form" style="display: none" class="form">
+      <button type="button" class="button" id="try_another">Try Another Email</button>
     </div>
   </body>
 </html>
