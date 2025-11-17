@@ -17,7 +17,7 @@ jobs:
     uses: iabtechlab/uid2-shared-actions/.github/workflows/shared-increase-version-number.yaml@v2
     with:
       release_type: ${{ inputs.release_type }}
-      working_dir: ${{ github.workspace }}
+      working_dir: tools/reverse-proxy
     secrets: inherit
     
   publishReverseProxyImage:
