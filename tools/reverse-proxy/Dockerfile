@@ -1,14 +1,22 @@
 FROM nginx:alpine
 
-# Install wget for healthcheck
-RUN apk add --no-cache wget
+# Install wget for healthcheck and gettext for envsubst
+RUN apk add --no-cache wget gettext
 
-# Copy nginx configuration
-COPY default.conf /etc/nginx/conf.d/default.conf
+# Create templates directory
+RUN mkdir -p /etc/nginx/templates
+
+# Copy nginx configuration template
+COPY default.conf.template /etc/nginx/templates/default.conf.template
+
+# Copy entrypoint script
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 # Create directory for static files (optional)
 RUN mkdir -p /usr/share/nginx/html
 
 EXPOSE 80
 
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]

@@ -24,7 +24,7 @@ server {
 # JavaScript SDK - Client Side (port 3031)
 server {
     listen 80;
-    server_name js-client-side.sample-dev.com *.js-client-side.sample-dev.com;
+    server_name js-client-side.${DOMAIN} *.js-client-side.${DOMAIN};
 
     location /healthcheck {
         access_log off;
@@ -44,7 +44,7 @@ server {
 # JavaScript SDK - Client Server (port 3032)
 server {
     listen 80;
-    server_name js-client-server.sample-dev.com *.js-client-server.sample-dev.com;
+    server_name js-client-server.${DOMAIN} *.js-client-server.${DOMAIN};
 
     location /healthcheck {
         access_log off;
@@ -64,7 +64,7 @@ server {
 # JavaScript SDK - React Client Side (port 3034)
 server {
     listen 80;
-    server_name js-react.sample-dev.com *.js-react.sample-dev.com;
+    server_name js-react.${DOMAIN} *.js-react.${DOMAIN};
 
     location /healthcheck {
         access_log off;
@@ -84,7 +84,7 @@ server {
 # Server Side Integration (port 3033)
 server {
     listen 80;
-    server_name server-side.sample-dev.com *.server-side.sample-dev.com;
+    server_name server-side.${DOMAIN} *.server-side.${DOMAIN};
 
     location /healthcheck {
         access_log off;
@@ -104,7 +104,7 @@ server {
 # Google Secure Signals - Client Server (port 3041)
 server {
     listen 80;
-    server_name gss-client-server.sample-dev.com *.gss-client-server.sample-dev.com;
+    server_name gss-client-server.${DOMAIN} *.gss-client-server.${DOMAIN};
 
     location /healthcheck {
         access_log off;
@@ -124,7 +124,7 @@ server {
 # Google Secure Signals - Client Side (port 3042)
 server {
     listen 80;
-    server_name gss-client-side.sample-dev.com *.gss-client-side.sample-dev.com;
+    server_name gss-client-side.${DOMAIN} *.gss-client-side.${DOMAIN};
 
     location /healthcheck {
         access_log off;
@@ -144,7 +144,7 @@ server {
 # Google Secure Signals - Server Side (port 3043)
 server {
     listen 80;
-    server_name gss-server-side.sample-dev.com *.gss-server-side.sample-dev.com;
+    server_name gss-server-side.${DOMAIN} *.gss-server-side.${DOMAIN};
 
     location /healthcheck {
         access_log off;
@@ -164,7 +164,7 @@ server {
 # Google Secure Signals - React Client Side (port 3044)
 server {
     listen 80;
-    server_name gss-react.sample-dev.com *.gss-react.sample-dev.com;
+    server_name gss-react.${DOMAIN} *.gss-react.${DOMAIN};
 
     location /healthcheck {
         access_log off;
@@ -184,7 +184,7 @@ server {
 # Prebid - Client Side (port 3051)
 server {
     listen 80;
-    server_name prebid-client.sample-dev.com *.prebid-client.sample-dev.com;
+    server_name prebid-client.${DOMAIN} *.prebid-client.${DOMAIN};
 
     location /healthcheck {
         access_log off;
@@ -204,7 +204,7 @@ server {
 # Prebid - Client Server (port 3052)
 server {
     listen 80;
-    server_name prebid-client-server.sample-dev.com *.prebid-client-server.sample-dev.com;
+    server_name prebid-client-server.${DOMAIN} *.prebid-client-server.${DOMAIN};
 
     location /healthcheck {
         access_log off;
@@ -224,7 +224,7 @@ server {
 # Prebid Secure Signals - Client Side (port 3061)
 server {
     listen 80;
-    server_name prebid-ss.sample-dev.com *.prebid-ss.sample-dev.com;
+    server_name prebid-ss.${DOMAIN} *.prebid-ss.${DOMAIN};
 
     location /healthcheck {
         access_log off;

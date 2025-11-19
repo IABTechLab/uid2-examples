@@ -7,6 +7,8 @@ services:
     ports:
       - "80:80"
     container_name: reverse-proxy
+    environment:
+      - DOMAIN=${DOMAIN:-sample-dev.com}
   
   # javascript sdk integrations
   javascript-sdk-client-side:
