@@ -25,13 +25,13 @@ The following subdomains are configured (using `${DOMAIN}` as the base domain):
 - `js-client-server.${DOMAIN}` → JavaScript SDK Client Server (port 3032)
 - `js-react.${DOMAIN}` → JavaScript SDK React Client Side (port 3034)
 - `server-side.${DOMAIN}` → Server Side Integration (port 3033)
-- `gss-client-server.${DOMAIN}` → Google Secure Signals Client Server (port 3041)
-- `gss-client-side.${DOMAIN}` → Google Secure Signals Client Side (port 3042)
-- `gss-server-side.${DOMAIN}` → Google Secure Signals Server Side (port 3043)
-- `gss-react.${DOMAIN}` → Google Secure Signals React Client Side (port 3044)
+- `secure-signals-client-server.${DOMAIN}` → Google Secure Signals Client Server (port 3041)
+- `secure-signals-client-side.${DOMAIN}` → Google Secure Signals Client Side (port 3042)
+- `secure-signals-server-side.${DOMAIN}` → Google Secure Signals Server Side (port 3043)
+- `secure-signals-react.${DOMAIN}` → Google Secure Signals React Client Side (port 3044)
 - `prebid-client.${DOMAIN}` → Prebid Client Side (port 3051)
 - `prebid-client-server.${DOMAIN}` → Prebid Client Server (port 3052)
-- `prebid-ss.${DOMAIN}` → Prebid Secure Signals Client Side (port 3061)
+- `prebid-secure-signals.${DOMAIN}` → Prebid Secure Signals Client Side (port 3061)
 
 **Example with default domain (`sample-dev.com`):**
 - `js-client-side.sample-dev.com` → JavaScript SDK Client Side (port 3031)
@@ -61,13 +61,13 @@ To use the subdomain-based routing, you must add entries to your hosts file so t
    127.0.0.1 js-client-server.sample-dev.com
    127.0.0.1 js-react.sample-dev.com
    127.0.0.1 server-side.sample-dev.com
-   127.0.0.1 gss-client-server.sample-dev.com
-   127.0.0.1 gss-client-side.sample-dev.com
-   127.0.0.1 gss-server-side.sample-dev.com
-   127.0.0.1 gss-react.sample-dev.com
+   127.0.0.1 secure-signals-client-server.sample-dev.com
+   127.0.0.1 secure-signals-client-side.sample-dev.com
+   127.0.0.1 secure-signals-server-side.sample-dev.com
+   127.0.0.1 secure-signals-react.sample-dev.com
    127.0.0.1 prebid-client.sample-dev.com
    127.0.0.1 prebid-client-server.sample-dev.com
-   127.0.0.1 prebid-ss.sample-dev.com
+   127.0.0.1 prebid-secure-signals.sample-dev.com
    ```
 
 4. Save the file
@@ -91,13 +91,13 @@ To use the subdomain-based routing, you must add entries to your hosts file so t
    127.0.0.1 js-client-server.sample-dev.com
    127.0.0.1 js-react.sample-dev.com
    127.0.0.1 server-side.sample-dev.com
-   127.0.0.1 gss-client-server.sample-dev.com
-   127.0.0.1 gss-client-side.sample-dev.com
-   127.0.0.1 gss-server-side.sample-dev.com
-   127.0.0.1 gss-react.sample-dev.com
+   127.0.0.1 secure-signals-client-server.sample-dev.com
+   127.0.0.1 secure-signals-client-side.sample-dev.com
+   127.0.0.1 secure-signals-server-side.sample-dev.com
+   127.0.0.1 secure-signals-react.sample-dev.com
    127.0.0.1 prebid-client.sample-dev.com
    127.0.0.1 prebid-client-server.sample-dev.com
-   127.0.0.1 prebid-ss.sample-dev.com
+   127.0.0.1 prebid-secure-signals.sample-dev.com
    ```
 
 3. Save and exit
