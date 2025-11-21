@@ -1,0 +1,254 @@
+# Localhost server block - provides helpful information
+server {
+    listen 80;
+    server_name localhost 127.0.0.1;
+
+    location /healthcheck {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+
+    location / {
+        add_header Content-Type text/html;
+        return 200 "<!DOCTYPE html><html><head><title>UID2 Sample Pages</title><style>body{font-family:Arial,sans-serif;max-width:800px;margin:50px auto;padding:20px;background:#f5f5f5}h1{color:#333}a{display:block;padding:10px;margin:5px 0;background:white;border-left:4px solid #007bff;text-decoration:none;color:#007bff;border-radius:4px}a:hover{background:#e7f3ff;border-left-color:#0056b3}.info{margin-top:30px;padding:15px;background:#fff3cd;border-left:4px solid #ffc107;border-radius:4px}</style></head><body><h1>UID2 Sample Pages</h1><p>Access services using the following subdomains:</p><a href=\"http://js-client-side.${DOMAIN}\">js-client-side.${DOMAIN}</a><a href=\"http://js-client-server.${DOMAIN}\">js-client-server.${DOMAIN}</a><a href=\"http://js-react.${DOMAIN}\">js-react.${DOMAIN}</a><a href=\"http://server-side.${DOMAIN}\">server-side.${DOMAIN}</a><a href=\"http://secure-signals-client-server.${DOMAIN}\">secure-signals-client-server.${DOMAIN}</a><a href=\"http://secure-signals-client-side.${DOMAIN}\">secure-signals-client-side.${DOMAIN}</a><a href=\"http://secure-signals-server-side.${DOMAIN}\">secure-signals-server-side.${DOMAIN}</a><a href=\"http://secure-signals-react.${DOMAIN}\">secure-signals-react.${DOMAIN}</a><a href=\"http://prebid-client.${DOMAIN}\">prebid-client.${DOMAIN}</a><a href=\"http://prebid-client-server.${DOMAIN}\">prebid-client-server.${DOMAIN}</a><a href=\"http://prebid-secure-signals.${DOMAIN}\">prebid-secure-signals.${DOMAIN}</a><div class=\"info\"><strong>Note:</strong> Add these subdomains to your hosts file (127.0.0.1) to use them.</div></body></html>";
+    }
+}
+
+# Default server block - catch-all for unmatched subdomains
+server {
+    listen 80 default_server;
+    server_name _;
+
+    location /healthcheck {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+
+    location / {
+        return 404 "No matching subdomain configuration\n";
+        add_header Content-Type text/plain;
+    }
+}
+
+# JavaScript SDK - Client Side (port 3031)
+server {
+    listen 80;
+    server_name js-client-side.${DOMAIN} *.js-client-side.${DOMAIN};
+
+    location /healthcheck {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+
+    location / {
+        proxy_pass http://javascript-sdk-client-side:3031;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# JavaScript SDK - Client Server (port 3032)
+server {
+    listen 80;
+    server_name js-client-server.${DOMAIN} *.js-client-server.${DOMAIN};
+
+    location /healthcheck {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+
+    location / {
+        proxy_pass http://javascript-sdk-client-server:3032;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# JavaScript SDK - React Client Side (port 3034)
+server {
+    listen 80;
+    server_name js-react.${DOMAIN} *.js-react.${DOMAIN};
+
+    location /healthcheck {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+
+    location / {
+        proxy_pass http://javascript-sdk-react-client-side:3034;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# Server Side Integration (port 3033)
+server {
+    listen 80;
+    server_name server-side.${DOMAIN} *.server-side.${DOMAIN};
+
+    location /healthcheck {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+
+    location / {
+        proxy_pass http://server-side:3033;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# Google Secure Signals - Client Server (port 3041)
+server {
+    listen 80;
+    server_name secure-signals-client-server.${DOMAIN} *.secure-signals-client-server.${DOMAIN};
+
+    location /healthcheck {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+
+    location / {
+        proxy_pass http://google-secure-signals-client-server:3041;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# Google Secure Signals - Client Side (port 3042)
+server {
+    listen 80;
+    server_name secure-signals-client-side.${DOMAIN} *.secure-signals-client-side.${DOMAIN};
+
+    location /healthcheck {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+
+    location / {
+        proxy_pass http://google-secure-signals-client-side:3042;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# Google Secure Signals - Server Side (port 3043)
+server {
+    listen 80;
+    server_name secure-signals-server-side.${DOMAIN} *.secure-signals-server-side.${DOMAIN};
+
+    location /healthcheck {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+
+    location / {
+        proxy_pass http://google-secure-signals-server-side:3043;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# Google Secure Signals - React Client Side (port 3044)
+server {
+    listen 80;
+    server_name secure-signals-react.${DOMAIN} *.secure-signals-react.${DOMAIN};
+
+    location /healthcheck {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+
+    location / {
+        proxy_pass http://google-secure-signals-react-client-side:3044;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# Prebid - Client Side (port 3051)
+server {
+    listen 80;
+    server_name prebid-client.${DOMAIN} *.prebid-client.${DOMAIN};
+
+    location /healthcheck {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+
+    location / {
+        proxy_pass http://prebid-client-side:3051;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# Prebid - Client Server (port 3052)
+server {
+    listen 80;
+    server_name prebid-client-server.${DOMAIN} *.prebid-client-server.${DOMAIN};
+
+    location /healthcheck {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+
+    location / {
+        proxy_pass http://prebid-client-server:3052;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# Prebid Secure Signals - Client Side (port 3061)
+server {
+    listen 80;
+    server_name prebid-secure-signals.${DOMAIN} *.prebid-secure-signals.${DOMAIN};
+
+    location /healthcheck {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+
+    location / {
+        proxy_pass http://prebid-secure-signals-client-side:3061;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
