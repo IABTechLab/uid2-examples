@@ -13,8 +13,6 @@
         serverPublicKey: '${SERVER_PUBLIC_KEY}',
       };
 
-      let callbackCounter = 0;
-
       // __uid2 for UID2 SDK, __euid for EUID SDK.
       const sdkName = '${UID_JS_SDK_NAME}';
 
@@ -30,7 +28,6 @@
           sdk.isLoginRequired() || sdk.isLoginRequired() === undefined ? 'yes' : 'no'
         );
         $(`#has_opted_out`).text(sdk.hasOptedOut() ? 'yes' : 'no');
-        $('#update_counter').text(callbackCounter);
         $('#identity_state').text(String(JSON.stringify(state, null, 2)));
 
         updateSharedGuiElements();
@@ -47,12 +44,6 @@
       }
 
       function onIdentityUpdated(eventType, payload) {
-        if (
-          payload?.identity &&
-          (eventType === 'InitCompleted' || eventType === 'IdentityUpdated')
-        ) {
-          ++callbackCounter;
-        }
         updateGuiElements(payload);
       }
 
@@ -89,40 +80,90 @@
     </script>
   </head>
   <body>
-    <h1>Client-Side ${IDENTITY_NAME} Integration Example using JavaScript SDK</h1>
-    <p>
-      This example demonstrates how a content publisher can follow the
-      <a href="${DOCS_BASE_URL}/guides/integration-javascript-client-side"
-        >Client-Side Integration Guide for JavaScript
-      </a>
-      to implement ${IDENTITY_NAME} integration and generate ${IDENTITY_NAME} tokens.
-      <strong>Note:</strong> This is a <em>test-only</em> integration environment—not for production
-      use. It does not perform real user authentication or generate production-level tokens. Do not
-      use real user data on this page.
-    </p>
-    <table id="uid2_state">
+    <div class="page-wrapper">
+      <!-- Main Content Area -->
+      <div class="main-content">
+        <h1>Client-Side ${IDENTITY_NAME} Integration Example using JavaScript SDK</h1>
+        <p>
+          This example demonstrates how a content publisher can follow the
+          <a href="${DOCS_BASE_URL}/guides/integration-javascript-client-side"
+            >Client-Side Integration Guide for JavaScript
+          </a>
+          to implement ${IDENTITY_NAME} integration and generate ${IDENTITY_NAME} tokens.
+          <strong>Note:</strong> This is a <em>test-only</em> integration environment—not for production
+          use. It does not perform real user authentication or generate production-level tokens. Do not
+          use real user data on this page.
+        </p>
+        <h2>${IDENTITY_NAME} Integration Status</h2>
+        <table id="uid2_state">
       <tr>
-        <td class="label">Ready for Targeted Advertising:</td>
+        <td class="label">
+          <div class="tooltip-wrapper">
+            Ready for Targeted Advertising:
+            <div class="tooltip">
+              <span class="tooltip-trigger">?</span>
+              <div class="tooltip-content">
+                Indicates whether a valid advertising token is available for use in targeted advertising. Returns "yes" when the SDK has successfully generated or refreshed a token.
+              </div>
+            </div>
+          </div>
+        </td>
         <td class="value"><pre id="targeted_advertising_ready"></pre></td>
       </tr>
       <tr>
-        <td class="label">Advertising Token:</td>
+        <td class="label">
+          <div class="tooltip-wrapper">
+            Advertising Token:
+            <div class="tooltip">
+              <span class="tooltip-trigger">?</span>
+              <div class="tooltip-content">
+                The ${IDENTITY_NAME} token used for targeted advertising. This token is passed to advertising partners and automatically refreshed by the SDK in the background.
+              </div>
+            </div>
+          </div>
+        </td>
         <td class="value"><pre id="advertising_token"></pre></td>
       </tr>
       <tr>
-        <td class="label">Is Login Required?</td>
+        <td class="label">
+          <div class="tooltip-wrapper">
+            Is Login Required?
+            <div class="tooltip">
+              <span class="tooltip-trigger">?</span>
+              <div class="tooltip-content">
+                Indicates whether the user needs to generate a new ${IDENTITY_NAME} token. Returns "yes" when no valid identity exists or the current identity has expired.
+              </div>
+            </div>
+          </div>
+        </td>
         <td class="value"><pre id="login_required"></pre></td>
       </tr>
       <tr>
-        <td class="label">Has opted out?</td>
+        <td class="label">
+          <div class="tooltip-wrapper">
+            Has opted out?
+            <div class="tooltip">
+              <span class="tooltip-trigger">?</span>
+              <div class="tooltip-content">
+                Indicates whether the user has opted out of ${IDENTITY_NAME}. When "yes", no advertising token will be generated and targeted advertising should not be enabled.
+              </div>
+            </div>
+          </div>
+        </td>
         <td class="value"><pre id="has_opted_out"></pre></td>
       </tr>
       <tr>
-        <td class="label">Identity Updated Counter:</td>
-        <td class="value"><pre id="update_counter"></pre></td>
-      </tr>
-      <tr>
-        <td class="label">Identity Callback State:</td>
+        <td class="label">
+          <div class="tooltip-wrapper">
+            Identity Callback State:
+            <div class="tooltip">
+              <span class="tooltip-trigger">?</span>
+              <div class="tooltip-content">
+                The complete identity object returned by the SDK. Contains the full ${IDENTITY_NAME} identity data including refresh tokens and metadata. Used for debugging and verification.
+              </div>
+            </div>
+          </div>
+        </td>
         <td class="value"><pre id="identity_state"></pre></td>
       </tr>
     </table>
@@ -133,15 +174,68 @@
           id="email"
           name="email"
           placeholder="Enter an email address"
-          style="border-style: none"
         />
+        <button type="button" class="button" id="login">Generate ${IDENTITY_NAME}</button>
       </div>
-      <div><button type="button" class="button" id="login">Generate ${IDENTITY_NAME}</button>></div>
     </div>
     <div id="logout_form" style="display: none" class="form">
-      <form>
-        <button type="button" class="button" id="logout">Clear ${IDENTITY_NAME}</button>
-      </form>
+      <button type="button" class="button" id="logout">Clear ${IDENTITY_NAME}</button>
+    </div>
+      </div>
+
+      <!-- Sidebar for Instructions -->
+      <aside class="sidebar">
+        <h3>📋 How to Test</h3>
+        
+        <div class="section">
+          <h4>Step 1: Generate ${IDENTITY_NAME}</h4>
+          <ul>
+            <li>Enter an email address in the input field</li>
+            <li>Click "Generate ${IDENTITY_NAME}" button</li>
+            <li>The SDK will initialize and request a token</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>Step 2: Observe Token State</h4>
+          <ul>
+            <li>Watch "Ready for Targeted Advertising" change to "yes"</li>
+            <li>Check the advertising token appears in the table</li>
+            <li>Note "Is Login Required?" becomes "no"</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>Step 3: Monitor Updates</h4>
+          <ul>
+            <li>Keep the page open to observe automatic token refreshes</li>
+            <li>The SDK maintains the token in the background</li>
+            <li>Identity state updates automatically as needed</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>Step 4: Test Opt-Out</h4>
+          <ul>
+            <li>Try the special email: <code>test@example.com</code></li>
+            <li>Observe "Has opted out?" changes to "yes"</li>
+            <li>No advertising token is generated</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>What's Happening?</h4>
+          <ul>
+            <li><strong>Client-Side Token Generation:</strong> The SDK generates tokens directly in the browser using your public credentials</li>
+            <li><strong>Auto-Refresh:</strong> Tokens are automatically refreshed in the background to maintain up-to-date identity</li>
+            <li><strong>Local Storage:</strong> Identity is stored in browser storage for persistence across page loads</li>
+          </ul>
+        </div>
+
+        <div class="note">
+          <strong>Note:</strong> This is a test-only environment. Do not use real user data. The integration uses Client-Side Token Generation (CSTG) with public credentials.
+        </div>
+      </aside>
     </div>
   </body>
 </html>
