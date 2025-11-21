@@ -287,7 +287,7 @@ a:hover {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background-color: #3B82F6; /* Info blue color matching portal */
+  background-color: #3B82F6; 
   color: white;
   border: none;
   font-size: 0.7rem;
@@ -312,16 +312,16 @@ a:hover {
   bottom: calc(100% + 8px); /* Position above with gap */
   left: 50%;
   transform: translateX(-50%);
-  background-color: #1F2937; /* Dark sidepanel color matching portal */
+  background-color: #1F2937; 
   color: white;
   padding: 10px;
   border-radius: 4px;
   font-size: 0.75rem;
-  line-height: 1.125; /* Exact line-height from portal */
-  min-width: 300px; /* Minimum width to ensure wider tooltips */
-  max-width: 570px; /* 3x wider for better text flow */
+  line-height: 1.125; 
+  min-width: 300px; 
+  max-width: 570px; 
   white-space: normal;
-  z-index: 10000; /* High z-index to prevent cutoff */
+  z-index: 10000; 
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   transition: opacity 0.2s ease, visibility 0.2s ease;
   font-weight: 400;
@@ -350,7 +350,6 @@ a:hover {
   overflow: visible;
 }
 
-/* Responsive Design */
 @media (max-width: 1024px) {
   .page-wrapper {
     flex-direction: column;
@@ -359,7 +358,6 @@ a:hover {
   .sidebar {
     position: static;
     max-height: none;
-    order: -1; /* Put sidebar on top on mobile */
   }
   
   body {
@@ -368,10 +366,6 @@ a:hover {
   
   .main-content {
     padding: 1.5rem;
-  }
-  
-  h1 {
-    font-size: 1.5rem;
   }
   
   .email_prompt {
