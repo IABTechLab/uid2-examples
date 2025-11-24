@@ -1,0 +1,46 @@
+/* 
+ * Centralized UID2 Examples Theme Variables
+ * 
+ * This file defines the color palette and design tokens used across all UID2 example sites.
+ * To use in your site, either:
+ * 1. Link this file in your HTML: <link rel="stylesheet" href="path/to/themes.css">
+ * 2. Copy these :root variables into your site's CSS file
+ */
+
+:root {
+  /* Brand Colors */
+  --primary-orange: #FF6B35;
+  --primary-dark: #2D3748;
+  --accent-teal: #0D9488;
+  --accent-yellow: #FBBF24;
+
+  /* Text Colors */
+  --text-dark: #1A202C;
+  --text-gray: #718096;
+
+  /* Background Colors */
+  --bg-white: #FFFFFF;
+  --bg-light: #F7FAFC;
+  --sidebar-bg: #FFF7ED;
+
+  /* Border Colors */
+  --border-color: #E2E8F0;
+
+  /* Button Colors */
+  --button-navy: rgba(2, 10, 64, 1);
+  --button-navy-hover: rgba(2, 10, 64, 0.9);
+
+  /* Link Colors */
+  --link-color: #0459fd;
+  --link-hover: #0347cc;
+
+  /* Tooltip Colors */
+  --tooltip-bg: #1F2937;
+  --tooltip-trigger: #3B82F6;
+  --tooltip-trigger-hover: #2563EB;
+
+  /* Shadows */
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+

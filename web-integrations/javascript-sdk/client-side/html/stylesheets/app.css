@@ -12,6 +12,19 @@
   --sidebar-bg: #FFF7ED;
   --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  
+  /* Button Colors */
+  --button-navy: rgba(2, 10, 64, 1);
+  --button-navy-hover: rgba(2, 10, 64, 0.9);
+  
+  /* Link Colors */
+  --link-color: #0459fd;
+  --link-hover: #0347cc;
+  
+  /* Tooltip Colors */
+  --tooltip-bg: #1F2937;
+  --tooltip-trigger: #3B82F6;
+  --tooltip-trigger-hover: #2563EB;
 }
 
 * {
@@ -129,7 +142,7 @@ p {
 }
 
 a {
-  color: #0459fd; /* Self-serve portal link color */
+  color: var(--link-color);
   text-decoration: none;
   font-weight: 600;
   border-bottom: 2px solid transparent;
@@ -137,7 +150,7 @@ a {
 }
 
 a:hover {
-  border-bottom-color: #0459fd;
+  border-bottom-color: var(--link-color);
 }
 
 /* State Table */
@@ -223,7 +236,7 @@ a:hover {
 /* Buttons */
 .button {
   padding: 0.875rem 2rem;
-  background: linear-gradient(135deg, var(--primary-orange) 0%, #FF8566 100%);
+  background: var(--button-navy);
   color: white;
   border: none;
   font-size: 0.95rem;
@@ -235,8 +248,9 @@ a:hover {
 }
 
 .button:hover {
+  background: var(--button-navy-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(255, 107, 53, 0.3);
+  box-shadow: 0 6px 12px rgba(2, 10, 64, 0.3);
 }
 
 .button:active {
@@ -287,7 +301,7 @@ a:hover {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background-color: #3B82F6; 
+  background-color: var(--tooltip-trigger);
   color: white;
   border: none;
   font-size: 0.7rem;
@@ -301,7 +315,7 @@ a:hover {
 }
 
 .tooltip-trigger:hover {
-  background-color: #2563EB;
+  background-color: var(--tooltip-trigger-hover);
   transform: scale(1.05);
 }
 
@@ -312,7 +326,7 @@ a:hover {
   bottom: calc(100% + 8px); /* Position above with gap */
   left: 50%;
   transform: translateX(-50%);
-  background-color: #1F2937; 
+  background-color: var(--tooltip-bg);
   color: white;
   padding: 10px;
   border-radius: 4px;

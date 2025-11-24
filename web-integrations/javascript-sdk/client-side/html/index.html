@@ -117,7 +117,7 @@
             <div class="tooltip">
               <span class="tooltip-trigger">?</span>
               <div class="tooltip-content">
-                The ${IDENTITY_NAME} token used for targeted advertising. This token is passed to advertising partners and automatically refreshed by the SDK in the background.
+                This token is passed to the bidstream and used for targeted advertising. It is automatically refreshed by the SDK in the background when expired.
               </div>
             </div>
           </div>
@@ -131,7 +131,7 @@
             <div class="tooltip">
               <span class="tooltip-trigger">?</span>
               <div class="tooltip-content">
-                Indicates whether the user needs to generate a new ${IDENTITY_NAME} token. Returns "yes" when no valid identity exists or the current identity has expired.
+                Indicates whether a new ${IDENTITY_NAME} token needs to be generated. Returns "yes" when no valid identity exists or the current identity has expired.
               </div>
             </div>
           </div>
@@ -228,7 +228,7 @@
           <ul>
             <li><strong>Client-Side Token Generation:</strong> The SDK generates tokens directly in the browser using your public credentials</li>
             <li><strong>Auto-Refresh:</strong> Tokens are automatically refreshed in the background to maintain up-to-date identity</li>
-            <li><strong>Local Storage:</strong> Identity is stored in browser storage for persistence across page loads</li>
+            <li><strong>Local Storage:</strong> Identity is stored in localStorage (__uid2_advertising_token or __euid_advertising_token) for persistence across page loads</li>
           </ul>
         </div>
 

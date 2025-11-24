@@ -1,0 +1,39 @@
+@use "colors" as *;
+
+:root {
+  /* Brand Colors */
+  --primary-orange: #{$color-primary-orange};
+  --primary-dark: #{$color-primary-dark};
+  --accent-teal: #{$color-accent-teal};
+  --accent-yellow: #{$color-accent-yellow};
+
+  /* Text Colors */
+  --text-dark: #{$color-text-dark};
+  --text-gray: #{$color-text-gray};
+
+  /* Background Colors */
+  --bg-white: #{$color-bg-white};
+  --bg-light: #{$color-bg-light};
+  --sidebar-bg: #{$color-sidebar-bg};
+
+  /* Border Colors */
+  --border-color: #{$color-border};
+
+  /* Button Colors */
+  --button-navy: #{$color-button-navy};
+  --button-navy-hover: #{$color-button-navy-hover};
+
+  /* Link Colors */
+  --link-color: #{$color-link};
+  --link-hover: #{$color-link-hover};
+
+  /* Tooltip Colors */
+  --tooltip-bg: #{$color-tooltip-bg};
+  --tooltip-trigger: #{$color-tooltip-trigger};
+  --tooltip-trigger-hover: #{$color-tooltip-trigger-hover};
+
+  /* Shadows */
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
