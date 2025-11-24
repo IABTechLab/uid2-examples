@@ -65,8 +65,8 @@ services:
 
   google-secure-signals-client-side:
     build:
-      context: .
-      dockerfile: web-integrations/google-secure-signals/client-side/Dockerfile
+      context: web-integrations/google-secure-signals/client-side
+      dockerfile: Dockerfile
     ports:
       - "3042:3042"
     container_name: google-secure-signals-client-side
@@ -75,8 +75,8 @@ services:
 
   google-secure-signals-server-side:
     build:
-      context: .
-      dockerfile: web-integrations/google-secure-signals/server-side/Dockerfile
+      context: web-integrations/google-secure-signals/server-side
+      dockerfile: Dockerfile
     ports:
       - "3043:3043"
     container_name: google-secure-signals-server-side
@@ -85,8 +85,8 @@ services:
 
   google-secure-signals-react-client-side:
     build:
-      context: .
-      dockerfile: web-integrations/google-secure-signals/react-client-side/Dockerfile
+      context: web-integrations/google-secure-signals/react-client-side
+      dockerfile: Dockerfile
     ports:
       - "3044:3044"
     container_name: google-secure-signals-react-client-side
