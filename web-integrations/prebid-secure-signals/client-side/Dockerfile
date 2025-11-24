@@ -9,6 +9,9 @@ COPY web-integrations/prebid-secure-signals/client-side/ads.css /usr/share/nginx
 COPY web-integrations/prebid-secure-signals/client-side/ads.js /usr/share/nginx/html/
 COPY web-integrations/prebid-secure-signals/prebid.js /usr/share/nginx/html/
 
+# Copy shared styles folder
+COPY web-integrations/styles /usr/share/nginx/html/styles/
+
 # Copy config and HTML template
 COPY web-integrations/prebid-secure-signals/client-side/default.conf /etc/nginx/conf.d/default.conf
 COPY web-integrations/prebid-secure-signals/client-side/index.html /usr/share/nginx/html/index.template.html

@@ -1,31 +1,5 @@
-/* Two-Column Layout with Sidebar - Modern Design */
-:root {
-  --primary-orange: #FF6B35;
-  --primary-dark: #2D3748;
-  --accent-teal: #0D9488;
-  --accent-yellow: #FBBF24;
-  --text-dark: #1A202C;
-  --text-gray: #718096;
-  --border-color: #E2E8F0;
-  --bg-light: #F7FAFC;
-  --bg-white: #FFFFFF;
-  --sidebar-bg: #FFF7ED;
-  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  
-  /* Button Colors */
-  --button-navy: rgba(2, 10, 64, 1);
-  --button-navy-hover: rgba(2, 10, 64, 0.9);
-  
-  /* Link Colors */
-  --link-color: #0459fd;
-  --link-hover: #0347cc;
-  
-  /* Tooltip Colors */
-  --tooltip-bg: #1F2937;
-  --tooltip-trigger: #3B82F6;
-  --tooltip-trigger-hover: #2563EB;
-}
+/* Import centralized color variables */
+@import url('../styles/colors.css');
 
 * {
   box-sizing: border-box;
@@ -143,14 +117,13 @@ p {
 
 a {
   color: var(--link-color);
-  text-decoration: none;
-  font-weight: 600;
-  border-bottom: 2px solid transparent;
-  transition: border-color 0.2s ease;
+  text-decoration: underline;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
 }
 
 a:hover {
-  border-bottom-color: var(--link-color);
+  opacity: 0.8;
 }
 
 /* State Table */

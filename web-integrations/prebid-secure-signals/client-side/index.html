@@ -47,9 +47,6 @@
           // Show "undefined" if no token, otherwise show the token
           $('#advertising_token').text(identity ? String(identity.id) : 'undefined');
           
-          // Update the label to include the storage key name
-          $('#prebid_storage_label').text(`Prebid Token Storage ('${UID_STORAGE_KEY}' in localStorage):`);
-          
           // Show localStorage content with formatted structure
           const localStorageValue = localStorage.getItem(storageKey);
           if (localStorageValue) {
@@ -260,42 +257,89 @@
     </script>
   </head>
   <body>
-    <h1>Client-Side ${IDENTITY_NAME} Integration with Prebid.js and Google Secure Signals</h1>
+    <div class="page-wrapper">
+      <!-- Main Content Area -->
+      <div class="main-content">
+        <h1>Client-Side ${IDENTITY_NAME} Integration with Prebid.js and Google Secure Signals</h1>
     <p class="intro">
       This example demonstrates how a content publisher can integrate ${IDENTITY_NAME} with both 
       <strong>Prebid.js</strong> (for header bidding) and <strong>Google Secure Signals</strong> 
       (for Google Ad Manager), using client-side token generation. Prebid manages the ${IDENTITY_NAME} token, 
-      and Google Secure Signals reads from Prebid's storage automatically. For documentation, see:
-      <ul>
-        <li><a href="${DOCS_BASE_URL}/guides/integration-prebid-client-side">${IDENTITY_NAME} Client-Side Integration Guide for Prebid.js</a></li>
-        <li><a href="${DOCS_BASE_URL}/guides/integration-google-ss">Google Ad Manager Secure Signals Integration Guide</a></li>
-      </ul>
-      <strong>Note:</strong> This is a <em>test-only</em> integration environment—not for production use.
-      It does not perform real user authentication or generate production-level tokens.
-      Do not use real user data on this page.
+      and Google Secure Signals reads from Prebid's storage automatically. For documentation, see <a href="${DOCS_BASE_URL}/guides/integration-prebid-client-side">${IDENTITY_NAME} Client-Side Integration Guide for Prebid.js</a>
+      and <a href="${DOCS_BASE_URL}/guides/integration-google-ss">Google Ad Manager Secure Signals Integration Guide</a> for more details.
     </p>
 
     <h2>${IDENTITY_NAME} Integration Status</h2>
 
     <table id="integration_state">
       <tr>
-        <td class="label">Ready for Targeted Advertising:</td>
+        <td class="label">
+          <div class="tooltip-wrapper">
+            Ready for Targeted Advertising:
+            <div class="tooltip">
+              <span class="tooltip-trigger">?</span>
+              <div class="tooltip-content">
+                Indicates whether a valid ${IDENTITY_NAME} token is available. Returns "yes" when Prebid has successfully generated and stored a token.
+              </div>
+            </div>
+          </div>
+        </td>
         <td class="value"><pre id="targeted_advertising_ready"></pre></td>
       </tr>
       <tr>
-        <td class="label">${IDENTITY_NAME} Advertising Token (from Prebid):</td>
+        <td class="label">
+          <div class="tooltip-wrapper">
+            Advertising Token:
+            <div class="tooltip">
+              <span class="tooltip-trigger">?</span>
+              <div class="tooltip-content">
+                The ${IDENTITY_NAME} token used for targeted advertising. This token is passed to the bidstream and automatically refreshed by the SDK in the background when expired.
+              </div>
+            </div>
+          </div>
+        </td>
         <td class="value"><pre id="advertising_token"></pre></td>
       </tr>
       <tr>
-        <td class="label">Is ${IDENTITY_NAME} Login Required?</td>
+        <td class="label">
+          <div class="tooltip-wrapper">
+            Is Login Required?
+            <div class="tooltip">
+              <span class="tooltip-trigger">?</span>
+              <div class="tooltip-content">
+                Indicates whether a new ${IDENTITY_NAME} token needs to be generated. Returns "yes" when no valid identity exists or the current identity has expired.
+              </div>
+            </div>
+          </div>
+        </td>
         <td class="value"><pre id="login_required"></pre></td>
       </tr>
       <tr>
-        <td class="label" id="prebid_storage_label">Prebid Token Storage:</td>
+        <td class="label">
+          <div class="tooltip-wrapper">
+            Prebid Token Storage:
+            <div class="tooltip">
+              <span class="tooltip-trigger">?</span>
+              <div class="tooltip-content">
+                Shows the ${IDENTITY_NAME} token stored by Prebid in localStorage under the key '${UID_STORAGE_KEY}'. This storage is shared between Prebid and Google Secure Signals.
+              </div>
+            </div>
+          </div>
+        </td>
         <td class="value"><pre id="prebid_storage"></pre></td>
       </tr>
       <tr>
-        <td class="label">Secure Signals Configured via Prebid?</td>
+        <td class="label">
+          <div class="tooltip-wrapper">
+            Secure Signals Configured?
+            <div class="tooltip">
+              <span class="tooltip-trigger">?</span>
+              <div class="tooltip-content">
+                Indicates whether Google Secure Signals integration is properly configured in Prebid. When "yes", encrypted ${IDENTITY_NAME} signals are sent to Google Ad Manager.
+              </div>
+            </div>
+          </div>
+        </td>
         <td class="value"><pre id="secure_signals_configured"></pre></td>
       </tr>
     </table>
@@ -320,15 +364,59 @@
           id="email"
           name="email"
           placeholder="Enter an email address"
-          style="border-style: none"
         />
+        <button type="button" class="button" id="login">Generate ${IDENTITY_NAME}</button>
       </div>
-      <div><button type="button" class="button" id="login">Generate ${IDENTITY_NAME}</button></div>
     </div>
     <div id="clear_storage_form" style="display: none" class="form">
-      <form>
-        <button type="button" class="button" id="clear_storage">Clear ${IDENTITY_NAME}</button>
-      </form>
+      <button type="button" class="button" id="clear_storage">Clear ${IDENTITY_NAME}</button>
+    </div>
+      </div>
+
+      <!-- Sidebar for Instructions -->
+      <aside class="sidebar">
+        <h3>📋 How to Test</h3>
+        
+        <div class="section">
+          <h4>Step 1: Generate ${IDENTITY_NAME}</h4>
+          <ul>
+            <li>Enter an email address in the input field</li>
+            <li>Click "Generate ${IDENTITY_NAME}" button</li>
+            <li>Wait for the integration to initialize</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>Step 2: Observe Integration</h4>
+          <ul>
+            <li>Check "Integration Status" table for token values</li>
+            <li>Verify Prebid storage updates in localStorage</li>
+            <li>Note Secure Signals data appears</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>Step 3: View Video Ad</h4>
+          <ul>
+            <li>Video player appears after successful token generation</li>
+            <li>Click "Play" to watch the ad</li>
+            <li>Ad request includes ${IDENTITY_NAME} token</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>What's Happening?</h4>
+          <ul>
+            <li><strong>Prebid.js</strong> manages ${IDENTITY_NAME} token storage</li>
+            <li><strong>Google Secure Signals</strong> shares tokens with bidders</li>
+            <li><strong>IMA SDK</strong> displays video ads with targeting</li>
+          </ul>
+        </div>
+
+        <div class="note">
+          <strong>Note:</strong> This is a test-only environment. Do not use real user data. The integration demonstrates client-side token generation and sharing.
+        </div>
+      </aside>
     </div>
 
     <script type="text/javascript" src="./ads.js"></script>
