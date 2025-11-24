@@ -55,8 +55,8 @@ services:
   # secure signals integrations
   google-secure-signals-client-server:
     build:
-      context: .
-      dockerfile: web-integrations/google-secure-signals/client-server/Dockerfile
+      context: web-integrations/google-secure-signals/client-server
+      dockerfile: Dockerfile
     ports:
       - "3041:3041"
     container_name: google-secure-signals-client-server
