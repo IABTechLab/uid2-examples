@@ -13,8 +13,8 @@ services:
   # javascript sdk integrations
   javascript-sdk-client-side:
     build:
-      context: .
-      dockerfile: web-integrations/javascript-sdk/client-side/Dockerfile
+      context: web-integrations/javascript-sdk/client-side
+      dockerfile: Dockerfile
     ports:
       - "3031:3031"
     container_name: javascript-sdk-client-side
@@ -23,8 +23,8 @@ services:
   
   javascript-sdk-client-server:
     build:
-      context: .
-      dockerfile: web-integrations/javascript-sdk/client-server/Dockerfile
+      context: web-integrations/javascript-sdk/client-server
+      dockerfile: Dockerfile
     ports:
       - "3032:3032"
     container_name: javascript-sdk-client-server
@@ -33,8 +33,8 @@ services:
 
   javascript-sdk-react-client-side:
     build:
-      context: .
-      dockerfile: web-integrations/javascript-sdk/react-client-side/Dockerfile
+      context: web-integrations/javascript-sdk/react-client-side
+      dockerfile: Dockerfile
     ports:
       - "3034:3034"
     container_name: javascript-sdk-react-client-side
@@ -44,8 +44,8 @@ services:
   # server-side integration (no SDK)
   server-side:
     build:
-      context: .
-      dockerfile: web-integrations/server-side/Dockerfile
+      context: web-integrations/server-side
+      dockerfile: Dockerfile
     ports:
       - "3033:3033"
     container_name: server-side
@@ -96,8 +96,8 @@ services:
   # prebid integrations
   prebid-client:
     build:
-      context: .
-      dockerfile: web-integrations/prebid-integrations/client-side/Dockerfile
+      context: web-integrations/prebid-integrations
+      dockerfile: client-side/Dockerfile
     ports:
       - "3051:3051"
     container_name: prebid-client-side
@@ -106,8 +106,8 @@ services:
 
   prebid-client-server:
     build:
-      context: .
-      dockerfile: web-integrations/prebid-integrations/client-server/Dockerfile
+      context: web-integrations/prebid-integrations
+      dockerfile: client-server/Dockerfile
     ports:
       - "3052:3052"
     container_name: prebid-client-server
@@ -117,8 +117,8 @@ services:
   # prebid + secure signals integrations
   prebid-secure-signals-client-side:
     build:
-      context: .
-      dockerfile: web-integrations/prebid-secure-signals/client-side/Dockerfile
+      context: web-integrations/prebid-secure-signals
+      dockerfile: client-side/Dockerfile
     ports:
       - "3061:3061"
     container_name: prebid-secure-signals-client-side
