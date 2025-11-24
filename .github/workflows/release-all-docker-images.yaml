@@ -1,4 +1,4 @@
-name: Release Reverse Proxy Image
+name: Release All Sample Docker Images
 run-name: ${{ inputs.release_type == 'Snapshot' && 'Publish Pre-release' || format('Release {0}', inputs.release_type)}} Docker Image by @${{ github.actor }}  
 on:
   workflow_dispatch:
