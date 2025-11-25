@@ -1,7 +1,8 @@
-# Localhost server block - provides helpful information
+# Info page server block - shows available services
+# Matches localhost (for local dev) and root domain (for production)
 server {
     listen 80;
-    server_name localhost 127.0.0.1;
+    server_name localhost 127.0.0.1 ${DOMAIN} www.${DOMAIN};
 
     location /ops/healthcheck {
         access_log off;
@@ -11,7 +12,8 @@ server {
 
     location / {
         add_header Content-Type text/html;
-        return 200 "<!DOCTYPE html><html><head><title>UID2 Sample Pages</title><style>body{font-family:Arial,sans-serif;max-width:800px;margin:50px auto;padding:20px;background:#f5f5f5}h1{color:#333}a{display:block;padding:10px;margin:5px 0;background:white;border-left:4px solid #007bff;text-decoration:none;color:#007bff;border-radius:4px}a:hover{background:#e7f3ff;border-left-color:#0056b3}.info{margin-top:30px;padding:15px;background:#fff3cd;border-left:4px solid #ffc107;border-radius:4px}</style></head><body><h1>UID2 Sample Pages</h1><p>Access services using the following subdomains:</p><a href=\"http://js-client-side.${DOMAIN}\">js-client-side.${DOMAIN}</a><a href=\"http://js-client-server.${DOMAIN}\">js-client-server.${DOMAIN}</a><a href=\"http://js-react.${DOMAIN}\">js-react.${DOMAIN}</a><a href=\"http://server-side.${DOMAIN}\">server-side.${DOMAIN}</a><a href=\"http://secure-signals-client-server.${DOMAIN}\">secure-signals-client-server.${DOMAIN}</a><a href=\"http://secure-signals-client-side.${DOMAIN}\">secure-signals-client-side.${DOMAIN}</a><a href=\"http://secure-signals-server-side.${DOMAIN}\">secure-signals-server-side.${DOMAIN}</a><a href=\"http://secure-signals-react.${DOMAIN}\">secure-signals-react.${DOMAIN}</a><a href=\"http://prebid-client.${DOMAIN}\">prebid-client.${DOMAIN}</a><a href=\"http://prebid-client-server.${DOMAIN}\">prebid-client-server.${DOMAIN}</a><a href=\"http://prebid-secure-signals.${DOMAIN}\">prebid-secure-signals.${DOMAIN}</a><div class=\"info\"><strong>Note:</strong> Add these subdomains to your hosts file (127.0.0.1) to use them.</div></body></html>";
+        # Use protocol-relative URLs (//) so they work with both http and https
+        return 200 "<!DOCTYPE html><html><head><title>UID2 Sample Pages</title><style>body{font-family:Arial,sans-serif;max-width:800px;margin:50px auto;padding:20px;background:#f5f5f5}h1{color:#333}a{display:block;padding:10px;margin:5px 0;background:white;border-left:4px solid #007bff;text-decoration:none;color:#007bff;border-radius:4px}a:hover{background:#e7f3ff;border-left-color:#0056b3}.info{margin-top:30px;padding:15px;background:#fff3cd;border-left:4px solid #ffc107;border-radius:4px}</style></head><body><h1>UID2 Sample Pages</h1><p>Access services using the following subdomains:</p><a href=\"//js-client-side.${DOMAIN}\">js-client-side.${DOMAIN}</a><a href=\"//js-client-server.${DOMAIN}\">js-client-server.${DOMAIN}</a><a href=\"//js-react.${DOMAIN}\">js-react.${DOMAIN}</a><a href=\"//server-side.${DOMAIN}\">server-side.${DOMAIN}</a><a href=\"//secure-signals-client-server.${DOMAIN}\">secure-signals-client-server.${DOMAIN}</a><a href=\"//secure-signals-client-side.${DOMAIN}\">secure-signals-client-side.${DOMAIN}</a><a href=\"//secure-signals-server-side.${DOMAIN}\">secure-signals-server-side.${DOMAIN}</a><a href=\"//secure-signals-react.${DOMAIN}\">secure-signals-react.${DOMAIN}</a><a href=\"//prebid-client.${DOMAIN}\">prebid-client.${DOMAIN}</a><a href=\"//prebid-client-server.${DOMAIN}\">prebid-client-server.${DOMAIN}</a><a href=\"//prebid-secure-signals.${DOMAIN}\">prebid-secure-signals.${DOMAIN}</a><div class=\"info\"><strong>Note:</strong> Add these subdomains to your hosts file (127.0.0.1) to use them.</div></body></html>";
     }
 }
 
@@ -47,6 +49,10 @@ server {
     location / {
         set $backend "javascript-sdk-client-side";
         proxy_pass http://$backend:3031;
+        proxy_redirect off;
+        proxy_connect_timeout 5s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -69,6 +75,10 @@ server {
     location / {
         set $backend "javascript-sdk-client-server";
         proxy_pass http://$backend:3032;
+        proxy_redirect off;
+        proxy_connect_timeout 5s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -91,6 +101,10 @@ server {
     location / {
         set $backend "javascript-sdk-react-client-side";
         proxy_pass http://$backend:3034;
+        proxy_redirect off;
+        proxy_connect_timeout 5s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -113,6 +127,10 @@ server {
     location / {
         set $backend "server-side";
         proxy_pass http://$backend:3033;
+        proxy_redirect off;
+        proxy_connect_timeout 5s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -135,6 +153,10 @@ server {
     location / {
         set $backend "google-secure-signals-client-server";
         proxy_pass http://$backend:3041;
+        proxy_redirect off;
+        proxy_connect_timeout 5s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -157,6 +179,10 @@ server {
     location / {
         set $backend "google-secure-signals-client-side";
         proxy_pass http://$backend:3042;
+        proxy_redirect off;
+        proxy_connect_timeout 5s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -179,6 +205,10 @@ server {
     location / {
         set $backend "google-secure-signals-server-side";
         proxy_pass http://$backend:3043;
+        proxy_redirect off;
+        proxy_connect_timeout 5s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -201,6 +231,10 @@ server {
     location / {
         set $backend "google-secure-signals-react-client-side";
         proxy_pass http://$backend:3044;
+        proxy_redirect off;
+        proxy_connect_timeout 5s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -221,8 +255,12 @@ server {
     }
 
     location / {
-        set $backend "prebid-client-side";
+        set $backend "prebid-client";
         proxy_pass http://$backend:3051;
+        proxy_redirect off;
+        proxy_connect_timeout 5s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -245,6 +283,10 @@ server {
     location / {
         set $backend "prebid-client-server";
         proxy_pass http://$backend:3052;
+        proxy_redirect off;
+        proxy_connect_timeout 5s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -267,6 +309,10 @@ server {
     location / {
         set $backend "prebid-secure-signals-client-side";
         proxy_pass http://$backend:3061;
+        proxy_redirect off;
+        proxy_connect_timeout 5s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
