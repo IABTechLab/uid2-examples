@@ -195,7 +195,8 @@
           <ul>
             <li><strong>Client-Side Token Generation:</strong> The SDK generates tokens directly in the browser</li>
             <li><strong>Auto-Refresh:</strong> Tokens are automatically refreshed by the SDK in the background when expired</li>
-            <li><strong>Google Secure Signals:</strong> Encrypted tokens are stored and shared with Google Ad Manager</li>
+            <li><strong>Local Storage:</strong> The SDK stores identity in localStorage (__uid2_advertising_token or __euid_advertising_token) for persistence across page loads</li>
+            <li><strong>Google Secure Signals:</strong> Encrypted tokens are stored in localStorage under ${UID_SECURE_SIGNALS_STORAGE_KEY} and shared with Google Ad Manager</li>
             <li><strong>IMA SDK:</strong> Displays video ads with ${IDENTITY_NAME} targeting</li>
           </ul>
         </div>
