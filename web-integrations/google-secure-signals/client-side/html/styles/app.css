@@ -137,6 +137,8 @@ a:hover {
   border-radius: 8px;
   overflow: hidden;
   font-size: 0.875rem;
+  position: relative;
+  overflow: visible;
 }
 
 #uid2_state tr {

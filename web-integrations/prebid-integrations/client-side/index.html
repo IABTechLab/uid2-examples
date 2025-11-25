@@ -85,7 +85,12 @@
         $('#login').click(handleLogin);
         $('#clear_storage').click(handleClearStorage);
         
-        updateGuiElements();
+        // Wait for Prebid to load user IDs from storage before updating UI
+        pbjs.que.push(function() {
+          pbjs.onEvent('userIds', updateGuiElements);
+          // Also update immediately in case IDs are already loaded
+          updateGuiElements();
+        });
       }
 
       function setUidConfig(email) {
