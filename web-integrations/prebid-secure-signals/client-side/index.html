@@ -416,11 +416,11 @@
         </div>
 
         <div class="section">
-          <h4>Step 3: View Video Ad</h4>
+          <h4>Step 3: View Video Ad & Verify</h4>
           <ul>
             <li>Video player appears after successful token generation</li>
             <li>Click "Play" to watch the ad</li>
-            <li>Ad request includes ${IDENTITY_NAME} token</li>
+            <li><strong>Follow the verification instructions</strong> displayed below the table to confirm Secure Signals are being sent to Google Ad Manager</li>
           </ul>
         </div>
 
@@ -436,11 +436,10 @@
         <div class="section">
           <h4>What's Happening?</h4>
           <ul>
-            <li><strong>Client-Side Token Generation:</strong> The SDK generates the initial ${IDENTITY_NAME} token directly in the browser</li>
-            <li><strong>Prebid Management:</strong> Prebid's ${IDENTITY_NAME} module reads and manages the token lifecycle</li>
-            <li><strong>Auto-Refresh:</strong> Tokens are automatically refreshed by Prebid's ${IDENTITY_NAME} module in the background when expired</li>
+            <li><strong>Configuration:</strong> Prebid's ${IDENTITY_NAME} module is configured with your public credentials (subscription ID and server public key) and encryptedSignalSources for Secure Signals</li>
+            <li><strong>Token Management:</strong> Prebid generates, stores, and automatically refreshes ${IDENTITY_NAME} tokens in the background when expired</li>
+            <li><strong>Secure Signals Integration:</strong> Prebid passes ${IDENTITY_NAME} tokens to Google Secure Signals for encrypted sharing with Google Ad Manager</li>
             <li><strong>Local Storage:</strong> Prebid stores tokens in localStorage (__uid2_advertising_token or __euid_advertising_token) for persistence</li>
-            <li><strong>Google Secure Signals:</strong> Encrypted signals are shared with Google Ad Manager</li>
             <li><strong>IMA SDK:</strong> Displays video ads with ${IDENTITY_NAME} targeting</li>
           </ul>
         </div>
