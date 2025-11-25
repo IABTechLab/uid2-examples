@@ -7,6 +7,9 @@ RUN apk add --no-cache gettext
 COPY web-integrations/prebid-integrations/client-side/app.css /usr/share/nginx/html/
 COPY web-integrations/prebid-integrations/prebid.js /usr/share/nginx/html/
 
+# Copy shared styles folder
+COPY web-integrations/styles /usr/share/nginx/html/styles/
+
 # Copy config and HTML
 COPY web-integrations/prebid-integrations/client-side/default.conf /etc/nginx/conf.d/default.conf
 COPY web-integrations/prebid-integrations/client-side/index.html /usr/share/nginx/html/index.template.html
