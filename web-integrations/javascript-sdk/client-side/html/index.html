@@ -98,7 +98,7 @@
             <div class="tooltip">
               <span class="tooltip-trigger">?</span>
               <div class="tooltip-content">
-                Indicates whether a valid advertising token is available for use in targeted advertising. Returns "yes" when the SDK has successfully generated or refreshed a token.
+                Indicates whether a valid ${IDENTITY_NAME} token is present and can be used for personalized ad targeting.
               </div>
             </div>
           </div>
@@ -112,7 +112,7 @@
             <div class="tooltip">
               <span class="tooltip-trigger">?</span>
               <div class="tooltip-content">
-                This token is passed to the bidstream and used for targeted advertising. It is automatically refreshed by the SDK in the background when expired.
+                The encrypted ${IDENTITY_NAME} token passed to ad systems without exposing raw user identity. It is automatically refreshed by the SDK in the background when expired.
               </div>
             </div>
           </div>
@@ -140,7 +140,7 @@
             <div class="tooltip">
               <span class="tooltip-trigger">?</span>
               <div class="tooltip-content">
-                Indicates whether the user has opted out of ${IDENTITY_NAME}. When "yes", no advertising token will be generated and targeted advertising should not be enabled.
+                Shows whether the user has exercised opt-out, in which case no advertising token may be generated or used.
               </div>
             </div>
           </div>
@@ -154,7 +154,7 @@
             <div class="tooltip">
               <span class="tooltip-trigger">?</span>
               <div class="tooltip-content">
-                The complete identity object returned by the SDK. Contains the full ${IDENTITY_NAME} identity data including refresh tokens and metadata. Used for debugging and verification.
+                The complete identity object returned by the SDK. Contains the full ${IDENTITY_NAME} identity data including refresh tokens and metadata.
               </div>
             </div>
           </div>
@@ -228,7 +228,7 @@
         </div>
 
         <div class="note">
-          <strong>Note:</strong> This is a test-only environment. Do not use real user data. The integration uses Client-Side Token Generation (CSTG) with public credentials.
+          <strong>Note:</strong> This is a test-only environment. Do not use real user data.
         </div>
       </aside>
     </div>

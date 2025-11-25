@@ -30,7 +30,7 @@
                 <div class="tooltip">
                   <span class="tooltip-trigger">?</span>
                   <div class="tooltip-content">
-                    Indicates whether a valid ${IDENTITY_NAME} token is available. Returns "yes" when the SDK has successfully generated and stored a token.
+                    Indicates whether a valid ${IDENTITY_NAME} token is present and can be used for personalized ad targeting.
                   </div>
                 </div>
               </div>
@@ -44,7 +44,7 @@
                 <div class="tooltip">
                   <span class="tooltip-trigger">?</span>
                   <div class="tooltip-content">
-                    This token is passed to the bidstream and used for targeted advertising. It is automatically refreshed by the SDK in the background when expired.
+                    The encrypted ${IDENTITY_NAME} token passed to ad systems without exposing raw user identity. It is automatically refreshed by the SDK in the background when expired.
                   </div>
                 </div>
               </div>
@@ -72,7 +72,7 @@
                 <div class="tooltip">
                   <span class="tooltip-trigger">?</span>
                   <div class="tooltip-content">
-                    The complete ${IDENTITY_NAME} identity object returned by the SDK, including advertising_token, refresh_token, and expiration times.
+                    The complete identity object returned by the SDK. Contains the full ${IDENTITY_NAME} identity data including refresh tokens and metadata.
                   </div>
                 </div>
               </div>
@@ -192,7 +192,7 @@
         </div>
 
         <div class="note">
-          <strong>Note:</strong> This is a test-only environment. Do not use real user data. The integration demonstrates client-side token generation with Google Secure Signals.
+          <strong>Note:</strong> This is a test-only environment. Do not use real user data.
         </div>
       </aside>
     </div>

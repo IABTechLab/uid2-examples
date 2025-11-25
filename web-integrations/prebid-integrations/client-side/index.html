@@ -210,8 +210,7 @@
                 <div class="tooltip">
                   <span class="tooltip-trigger">?</span>
                   <div class="tooltip-content">
-                    Indicates whether a valid ${IDENTITY_NAME} token is available. Returns "yes" when Prebid has successfully generated and stored a token.
-                  </div>
+                    Indicates whether a valid ${IDENTITY_NAME} token is present and can be used for personalized ad targeting.
                 </div>
               </div>
             </td>
@@ -224,7 +223,7 @@
                 <div class="tooltip">
                   <span class="tooltip-trigger">?</span>
                   <div class="tooltip-content">
-                    The ${IDENTITY_NAME} token used for targeted advertising. This token is passed to the bidstream and automatically refreshed by the SDK in the background when expired.
+                    The encrypted ${IDENTITY_NAME} token passed to ad systems without exposing raw user identity. It is automatically refreshed by the SDK in the background when expired.
                   </div>
                 </div>
               </div>
@@ -320,7 +319,7 @@
         </div>
 
         <div class="note">
-          <strong>Note:</strong> This is a test-only environment. Do not use real user data. The integration demonstrates client-side token generation for header bidding.
+          <strong>Note:</strong> This is a test-only environment. Do not use real user data.
         </div>
       </aside>
     </div>
