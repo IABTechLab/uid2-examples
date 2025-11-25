@@ -68,6 +68,20 @@
           <tr>
             <td class="label">
               <div class="tooltip-wrapper">
+                Has Opted Out?
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Shows whether the user has exercised opt-out, in which case no advertising token may be generated or used.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="has_opted_out"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
                 Identity Callback State:
                 <div class="tooltip">
                   <span class="tooltip-trigger">?</span>
@@ -120,12 +134,6 @@
           <button id="play-button">Play</button>
         </div>
 
-        <div id="optout_banner" style="display: none">
-          <p>The email address you entered has opted out of ${IDENTITY_NAME}.</p>
-        </div>
-        <div id="optout_message" style="display: none" class="form">
-          <button type="button" class="button" id="try_another">Try Another Email</button>
-        </div>
         <div id="login_form" style="display: none" class="form">
           <div class="email_prompt">
             <input
@@ -176,9 +184,9 @@
         <div class="section">
           <h4>Step 4: Test Opt-Out</h4>
           <ul>
-            <li>Try entering: <strong>optout@example.com</strong></li>
-            <li>Yellow banner shows "opted out" status</li>
-            <li>Click "Try Another Email" to test a different email</li>
+            <li>Try the special email: <code>test@example.com</code></li>
+            <li>Observe "Has opted out?" changes to "yes"</li>
+            <li>No advertising token is generated</li>
           </ul>
         </div>
 
@@ -186,6 +194,7 @@
           <h4>What's Happening?</h4>
           <ul>
             <li><strong>Client-Side Token Generation:</strong> The SDK generates tokens directly in the browser</li>
+            <li><strong>Auto-Refresh:</strong> Tokens are automatically refreshed by the SDK in the background when expired</li>
             <li><strong>Google Secure Signals:</strong> Encrypted tokens are stored and shared with Google Ad Manager</li>
             <li><strong>IMA SDK:</strong> Displays video ads with ${IDENTITY_NAME} targeting</li>
           </ul>

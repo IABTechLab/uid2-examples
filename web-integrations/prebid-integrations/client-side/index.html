@@ -265,8 +265,6 @@
           </tr>
         </table>
 
-        <div id="test-div"></div>
-
         <div id="login_form" style="display: none" class="form">
           <div class="email_prompt">
             <input
@@ -308,17 +306,19 @@
         <div class="section">
           <h4>Step 3: Test Opt-Out</h4>
           <ul>
-            <li>Try entering: <strong>optout@example.com</strong></li>
-            <li>Table shows "opted out" status</li>
-            <li>Click "Clear ${IDENTITY_NAME}" to try another email</li>
+            <li>Try entering: <strong>test@example.com</strong></li>
+            <li>Advertising token shows "This email has opted out"</li>
+            <li>No advertising token is stored</li>
           </ul>
         </div>
 
         <div class="section">
           <h4>What's Happening?</h4>
           <ul>
-            <li><strong>Client-Side Token Generation:</strong> The SDK generates tokens directly in the browser</li>
-            <li><strong>Prebid Storage:</strong> Tokens are stored in localStorage (__uid2_advertising_token or __euid_advertising_token)</li>
+            <li><strong>Client-Side Token Generation:</strong> The SDK generates the initial ${IDENTITY_NAME} token directly in the browser</li>
+            <li><strong>Prebid Management:</strong> Prebid's ${IDENTITY_NAME} module reads and manages the token lifecycle</li>
+            <li><strong>Auto-Refresh:</strong> Tokens are automatically refreshed by Prebid's ${IDENTITY_NAME} module in the background when expired</li>
+            <li><strong>Local Storage:</strong> Prebid stores tokens in localStorage (__uid2_advertising_token or __euid_advertising_token) for persistence</li>
             <li><strong>Header Bidding:</strong> Prebid shares ${IDENTITY_NAME} tokens with bidders automatically</li>
           </ul>
         </div>

@@ -244,21 +244,6 @@ a:hover {
 }
 
 /* Opt-out Banner */
-#optout_banner {
-  background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.05) 100%);
-  border-left: 4px solid #ffc107;
-  padding: 1.25rem;
-  margin: 1.5rem 0;
-  border-radius: 6px;
-  color: var(--text-dark);
-  font-size: 0.95rem;
-  font-weight: 600;
-}
-
-#optout_banner p {
-  margin: 0;
-}
-
 /* Success Message */
 .message {
   background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%);
