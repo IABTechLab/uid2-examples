@@ -3,7 +3,7 @@ server {
     listen 80;
     server_name localhost 127.0.0.1;
 
-    location /healthcheck {
+    location /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -20,7 +20,7 @@ server {
     listen 80 default_server;
     server_name _;
 
-    location /healthcheck {
+    location /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -38,7 +38,7 @@ server {
     server_name js-client-side.${DOMAIN} *.js-client-side.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /healthcheck {
+    location /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -60,7 +60,7 @@ server {
     server_name js-client-server.${DOMAIN} *.js-client-server.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /healthcheck {
+    location /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -82,7 +82,7 @@ server {
     server_name js-react.${DOMAIN} *.js-react.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /healthcheck {
+    location /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -104,7 +104,7 @@ server {
     server_name server-side.${DOMAIN} *.server-side.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /healthcheck {
+    location /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -126,7 +126,7 @@ server {
     server_name secure-signals-client-server.${DOMAIN} *.secure-signals-client-server.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /healthcheck {
+    location /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -148,7 +148,7 @@ server {
     server_name secure-signals-client-side.${DOMAIN} *.secure-signals-client-side.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /healthcheck {
+    location /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -170,7 +170,7 @@ server {
     server_name secure-signals-server-side.${DOMAIN} *.secure-signals-server-side.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /healthcheck {
+    location /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -192,7 +192,7 @@ server {
     server_name secure-signals-react.${DOMAIN} *.secure-signals-react.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /healthcheck {
+    location /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -214,7 +214,7 @@ server {
     server_name prebid-client.${DOMAIN} *.prebid-client.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /healthcheck {
+    location /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -236,7 +236,7 @@ server {
     server_name prebid-client-server.${DOMAIN} *.prebid-client-server.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /healthcheck {
+    location /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -258,7 +258,7 @@ server {
     server_name prebid-secure-signals.${DOMAIN} *.prebid-secure-signals.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /healthcheck {
+    location /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
