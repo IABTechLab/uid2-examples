@@ -35,7 +35,10 @@ app.engine('.html', ejs.__express);
 app.set('views', './public');
 app.set('view engine', 'html');
 
-
+// Healthcheck endpoint for Kubernetes probes
+app.get('/ops/healthcheck', (req, res) => {
+    res.status(200).send('healthy\n');
+});
 
 // ============================================================================
 // Encryption/Decryption Helpers

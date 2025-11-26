@@ -103,6 +103,11 @@ app.use(session({
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 
+// Healthcheck endpoint for Kubernetes probes
+app.get('/ops/healthcheck', (req, res) => {
+  res.status(200).send('healthy\n');
+});
+
 app.engine('.html', ejs.__express);
 app.set('view engine', 'html');
 
