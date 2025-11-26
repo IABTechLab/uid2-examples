@@ -42,7 +42,7 @@ server {
     server_name js-client-side.${DOMAIN} *.js-client-side.${DOMAIN};
 
     location / {
-        proxy_pass http://localhost:3031;
+        proxy_pass http://${JS_CLIENT_SIDE_BACKEND}:3031;
         proxy_redirect off;
         proxy_connect_timeout 5s;
         proxy_send_timeout 60s;
@@ -60,7 +60,7 @@ server {
     server_name js-client-server.${DOMAIN} *.js-client-server.${DOMAIN};
 
     location / {
-        proxy_pass http://localhost:3032;
+        proxy_pass http://${JS_CLIENT_SERVER_BACKEND}:3032;
         proxy_redirect off;
         proxy_connect_timeout 5s;
         proxy_send_timeout 60s;
@@ -78,7 +78,7 @@ server {
     server_name js-react.${DOMAIN} *.js-react.${DOMAIN};
 
     location / {
-        proxy_pass http://localhost:3034;
+        proxy_pass http://${JS_REACT_CLIENT_SIDE_BACKEND}:3034;
         proxy_redirect off;
         proxy_connect_timeout 5s;
         proxy_send_timeout 60s;
@@ -96,7 +96,7 @@ server {
     server_name server-side.${DOMAIN} *.server-side.${DOMAIN};
 
     location / {
-        proxy_pass http://localhost:3033;
+        proxy_pass http://${SERVER_SIDE_BACKEND}:3033;
         proxy_redirect off;
         proxy_connect_timeout 5s;
         proxy_send_timeout 60s;
@@ -114,7 +114,7 @@ server {
     server_name secure-signals-client-server.${DOMAIN} *.secure-signals-client-server.${DOMAIN};
 
     location / {
-        proxy_pass http://localhost:3041;
+        proxy_pass http://${SECURE_SIGNALS_CLIENT_SERVER_BACKEND}:3041;
         proxy_redirect off;
         proxy_connect_timeout 5s;
         proxy_send_timeout 60s;
@@ -132,7 +132,7 @@ server {
     server_name secure-signals-client-side.${DOMAIN} *.secure-signals-client-side.${DOMAIN};
 
     location / {
-        proxy_pass http://localhost:3042;
+        proxy_pass http://${SECURE_SIGNALS_CLIENT_SIDE_BACKEND}:3042;
         proxy_redirect off;
         proxy_connect_timeout 5s;
         proxy_send_timeout 60s;
@@ -150,7 +150,7 @@ server {
     server_name secure-signals-server-side.${DOMAIN} *.secure-signals-server-side.${DOMAIN};
 
     location / {
-        proxy_pass http://localhost:3043;
+        proxy_pass http://${SECURE_SIGNALS_SERVER_SIDE_BACKEND}:3043;
         proxy_redirect off;
         proxy_connect_timeout 5s;
         proxy_send_timeout 60s;
@@ -168,7 +168,7 @@ server {
     server_name secure-signals-react.${DOMAIN} *.secure-signals-react.${DOMAIN};
 
     location / {
-        proxy_pass http://localhost:3044;
+        proxy_pass http://${SECURE_SIGNALS_REACT_CLIENT_SIDE_BACKEND}:3044;
         proxy_redirect off;
         proxy_connect_timeout 5s;
         proxy_send_timeout 60s;
@@ -186,7 +186,7 @@ server {
     server_name prebid-client.${DOMAIN} *.prebid-client.${DOMAIN};
 
     location / {
-        proxy_pass http://localhost:3051;
+        proxy_pass http://${PREBID_CLIENT_BACKEND}:3051;
         proxy_redirect off;
         proxy_connect_timeout 10s;
         proxy_send_timeout 60s;
@@ -214,7 +214,7 @@ server {
     server_name prebid-client-server.${DOMAIN} *.prebid-client-server.${DOMAIN};
 
     location / {
-        proxy_pass http://localhost:3052;
+        proxy_pass http://${PREBID_CLIENT_SERVER_BACKEND}:3052;
         proxy_redirect off;
         proxy_connect_timeout 5s;
         proxy_send_timeout 60s;
@@ -232,7 +232,7 @@ server {
     server_name prebid-secure-signals.${DOMAIN} *.prebid-secure-signals.${DOMAIN};
 
     location / {
-        proxy_pass http://localhost:3061;
+        proxy_pass http://${PREBID_SECURE_SIGNALS_CLIENT_SIDE_BACKEND}:3061;
         proxy_redirect off;
         proxy_connect_timeout 5s;
         proxy_send_timeout 60s;
