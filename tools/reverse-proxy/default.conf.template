@@ -4,7 +4,8 @@ server {
     listen 80;
     server_name localhost 127.0.0.1 ${DOMAIN} www.${DOMAIN};
 
-    location /ops/healthcheck {
+    # Exact match for /ops/healthcheck (highest priority)
+    location = /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -13,7 +14,7 @@ server {
     location / {
         add_header Content-Type text/html;
         # Use protocol-relative URLs (//) so they work with both http and https
-        return 200 "<!DOCTYPE html><html><head><title>UID2 Sample Pages</title><style>body{font-family:Arial,sans-serif;max-width:800px;margin:50px auto;padding:20px;background:#f5f5f5}h1{color:#333}a{display:block;padding:10px;margin:5px 0;background:white;border-left:4px solid #007bff;text-decoration:none;color:#007bff;border-radius:4px}a:hover{background:#e7f3ff;border-left-color:#0056b3}.info{margin-top:30px;padding:15px;background:#fff3cd;border-left:4px solid #ffc107;border-radius:4px}</style></head><body><h1>UID2 Sample Pages</h1><p>Access services using the following subdomains:</p><a href=\"//js-client-side.${DOMAIN}\">js-client-side.${DOMAIN}</a><a href=\"//js-client-server.${DOMAIN}\">js-client-server.${DOMAIN}</a><a href=\"//js-react.${DOMAIN}\">js-react.${DOMAIN}</a><a href=\"//server-side.${DOMAIN}\">server-side.${DOMAIN}</a><a href=\"//secure-signals-client-server.${DOMAIN}\">secure-signals-client-server.${DOMAIN}</a><a href=\"//secure-signals-client-side.${DOMAIN}\">secure-signals-client-side.${DOMAIN}</a><a href=\"//secure-signals-server-side.${DOMAIN}\">secure-signals-server-side.${DOMAIN}</a><a href=\"//secure-signals-react.${DOMAIN}\">secure-signals-react.${DOMAIN}</a><a href=\"//prebid-client.${DOMAIN}\">prebid-client.${DOMAIN}</a><a href=\"//prebid-client-server.${DOMAIN}\">prebid-client-server.${DOMAIN}</a><a href=\"//prebid-secure-signals.${DOMAIN}\">prebid-secure-signals.${DOMAIN}</a><div class=\"info\"><strong>Note:</strong> Add these subdomains to your hosts file (127.0.0.1) to use them.</div></body></html>";
+        return 200 "<!DOCTYPE html><html><head><title>UID2 Sample Pages</title><style>body{font-family:Arial,sans-serif;max-width:800px;margin:50px auto;padding:20px;background:#f5f5f5}h1{color:#333}a{display:block;padding:10px;margin:5px 0;background:white;border-left:4px solid #007bff;text-decoration:none;color:#007bff;border-radius:4px}a:hover{background:#e7f3ff;border-left-color:#0056b3}.info{margin-top:30px;padding:15px;background:#fff3cd;border-left:4px solid #ffc107;border-radius:4px}</style></head><body><h1>UID2 Sample Pages</h1><p>Access services using the following subdomains:</p><a href=\"//js-client-side.${DOMAIN}\">js-client-side.${DOMAIN}</a><a href=\"//js-client-server.${DOMAIN}\">js-client-server.${DOMAIN}</a><a href=\"//js-react.${DOMAIN}\">js-react.${DOMAIN}</a><a href=\"//server-side.${DOMAIN}\">server-side.${DOMAIN}</a><a href=\"//secure-signals-client-server.${DOMAIN}\">secure-signals-client-server.${DOMAIN}</a><a href=\"//secure-signals-client-side.${DOMAIN}\">secure-signals-client-side.${DOMAIN}</a><a href=\"//secure-signals-server-side.${DOMAIN}\">secure-signals-server-side.${DOMAIN}</a><a href=\"//secure-signals-react.${DOMAIN}\">secure-signals-react.${DOMAIN}</a><a href=\"//prebid-client.${DOMAIN}\">prebid-client.${DOMAIN}</a><a href=\"//prebid-client-server.${DOMAIN}\">prebid-client-server.${DOMAIN}</a><a href=\"//prebid-secure-signals.${DOMAIN}\">prebid-secure-signals.${DOMAIN}</a><div class=\"info\"><strong>Note:</strong> For local development, add ${DOMAIN} and all subdomains to your hosts file (127.0.0.1) to use them. Example: <code>127.0.0.1 ${DOMAIN} js-client-side.${DOMAIN} ...</code></div></body></html>";
     }
 }
 
@@ -22,7 +23,8 @@ server {
     listen 80 default_server;
     server_name _;
 
-    location /ops/healthcheck {
+    # Exact match for /ops/healthcheck (highest priority)
+    location = /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -40,7 +42,8 @@ server {
     server_name js-client-side.${DOMAIN} *.js-client-side.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /ops/healthcheck {
+    # Exact match for /ops/healthcheck (highest priority)
+    location = /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -66,7 +69,8 @@ server {
     server_name js-client-server.${DOMAIN} *.js-client-server.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /ops/healthcheck {
+    # Exact match for /ops/healthcheck (highest priority)
+    location = /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -92,7 +96,8 @@ server {
     server_name js-react.${DOMAIN} *.js-react.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /ops/healthcheck {
+    # Exact match for /ops/healthcheck (highest priority)
+    location = /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -118,7 +123,8 @@ server {
     server_name server-side.${DOMAIN} *.server-side.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /ops/healthcheck {
+    # Exact match for /ops/healthcheck (highest priority)
+    location = /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -144,7 +150,8 @@ server {
     server_name secure-signals-client-server.${DOMAIN} *.secure-signals-client-server.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /ops/healthcheck {
+    # Exact match for /ops/healthcheck (highest priority)
+    location = /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -170,7 +177,8 @@ server {
     server_name secure-signals-client-side.${DOMAIN} *.secure-signals-client-side.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /ops/healthcheck {
+    # Exact match for /ops/healthcheck (highest priority)
+    location = /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -196,7 +204,8 @@ server {
     server_name secure-signals-server-side.${DOMAIN} *.secure-signals-server-side.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /ops/healthcheck {
+    # Exact match for /ops/healthcheck (highest priority)
+    location = /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -222,7 +231,8 @@ server {
     server_name secure-signals-react.${DOMAIN} *.secure-signals-react.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /ops/healthcheck {
+    # Exact match for /ops/healthcheck (highest priority)
+    location = /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -248,7 +258,8 @@ server {
     server_name prebid-client.${DOMAIN} *.prebid-client.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /ops/healthcheck {
+    # Exact match for /ops/healthcheck (highest priority)
+    location = /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -258,13 +269,23 @@ server {
         set $backend "prebid-client";
         proxy_pass http://$backend:3051;
         proxy_redirect off;
-        proxy_connect_timeout 5s;
+        proxy_connect_timeout 10s;
         proxy_send_timeout 60s;
         proxy_read_timeout 60s;
+        proxy_next_upstream error timeout invalid_header http_500 http_502 http_503;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # Add error handling
+        proxy_intercept_errors on;
+        error_page 502 503 504 = @backend_error;
+    }
+    
+    location @backend_error {
+        return 503 "Service Unavailable: Backend service 'prebid-client' is not reachable. Please check if the service is running and on the same Docker network.";
+        add_header Content-Type text/plain;
     }
 }
 
@@ -274,7 +295,8 @@ server {
     server_name prebid-client-server.${DOMAIN} *.prebid-client-server.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /ops/healthcheck {
+    # Exact match for /ops/healthcheck (highest priority)
+    location = /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
@@ -300,7 +322,8 @@ server {
     server_name prebid-secure-signals.${DOMAIN} *.prebid-secure-signals.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    location /ops/healthcheck {
+    # Exact match for /ops/healthcheck (highest priority)
+    location = /ops/healthcheck {
         access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
