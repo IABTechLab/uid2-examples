@@ -9,6 +9,7 @@ services:
     container_name: reverse-proxy
     environment:
       - DOMAIN=${DOMAIN:-sample-dev.com}
+      - BACKEND_HOST=
   
   # javascript sdk integrations
   javascript-sdk-client-side:
