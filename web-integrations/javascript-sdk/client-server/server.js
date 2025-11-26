@@ -30,6 +30,11 @@ app.use(express.urlencoded({ extended: true }));
 app.engine('.html', ejs.__express);
 app.set('view engine', 'html');
 
+// Healthcheck endpoint for Kubernetes probes
+app.get('/ops/healthcheck', (req, res) => {
+    res.status(200).send('healthy\n');
+});
+
 app.get('/', (req, res) => {
     res.render('index', { 
         uidBaseUrl,

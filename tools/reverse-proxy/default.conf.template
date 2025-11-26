@@ -42,13 +42,6 @@ server {
     server_name js-client-side.${DOMAIN} *.js-client-side.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    # Exact match for /ops/healthcheck (highest priority)
-    location = /ops/healthcheck {
-        access_log off;
-        return 200 "healthy\n";
-        add_header Content-Type text/plain;
-    }
-
     location / {
         set $backend "javascript-sdk-client-side";
         proxy_pass http://$backend:3031;
@@ -68,13 +61,6 @@ server {
     listen 80;
     server_name js-client-server.${DOMAIN} *.js-client-server.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
-
-    # Exact match for /ops/healthcheck (highest priority)
-    location = /ops/healthcheck {
-        access_log off;
-        return 200 "healthy\n";
-        add_header Content-Type text/plain;
-    }
 
     location / {
         set $backend "javascript-sdk-client-server";
@@ -96,13 +82,6 @@ server {
     server_name js-react.${DOMAIN} *.js-react.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    # Exact match for /ops/healthcheck (highest priority)
-    location = /ops/healthcheck {
-        access_log off;
-        return 200 "healthy\n";
-        add_header Content-Type text/plain;
-    }
-
     location / {
         set $backend "javascript-sdk-react-client-side";
         proxy_pass http://$backend:3034;
@@ -122,13 +101,6 @@ server {
     listen 80;
     server_name server-side.${DOMAIN} *.server-side.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
-
-    # Exact match for /ops/healthcheck (highest priority)
-    location = /ops/healthcheck {
-        access_log off;
-        return 200 "healthy\n";
-        add_header Content-Type text/plain;
-    }
 
     location / {
         set $backend "server-side";
@@ -150,13 +122,6 @@ server {
     server_name secure-signals-client-server.${DOMAIN} *.secure-signals-client-server.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    # Exact match for /ops/healthcheck (highest priority)
-    location = /ops/healthcheck {
-        access_log off;
-        return 200 "healthy\n";
-        add_header Content-Type text/plain;
-    }
-
     location / {
         set $backend "google-secure-signals-client-server";
         proxy_pass http://$backend:3041;
@@ -176,13 +141,6 @@ server {
     listen 80;
     server_name secure-signals-client-side.${DOMAIN} *.secure-signals-client-side.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
-
-    # Exact match for /ops/healthcheck (highest priority)
-    location = /ops/healthcheck {
-        access_log off;
-        return 200 "healthy\n";
-        add_header Content-Type text/plain;
-    }
 
     location / {
         set $backend "google-secure-signals-client-side";
@@ -204,13 +162,6 @@ server {
     server_name secure-signals-server-side.${DOMAIN} *.secure-signals-server-side.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    # Exact match for /ops/healthcheck (highest priority)
-    location = /ops/healthcheck {
-        access_log off;
-        return 200 "healthy\n";
-        add_header Content-Type text/plain;
-    }
-
     location / {
         set $backend "google-secure-signals-server-side";
         proxy_pass http://$backend:3043;
@@ -231,13 +182,6 @@ server {
     server_name secure-signals-react.${DOMAIN} *.secure-signals-react.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    # Exact match for /ops/healthcheck (highest priority)
-    location = /ops/healthcheck {
-        access_log off;
-        return 200 "healthy\n";
-        add_header Content-Type text/plain;
-    }
-
     location / {
         set $backend "google-secure-signals-react-client-side";
         proxy_pass http://$backend:3044;
@@ -257,13 +201,6 @@ server {
     listen 80;
     server_name prebid-client.${DOMAIN} *.prebid-client.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
-
-    # Exact match for /ops/healthcheck (highest priority)
-    location = /ops/healthcheck {
-        access_log off;
-        return 200 "healthy\n";
-        add_header Content-Type text/plain;
-    }
 
     location / {
         set $backend "prebid-client";
@@ -295,13 +232,6 @@ server {
     server_name prebid-client-server.${DOMAIN} *.prebid-client-server.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
 
-    # Exact match for /ops/healthcheck (highest priority)
-    location = /ops/healthcheck {
-        access_log off;
-        return 200 "healthy\n";
-        add_header Content-Type text/plain;
-    }
-
     location / {
         set $backend "prebid-client-server";
         proxy_pass http://$backend:3052;
@@ -321,13 +251,6 @@ server {
     listen 80;
     server_name prebid-secure-signals.${DOMAIN} *.prebid-secure-signals.${DOMAIN};
     resolver 127.0.0.11 valid=10s;
-
-    # Exact match for /ops/healthcheck (highest priority)
-    location = /ops/healthcheck {
-        access_log off;
-        return 200 "healthy\n";
-        add_header Content-Type text/plain;
-    }
 
     location / {
         set $backend "prebid-secure-signals-client-side";
