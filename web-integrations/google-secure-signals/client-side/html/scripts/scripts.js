@@ -23,22 +23,17 @@ function updateGuiElements(state) {
   
   // Check for opt-out: only if user attempted login, and we got identity null with no token
   const isOptedOut = loginAttempted && !token && state?.identity === null;
+  $('#has_opted_out').text(isOptedOut ? 'yes' : 'no');
   
   if (isOptedOut) {
     $('#login_form').hide();
-    $('#logout_form').hide();
-    $('#optout_message').show();
-    $('#optout_banner').show();
+    $('#logout_form').show();
   } else if (loginRequired) {
     $('#login_form').show();
     $('#logout_form').hide();
-    $('#optout_message').hide();
-    $('#optout_banner').hide();
   } else {
     $('#login_form').hide();
     $('#logout_form').show();
-    $('#optout_message').hide();
-    $('#optout_banner').hide();
   }
 
   const secureSignalsStorageKey = '${UID_SECURE_SIGNALS_STORAGE_KEY}';
@@ -81,13 +76,6 @@ function onDocumentReady() {
       console.error('setIdentityFromEmail failed', e);
     }
   });
-
-  $('#try_another').click(() => {
-    window.googletag.secureSignalProviders.clearAllCache();
-    sdk.disconnect();
-    $('#email').val('');
-    loginAttempted = false; // Reset flag
-  });
 }
 
 sdk.callbacks.push(onIdentityUpdated);
@@ -106,8 +94,6 @@ sdk.callbacks.push((eventType, payload) => {
       // Set initial UI state - updateGuiElements will adjust based on actual identity state
       $('#login_form').show();
       $('#logout_form').hide();
-      $('#optout_message').hide();
-      $('#optout_banner').hide();
     });
   }
 });

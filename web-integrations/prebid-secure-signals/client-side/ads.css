@@ -3,7 +3,7 @@
     /* this element's width controls the effective height */
     /* of the video container's padding-bottom */
     max-width: 640px;
-    margin: 10px 0;
+    margin: 2rem 0;
 }
   
 #video-container {
@@ -11,6 +11,7 @@
     /* forces the container to match a 16x9 aspect ratio */
     /* replace with 75% for a 4:3 aspect ratio, if needed */
     padding-bottom: 56.25%;
+    background: #000;
 }
   
 #video-element {

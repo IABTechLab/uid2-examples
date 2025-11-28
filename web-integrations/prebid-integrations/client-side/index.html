@@ -30,13 +30,33 @@
         }
         
         $('#targeted_advertising_ready').text(identity ? 'yes' : 'no');
+        $('#login_required').text(identity ? 'no' : 'yes');
         
         if (isOptedOut) {
           $('#advertising_token').text('This email has opted out.');
+          $('#prebid_storage').text('N/A (opted out)');
           $('#login_form').hide();
           $('#clear_storage_form').show();
         } else {
-          $('#advertising_token').text(identity ? String(identity.id) : '');
+          $('#advertising_token').text(identity ? String(identity.id) : 'undefined');
+          
+          // Show localStorage content with formatted structure
+          const localStorageValue = localStorage.getItem('${UID_STORAGE_KEY}');
+          if (localStorageValue) {
+            try {
+              const parsedToken = JSON.parse(localStorageValue);
+              const displayObject = { latestToken: parsedToken.latestToken };
+              if (parsedToken.originalIdentity) {
+                displayObject.originalIdentity = parsedToken.originalIdentity;
+              }
+              $('#prebid_storage').text(JSON.stringify(displayObject, null, 2));
+            } catch (e) {
+              $('#prebid_storage').text(localStorageValue);
+            }
+          } else {
+            $('#prebid_storage').text('No token stored yet.');
+          }
+          
           if (!identity) {
             $('#login_form').show();
             $('#clear_storage_form').hide();
@@ -65,7 +85,12 @@
         $('#login').click(handleLogin);
         $('#clear_storage').click(handleClearStorage);
         
-        updateGuiElements();
+        // Wait for Prebid to load user IDs from storage before updating UI
+        pbjs.que.push(function() {
+          pbjs.onEvent('userIds', updateGuiElements);
+          // Also update immediately in case IDs are already loaded
+          updateGuiElements();
+        });
       }
 
       function setUidConfig(email) {
@@ -172,42 +197,135 @@
     </script>
   </head>
   <body>
-    <h1>Client-Side ${IDENTITY_NAME} SDK Integration Example with Prebid.js</h1>
-    <p class="intro">
-      This example demonstrates how a content publisher can integrate with ${IDENTITY_NAME} and Prebid.js using the <a href="${DOCS_BASE_URL}/guides/integration-prebid-client-side">${IDENTITY_NAME} Client-Side Integration Guide for Prebid.js</a>, which includes generating ${IDENTITY_NAME} tokens within the browser.
-      <strong>Note:</strong> This is a <em>test-only</em> integration environment—not for production use.
-      It does not perform real user authentication or generate production-level tokens.
-      Do not use real user data on this page.
-    </p>
-    <table id="identity_state">
-      <tr>
-        <td class="label">Ready for Targeted Advertising:</td>
-        <td class="value"><pre id="targeted_advertising_ready"></pre></td>
-      </tr>
-      <tr>
-        <td class="label">${IDENTITY_NAME} Advertising Token:</td>
-        <td class="value"><pre id="advertising_token"></pre></td>
-      </tr>
-    </table>
-    <div id="test-div">
-    </div>
-    <div id="login_form" style="display: none" class="form">
-      <div class="email_prompt">
-        <input
-          type="text"
-          id="email"
-          name="email"
-          placeholder="Enter an email address"
-          style="border-style: none"
-        />
+    <div class="page-wrapper">
+      <!-- Main Content Area -->
+      <div class="main-content">
+        <h1>Client-Side ${IDENTITY_NAME} Integration with Prebid.js</h1>
+        <p class="intro">
+          This example demonstrates how a content publisher can integrate ${IDENTITY_NAME} with <strong>Prebid.js</strong> for header bidding, using client-side token generation. For documentation, see the <a href="${DOCS_BASE_URL}/guides/integration-prebid-client-side">${IDENTITY_NAME} Client-Side Integration Guide for Prebid.js</a>.
+        </p>
+
+        <h2>${IDENTITY_NAME} Integration Status</h2>
+
+        <table id="identity_state">
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Ready for Targeted Advertising:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Indicates whether a valid ${IDENTITY_NAME} token is present and can be used for personalized ad targeting.
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="targeted_advertising_ready"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Advertising Token:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    The encrypted ${IDENTITY_NAME} token that is passed to ad systems without exposing raw user identity. It is automatically refreshed by the SDK in the background when expired.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="advertising_token"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Is Login Required?
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Indicates whether a new ${IDENTITY_NAME} token needs to be generated. Returns "yes" when no valid identity exists or the current identity has expired.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="login_required"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Prebid Token Storage:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Shows the ${IDENTITY_NAME} token stored by Prebid in localStorage under the key '${UID_STORAGE_KEY}'. Prebid manages this storage for header bidding.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="prebid_storage"></pre></td>
+          </tr>
+        </table>
+
+        <div id="login_form" style="display: none" class="form">
+          <div class="email_prompt">
+            <input
+              type="text"
+              id="email"
+              name="email"
+              placeholder="Enter an email address"
+            />
+            <button type="button" class="button" id="login">Generate ${IDENTITY_NAME}</button>
+          </div>
+        </div>
+        <div id="clear_storage_form" style="display: none" class="form">
+          <button type="button" class="button" id="clear_storage">Clear ${IDENTITY_NAME}</button>
+        </div>
       </div>
-      <div><button type="button" class="button" id="login">Generate ${IDENTITY_NAME}</button></div>
-    </div>
-    <div id="clear_storage_form" style="display: none" class="form">
-      <form>
-        <button type="button" class="button" id="clear_storage">Clear ${IDENTITY_NAME}</button>
-      </form>
-    </div>
+
+      <!-- Sidebar for Instructions -->
+      <aside class="sidebar">
+        <h3>📋 How to Test</h3>
+        
+        <div class="section">
+          <h4>Step 1: Generate ${IDENTITY_NAME}</h4>
+          <ul>
+            <li>Enter an email address in the input field</li>
+            <li>Click "Generate ${IDENTITY_NAME}" button</li>
+            <li>Wait for Prebid to initialize the token</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>Step 2: Observe Integration</h4>
+          <ul>
+            <li>Check "Integration Status" table for token values</li>
+            <li>Verify Prebid storage updates in localStorage</li>
+            <li>Token is now available for header bidding</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>Step 3: Test Opt-Out</h4>
+          <ul>
+            <li>Try entering: <strong>test@example.com</strong></li>
+            <li>Advertising token shows "This email has opted out"</li>
+            <li>No advertising token is stored</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>What's Happening?</h4>
+          <ul>
+            <li><strong>Configuration:</strong> Prebid's ${IDENTITY_NAME} module is configured with your public credentials (subscription ID and server public key)</li>
+            <li><strong>Token Management:</strong> Prebid generates, stores, and automatically refreshes ${IDENTITY_NAME} tokens in the background when expired</li>
+            <li><strong>Local Storage:</strong> Prebid stores tokens in localStorage (__uid2_advertising_token or __euid_advertising_token) for persistence</li>
+            <li><strong>Header Bidding:</strong> Prebid shares ${IDENTITY_NAME} tokens with bidders automatically</li>
+          </ul>
+        </div>
+
+        <div class="note">
+          <strong>Note:</strong> This is a test-only environment. Do not use real user data.
+        </div>
+      </aside>
     </div>
   </body>
 </html>
