@@ -104,7 +104,7 @@ const ClientSideApp = () => {
         use real user data on this page.
       </p>
 
-      <table id="uid_state">
+      <table id="uid2_state">
         <tbody>
           <tr>
             <td className="label">Ready for Targeted Advertising:</td>

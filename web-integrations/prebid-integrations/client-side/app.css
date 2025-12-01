@@ -128,7 +128,7 @@ a:hover {
 }
 
 /* State Table */
-#uid_state {
+#identity_state {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
@@ -141,19 +141,19 @@ a:hover {
   overflow: visible;
 }
 
-#uid_state tr {
+#identity_state tr {
   border-bottom: 1px solid var(--border-color);
 }
 
-#uid_state tr:last-child {
+#identity_state tr:last-child {
   border-bottom: none;
 }
 
-#uid_state tr:nth-child(even) {
+#identity_state tr:nth-child(even) {
   background-color: var(--bg-light);
 }
 
-#uid_state td {
+#identity_state td {
   padding: 1rem;
   vertical-align: top;
 }
@@ -338,6 +338,7 @@ a:hover {
   .sidebar {
     position: static;
     max-height: none;
+    order: -1;
   }
   
   body {

@@ -351,6 +351,7 @@ a:hover {
   .sidebar {
     position: static;
     max-height: none;
+    order: -1; /* Put sidebar on top on mobile */
   }
   
   body {
