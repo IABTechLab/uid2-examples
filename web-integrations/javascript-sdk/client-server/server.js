@@ -135,7 +135,6 @@ app.post('/login', async (req, res) => {
                 uidJsSdkName
             });
         } else if (response.status !== 'success') {
-            // On error, just re-render the index page without updating (like client-side)
             res.render('index', {
                 identity: undefined,
                 isOptout: false,
@@ -146,7 +145,6 @@ app.post('/login', async (req, res) => {
                 uidJsSdkName
             });
         } else if (typeof response.body !== 'object') {
-            // On error, just re-render the index page without updating (like client-side)
             res.render('index', {
                 identity: undefined,
                 isOptout: false,
@@ -168,7 +166,6 @@ app.post('/login', async (req, res) => {
             });
         }
     } catch (error) {
-        // On error, just re-render the index page without updating (like client-side)
         res.render('index', {
             identity: undefined,
             isOptout: false,
