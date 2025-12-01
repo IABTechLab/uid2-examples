@@ -17,7 +17,7 @@ function updateGuiElements(state) {
   $('#login_required').text(
     sdk.isLoginRequired() || sdk.isLoginRequired() === undefined ? 'yes' : 'no'
   );
-  $('#identity_state').text(String(JSON.stringify(state, null, 2)));
+  $('#uid_state').text(String(JSON.stringify(state, null, 2)));
 
   const loginRequired = sdk.isLoginRequired();
   

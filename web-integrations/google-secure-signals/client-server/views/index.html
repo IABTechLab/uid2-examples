@@ -13,7 +13,6 @@
 
     <script>
       $(document).ready(() => {
-        let callbackCounter = 0;
         const sdkName = '<%- uidJsSdkName %>';
         let sdk = window[sdkName];
         sdk = sdk || { callbacks: [] };
@@ -24,7 +23,6 @@
           );
           $("#advertising_token").html(String(sdk.getAdvertisingToken()));
           $("#login_required").html(sdk.isLoginRequired() ? "yes" : "no");
-          $("#update_counter").html(callbackCounter);
           $("#identity_state").html(String(JSON.stringify(payload, null, 2)));
           
           // Update Secure Signals values displayed in the GUI
@@ -86,12 +84,6 @@
         }
 
         function onIdentityUpdated(eventType, payload) {
-          if (
-            payload?.identity &&
-            (eventType === "InitCompleted" || eventType === "IdentityUpdated")
-          ) {
-            ++callbackCounter;
-          }
           // Allow secure signals time to load
           setTimeout(() => updateGuiElements(payload), 1000);
         }
@@ -142,77 +134,197 @@
     </script>
   </head>
   <body>
-    <%- include('intro.html'); -%>
-    <p>
-      <strong>Note:</strong> This is a <em>test-only</em> integration environment—not for production
-      use. It does not perform real user authentication or generate production-level tokens. Do not
-      use real user data on this page.
-    </p>
-    <div id="googleAdContainer" style="display: none">
-      <div id="mainContainer">
-        <div id="content">
-          <video id="contentElement">
-            <source src="https://storage.googleapis.com/gvabox/media/samples/stock.mp4"></source>
-          </video>
+    <div class="page-wrapper">
+      <div class="main-content">
+        <%- include('intro.html'); -%>
+
+        <div id="googleAdContainer" style="display: none">
+          <div id="mainContainer">
+            <div id="content">
+              <video id="contentElement">
+                <source src="https://storage.googleapis.com/gvabox/media/samples/stock.mp4"></source>
+              </video>
+            </div>
+            <div id="adContainer"></div>
+          </div>
+          <button id="playButton">Play</button>
+          <script type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+          <script type="text/javascript" src="ads.js"></script>
         </div>
-        <div id="adContainer"></div>
+
+        <h2><%- identityName %> Integration Status</h2>
+
+        <table id="uid_state">
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Ready for Targeted Advertising:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Indicates if a valid <%- identityName %> advertising token is available and ready to be passed to the advertising ecosystem.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="targeted_advertising_ready"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Advertising Token:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    The encrypted <%- identityName %> token that is passed to ad systems without exposing raw user identity. It is automatically refreshed by the SDK in the background when expired.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="advertising_token"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Is Login Required?
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Indicates whether a new <%- identityName %> token needs to be generated.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="login_required"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Identity Callback State:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    The complete identity object returned by the SDK. Contains the full <%- identityName %> identity data including refresh tokens and metadata.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="identity_state"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Secure Signals Loaded?
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Indicates whether Google Secure Signals has successfully loaded and stored the <%- identityName %> token. Returns "yes" when signals are available in localStorage.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="secure_signals_loaded"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Secure Signals Value:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    The encrypted <%- identityName %> signals stored by Google in localStorage under the key '<%- secureSignalsStorageKey %>'. These signals are shared with Google Ad Manager.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="secure_signals_value"></pre></td>
+          </tr>
+        </table>
+
+        <div id="optout_banner" style="display: none" class="optout-banner">
+          <p>The email address you entered has opted out of <%- identityName %>.</p>
+        </div>
+
+        <div id="login_form" style="display: none" class="form">
+          <form action="/login" method="POST">
+            <div class="form-inline">
+              <input
+                type="text"
+                id="email"
+                name="email"
+                placeholder="Enter an email address"
+                class="email-input"
+              />
+              <input type="submit" value="Generate <%- identityName %>" class="button" />
+            </div>
+          </form>
+        </div>
+
+        <div id="logout_form" style="display: none" class="form">
+          <button type="button" class="button" id="logout">Clear <%- identityName %></button>
+        </div>
+
+        <div id="optout_form" style="display: none" class="form">
+          <button type="button" class="button" id="try_another">Try Another Email</button>
+        </div>
       </div>
-      <button id="playButton">Play</button>
-      <script type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
-      <script type="text/javascript" src="ads.js"></script>
-    </div>
-    <table id="uid2_state">
-      <tr>
-        <td class="label">Ready for Targeted Advertising:</td>
-        <td class="value"><pre id="targeted_advertising_ready"></pre></td>
-      </tr>
-      <tr>
-        <td class="label"><%- identityName %> Advertising Token:</td>
-        <td class="value"><pre id="advertising_token"></pre></td>
-      </tr>
-      <tr>
-        <td class="label">Is <%- identityName %> Login Required?</td>
-        <td class="value"><pre id="login_required"></pre></td>
-      </tr>
-      <tr>
-        <td class="label"><%- identityName %> Identity Updated Counter:</td>
-        <td class="value"><pre id="update_counter"></pre></td>
-      </tr>
-      <tr>
-        <td class="label"><%- identityName %> Identity Callback State:</td>
-        <td class="value"><pre id="identity_state"></pre></td>
-      </tr>
-      <tr>
-        <td class="label">Secure Signals Loaded?</td>
-        <td class="value"><pre id="secure_signals_loaded"></pre></td>
-      </tr>
-      <tr>
-        <td class="label">Secure Signals Value:</td>
-        <td class="value"><pre id="secure_signals_value"></pre></td>
-      </tr>
-    </table>
-    <div id="optout_banner" style="display: none; border: 3px solid #ffc107; padding: 15px; margin: 20px 0;">
-      <p style="margin: 0;">The email address you entered has opted out of <%- identityName %>.</p>
-    </div>
-    <div id="login_form" style="display: none" class="form">
-      <form action="/login" method="POST">
-        <div class="email_prompt">
-          <input
-            type="text"
-            id="email"
-            name="email"
-            placeholder="Enter an email address"
-            style="border-style: none"
-          />
+
+      <!-- Sidebar for Instructions -->
+      <aside class="sidebar">
+        <h3>📋 How to Test</h3>
+        
+        <div class="section">
+          <h4>Step 1: Generate <%- identityName %></h4>
+          <ul>
+            <li>Enter an email address in the input field</li>
+            <li>Click "Generate <%- identityName %>" button</li>
+            <li>The server generates a token and passes it to the SDK</li>
+          </ul>
         </div>
-        <div><input type="submit" value="Generate <%- identityName %>" class="button" /></div>
-      </form>
-    </div>
-    <div id="logout_form" style="display: none" class="form">
-      <button type="button" class="button" id="logout">Clear <%- identityName %></button>
-    </div>
-    <div id="optout_form" style="display: none" class="form">
-      <button type="button" class="button" id="try_another">Try Another Email</button>
+
+        <div class="section">
+          <h4>Step 2: View Video Ad</h4>
+          <ul>
+            <li>Video player appears after successful token generation</li>
+            <li>Click "Play" to watch the ad</li>
+            <li>Ad request includes <%- identityName %> token via Secure Signals</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>Step 3: Check Secure Signals</h4>
+          <ul>
+            <li>Verify "Secure Signals Loaded?" shows "yes"</li>
+            <li>Check "Secure Signals Value" displays encrypted token data</li>
+            <li>This confirms integration with Google Ad Manager</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>Step 4: Test Opt-Out</h4>
+          <ul>
+            <li>Clear your current identity with the button</li>
+            <li>Try the special email: <code>optout@example.com</code></li>
+            <li>Observe the opt-out banner appears</li>
+            <li>No token or Secure Signals are generated</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>What's Happening?</h4>
+          <ul>
+            <li><strong>Server-Side Token Generation:</strong> The server generates <%- identityName %> tokens using your API key and passes them to the SDK</li>
+            <li><strong>Auto-Refresh:</strong> Tokens are automatically refreshed by the SDK in the background when expired</li>
+            <li><strong>Local Storage:</strong> The SDK stores identity in localStorage (__uid2_advertising_token or __euid_advertising_token) for persistence across page loads</li>
+            <li><strong>Google Secure Signals:</strong> Encrypted tokens are stored in localStorage under <%- secureSignalsStorageKey %> and shared with Google Ad Manager</li>
+            <li><strong>IMA SDK:</strong> Displays video ads with <%- identityName %> targeting</li>
+          </ul>
+        </div>
+
+        <div class="note">
+          <strong>Note:</strong> This is a test-only environment. Do not use real user data.
+        </div>
+      </aside>
     </div>
   </body>
 </html>

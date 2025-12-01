@@ -127,7 +127,7 @@ a:hover {
 }
 
 /* State Table */
-#uid2_state {
+#uid_state {
   width: 100%;
   border-collapse: collapse;
   margin: 2rem 0;
@@ -137,19 +137,19 @@ a:hover {
   overflow: hidden;
 }
 
-#uid2_state tr {
+#uid_state tr {
   border-bottom: 1px solid var(--border-color);
 }
 
-#uid2_state tr:nth-child(even) {
+#uid_state tr:nth-child(even) {
   background-color: var(--bg-light);
 }
 
-#uid2_state tr:last-child {
+#uid_state tr:last-child {
   border-bottom: none;
 }
 
-#uid2_state td {
+#uid_state td {
   padding: 1rem;
   vertical-align: top;
 }
@@ -332,7 +332,7 @@ a:hover {
 }
 
 /* Ensure table doesn't clip tooltips */
-#uid2_state {
+#uid_state {
   position: relative;
   overflow: visible;
 }
