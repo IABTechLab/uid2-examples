@@ -1,6 +1,42 @@
 /* Two-Column Layout with Sidebar - Modern Design */
-/* Import centralized color variables */
-@import url('../styles/colors.css');
+
+/* Color Variables */
+:root {
+  /* Brand Colors */
+  --primary-orange: #FF6B35;
+  --primary-dark: #2D3748;
+  --accent-teal: #0D9488;
+  --accent-yellow: #FBBF24;
+
+  /* Text Colors */
+  --text-dark: #1A202C;
+  --text-gray: #718096;
+
+  /* Background Colors */
+  --bg-white: #FFFFFF;
+  --bg-light: #F7FAFC;
+  --sidebar-bg: #FFF7ED;
+
+  /* Border Colors */
+  --border-color: #E2E8F0;
+
+  /* Button Colors */
+  --button-navy: rgba(2, 10, 64, 1);
+  --button-navy-hover: rgba(2, 10, 64, 0.9);
+
+  /* Link Colors */
+  --link-color: #06B6D4;
+  --link-hover: #06B6D4;
+
+  /* Tooltip Colors */
+  --tooltip-bg: #1F2937;
+  --tooltip-trigger: #3B82F6;
+  --tooltip-trigger-hover: #2563EB;
+
+  /* Shadows */
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
 
 * {
   box-sizing: border-box;
@@ -128,7 +164,7 @@ a:hover {
 }
 
 /* State Table */
-#identity_state {
+#uid_state {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
@@ -141,19 +177,19 @@ a:hover {
   overflow: visible;
 }
 
-#identity_state tr {
+#uid_state tr {
   border-bottom: 1px solid var(--border-color);
 }
 
-#identity_state tr:last-child {
+#uid_state tr:last-child {
   border-bottom: none;
 }
 
-#identity_state tr:nth-child(even) {
+#uid_state tr:nth-child(even) {
   background-color: var(--bg-light);
 }
 
-#identity_state td {
+#uid_state td {
   padding: 1rem;
   vertical-align: top;
 }
@@ -338,7 +374,6 @@ a:hover {
   .sidebar {
     position: static;
     max-height: none;
-    order: -1;
   }
   
   body {

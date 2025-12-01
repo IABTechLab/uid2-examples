@@ -89,7 +89,7 @@
         pbjs.que.push(function() {
           pbjs.onEvent('userIds', updateGuiElements);
           // Also update immediately in case IDs are already loaded
-          updateGuiElements();
+        updateGuiElements();
         });
       }
 
@@ -201,13 +201,13 @@
       <!-- Main Content Area -->
       <div class="main-content">
         <h1>Client-Side ${IDENTITY_NAME} Integration with Prebid.js</h1>
-        <p class="intro">
+    <p class="intro">
           This example demonstrates how a content publisher can integrate ${IDENTITY_NAME} with <strong>Prebid.js</strong> for header bidding, using client-side token generation. For documentation, see the <a href="${DOCS_BASE_URL}/guides/integration-prebid-client-side">${IDENTITY_NAME} Client-Side Integration Guide for Prebid.js</a>.
         </p>
 
         <h2>${IDENTITY_NAME} Integration Status</h2>
 
-        <table id="identity_state">
+        <table id="uid_state">
           <tr>
             <td class="label">
               <div class="tooltip-wrapper">
@@ -219,9 +219,9 @@
                 </div>
               </div>
             </td>
-            <td class="value"><pre id="targeted_advertising_ready"></pre></td>
-          </tr>
-          <tr>
+        <td class="value"><pre id="targeted_advertising_ready"></pre></td>
+      </tr>
+      <tr>
             <td class="label">
               <div class="tooltip-wrapper">
                 Advertising Token:
@@ -233,8 +233,8 @@
                 </div>
               </div>
             </td>
-            <td class="value"><pre id="advertising_token"></pre></td>
-          </tr>
+        <td class="value"><pre id="advertising_token"></pre></td>
+      </tr>
           <tr>
             <td class="label">
               <div class="tooltip-wrapper">
@@ -263,21 +263,21 @@
             </td>
             <td class="value"><pre id="prebid_storage"></pre></td>
           </tr>
-        </table>
+    </table>
 
-        <div id="login_form" style="display: none" class="form">
-          <div class="email_prompt">
-            <input
-              type="text"
-              id="email"
-              name="email"
-              placeholder="Enter an email address"
-            />
+    <div id="login_form" style="display: none" class="form">
+      <div class="email_prompt">
+        <input
+          type="text"
+          id="email"
+          name="email"
+          placeholder="Enter an email address"
+        />
             <button type="button" class="button" id="login">Generate ${IDENTITY_NAME}</button>
-          </div>
-        </div>
-        <div id="clear_storage_form" style="display: none" class="form">
-          <button type="button" class="button" id="clear_storage">Clear ${IDENTITY_NAME}</button>
+      </div>
+    </div>
+    <div id="clear_storage_form" style="display: none" class="form">
+        <button type="button" class="button" id="clear_storage">Clear ${IDENTITY_NAME}</button>
         </div>
       </div>
 
@@ -324,7 +324,7 @@
 
         <div class="note">
           <strong>Note:</strong> This is a test-only environment. Do not use real user data.
-        </div>
+    </div>
       </aside>
     </div>
   </body>
