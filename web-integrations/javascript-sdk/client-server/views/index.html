@@ -9,28 +9,35 @@
     <script src="<%- uidJsSdkUrl %>"></script>
     <script>
       $(document).ready(() => {
-        let callbackCounter = 0;
         const sdkName = '<%- uidJsSdkName %>';
         const sdk = window[sdkName];
+        const isOptout = <%= isOptout %>;
+        const identity = <%- typeof identity !== 'undefined' && identity !== null ? JSON.stringify(identity) : 'undefined' %>;
 
         function updateGuiElements(state) {
           $('#targeted_advertising_ready').html(sdk.getAdvertisingToken() ? 'yes' : 'no');
           $('#advertising_token').html(String(sdk.getAdvertisingToken()));
           $('#login_required').html(sdk.isLoginRequired() ? 'yes' : 'no');
-          $('#update_counter').html(callbackCounter);
+          // In client-server flow, check the isOptout flag from server, not just SDK
+          $('#has_opted_out').html(isOptout ? 'yes' : 'no');
           $('#identity_state').html(String(JSON.stringify(state, null, 2)));
 
-          if (sdk.isLoginRequired()) {
+          if (isOptout) {
+            $('#login_form').hide();
+            $('#logout_form').hide();
+            $('#optout_form').show();
+          } else if (sdk.isLoginRequired()) {
             $('#login_form').show();
             $('#logout_form').hide();
+            $('#optout_form').hide();
           } else {
             $('#login_form').hide();
             $('#logout_form').show();
+            $('#optout_form').hide();
           }
         }
 
         function onIdentityUpdated(state) {
-          ++callbackCounter;
           updateGuiElements(state);
         }
 
@@ -39,63 +46,182 @@
           updateGuiElements(undefined);
         });
 
-        updateGuiElements(undefined);
-
-        sdk.init({
-          baseUrl: '<%- uidBaseUrl %>',
+        $('#try_another').click(() => {
+          window.location.href = '/';
         });
 
+        // Initialize SDK with identity if available (server-generated token)
+        if (identity !== undefined) {
+          sdk.init({
+            baseUrl: '<%- uidBaseUrl %>',
+            identity: identity
+          });
+        } else {
+          sdk.init({
+            baseUrl: '<%- uidBaseUrl %>',
+          });
+        }
+
         sdk.callbacks.push(onIdentityUpdated);
+        
+        // Update UI after SDK init
+        updateGuiElements(sdk.getIdentity());
       });
     </script>
   </head>
   <body>
-    <%- include('intro.html'); -%>
-    <p>
-      <strong>Note:</strong> This is a <em>test-only</em> integration environment—not for production
-      use. It does not perform real user authentication or generate production-level tokens. Do not
-      use real user data on this page.
-    </p>
-    <table id="uid2_state">
-      <tr>
-        <td class="label">Ready for Targeted Advertising:</td>
-        <td class="value"><pre id="targeted_advertising_ready"></pre></td>
-      </tr>
-      <tr>
-        <td class="label"><%- identityName %> Advertising Token:</td>
-        <td class="value"><pre id="advertising_token"></pre></td>
-      </tr>
-      <tr>
-        <td class="label">Is <%- identityName %> Login Required?</td>
-        <td class="value"><pre id="login_required"></pre></td>
-      </tr>
-      <tr>
-        <td class="label"><%- identityName %> Identity Updated Counter:</td>
-        <td class="value"><pre id="update_counter"></pre></td>
-      </tr>
-      <tr>
-        <td class="label"><%- identityName %> Identity Callback State:</td>
-        <td class="value"><pre id="identity_state"></pre></td>
-      </tr>
-    </table>
-    <div id="login_form" style="display: none" class="form">
-      <form action="/login" method="POST">
-        <div class="email_prompt">
-          <input
-            type="text"
-            id="email"
-            name="email"
-            placeholder="Enter an email address"
-            style="border-style: none"
-          />
+    <div class="page-wrapper">
+      <div class="main-content">
+        <%- include('intro.html'); -%>
+
+        <h2><%- identityName %> Integration Status</h2>
+
+        <table id="uid_state">
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Ready for Targeted Advertising:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Indicates whether a valid <%- identityName %> token is present and can be used for personalized ad targeting.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="targeted_advertising_ready"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Advertising Token:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    The encrypted <%- identityName %> token that is passed to ad systems without exposing raw user identity. It is automatically refreshed by the SDK in the background when expired.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="advertising_token"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Is Login Required?
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Indicates whether a new <%- identityName %> token needs to be generated. Returns "yes" when no valid identity exists or the current identity has expired.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="login_required"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Has Opted Out?
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Indicates if the user has opted out of <%- identityName %>. When true, no advertising token is generated or stored.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="has_opted_out"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Identity Callback State:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    The complete identity object returned by the SDK. Contains the full <%- identityName %> identity data including refresh tokens and metadata.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="identity_state"></pre></td>
+          </tr>
+        </table>
+
+        <div id="login_form" style="display: none" class="form">
+          <form action="/login" method="POST">
+            <div class="form-inline">
+              <input
+                type="text"
+                id="email"
+                name="email"
+                placeholder="Enter an email address"
+                class="email-input"
+              />
+              <input type="submit" value="Generate <%- identityName %>" class="button" />
+            </div>
+          </form>
         </div>
-        <div><input type="submit" value="Generate <%- identityName %>" class="button" /></div>
-      </form>
-    </div>
-    <div id="logout_form" style="display: none" class="form">
-      <form>
-        <button type="button" class="button" id="logout">Clear <%- identityName %></button>
-      </form>
+
+        <div id="logout_form" style="display: none" class="form">
+          <form>
+            <button type="button" class="button" id="logout">Clear <%- identityName %></button>
+          </form>
+        </div>
+
+        <div id="optout_form" style="display: none" class="form">
+          <form>
+            <button type="button" class="button" id="try_another">Try Another Email</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Sidebar for Instructions -->
+      <aside class="sidebar">
+        <h3>📋 How to Test</h3>
+        
+        <div class="section">
+          <h4>Step 1: Generate <%- identityName %></h4>
+          <ul>
+            <li>Enter an email address in the input field</li>
+            <li>Click "Generate <%- identityName %>" button</li>
+            <li>The server generates a token and passes it to the SDK</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>Step 2: Observe Token State</h4>
+          <ul>
+            <li>Watch "Ready for Targeted Advertising" change to "yes"</li>
+            <li>Check the advertising token appears in the table</li>
+            <li>Note "Is Login Required?" becomes "no"</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>Step 3: Test Opt-Out</h4>
+          <ul>
+            <li>Clear your current identity if needed</li>
+            <li>Enter the test opt-out email: <strong>test@example.com</strong></li>
+            <li>Click "Generate <%- identityName %>"</li>
+            <li>Observe that "Has Opted Out?" shows "yes" and no token is generated</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>What's Happening?</h4>
+          <ul>
+            <li><strong>Server-Side Token Generation:</strong> The server generates <%- identityName %> tokens using your API key and passes them to the SDK</li>
+            <li><strong>Auto-Refresh:</strong> Tokens are automatically refreshed by the SDK in the background when expired</li>
+            <li><strong>Local Storage:</strong> The SDK stores identity in localStorage (__uid2_advertising_token or __euid_advertising_token) for persistence across page loads</li>
+          </ul>
+        </div>
+
+        <div class="note">
+          <strong>Note:</strong> This is a test-only environment. Do not use real user data.
+        </div>
+      </aside>
     </div>
   </body>
 </html>
