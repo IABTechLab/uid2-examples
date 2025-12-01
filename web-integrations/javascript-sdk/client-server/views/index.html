@@ -11,19 +11,29 @@
       $(document).ready(() => {
         const sdkName = '<%- uidJsSdkName %>';
         const sdk = window[sdkName];
+        const isOptout = <%= isOptout %>;
+        const identity = <%- typeof identity !== 'undefined' && identity !== null ? JSON.stringify(identity) : 'undefined' %>;
 
         function updateGuiElements(state) {
           $('#targeted_advertising_ready').html(sdk.getAdvertisingToken() ? 'yes' : 'no');
           $('#advertising_token').html(String(sdk.getAdvertisingToken()));
           $('#login_required').html(sdk.isLoginRequired() ? 'yes' : 'no');
+          // In client-server flow, check the isOptout flag from server, not just SDK
+          $('#has_opted_out').html(isOptout ? 'yes' : 'no');
           $('#identity_state').html(String(JSON.stringify(state, null, 2)));
 
-          if (sdk.isLoginRequired()) {
+          if (isOptout) {
+            $('#login_form').hide();
+            $('#logout_form').hide();
+            $('#optout_form').show();
+          } else if (sdk.isLoginRequired()) {
             $('#login_form').show();
             $('#logout_form').hide();
+            $('#optout_form').hide();
           } else {
             $('#login_form').hide();
             $('#logout_form').show();
+            $('#optout_form').hide();
           }
         }
 
@@ -36,13 +46,26 @@
           updateGuiElements(undefined);
         });
 
-        updateGuiElements(undefined);
-
-        sdk.init({
-          baseUrl: '<%- uidBaseUrl %>',
+        $('#try_another').click(() => {
+          window.location.href = '/';
         });
 
+        // Initialize SDK with identity if available (server-generated token)
+        if (identity !== undefined) {
+          sdk.init({
+            baseUrl: '<%- uidBaseUrl %>',
+            identity: identity
+          });
+        } else {
+          sdk.init({
+            baseUrl: '<%- uidBaseUrl %>',
+          });
+        }
+
         sdk.callbacks.push(onIdentityUpdated);
+        
+        // Update UI after SDK init
+        updateGuiElements(sdk.getIdentity());
       });
     </script>
   </head>
@@ -99,6 +122,20 @@
           <tr>
             <td class="label">
               <div class="tooltip-wrapper">
+                Has Opted Out?
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Indicates if the user has opted out of <%- identityName %>. When true, no advertising token is generated or stored.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="has_opted_out"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
                 Identity Callback State:
                 <div class="tooltip">
                   <span class="tooltip-trigger">?</span>
@@ -132,6 +169,12 @@
             <button type="button" class="button" id="logout">Clear <%- identityName %></button>
           </form>
         </div>
+
+        <div id="optout_form" style="display: none" class="form">
+          <form>
+            <button type="button" class="button" id="try_another">Try Another Email</button>
+          </form>
+        </div>
       </div>
 
       <!-- Sidebar for Instructions -->
@@ -159,9 +202,10 @@
         <div class="section">
           <h4>Step 3: Test Opt-Out</h4>
           <ul>
-            <li>Clear your current identity with the button</li>
-            <li>Try the special email: <code>optout@example.com</code></li>
-            <li>Observe no token is generated</li>
+            <li>Clear your current identity if needed</li>
+            <li>Enter the test opt-out email: <code>optout@example.com</code></li>
+            <li>Click "Generate <%- identityName %>"</li>
+            <li>Observe that "Has Opted Out?" shows "yes" and no token is generated</li>
           </ul>
         </div>
 

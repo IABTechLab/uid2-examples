@@ -36,7 +36,9 @@ app.get('/ops/healthcheck', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    res.render('index', { 
+    res.render('index', {
+        identity: undefined,
+        isOptout: false,
         uidBaseUrl,
         identityName,
         docsBaseUrl,
@@ -122,23 +124,42 @@ app.post('/login', async (req, res) => {
         const encryptedResponse = await axios.post(uidBaseUrl + '/v2/token/generate', envelope, headers); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
         const response = decrypt(encryptedResponse.data, uidClientSecret, nonce);
 
-        if (response.status !== 'success') {
-            res.render('error', { 
-                error: 'Got unexpected token generate status in decrypted response: ' + response.status, 
-                response,
+        if (response.status === 'optout') {
+            res.render('index', {
+                identity: null,
+                isOptout: true,
+                uidBaseUrl,
                 identityName,
-                docsBaseUrl
+                docsBaseUrl,
+                uidJsSdkUrl,
+                uidJsSdkName
+            });
+        } else if (response.status !== 'success') {
+            // On error, just re-render the index page without updating (like client-side)
+            res.render('index', {
+                identity: undefined,
+                isOptout: false,
+                uidBaseUrl,
+                identityName,
+                docsBaseUrl,
+                uidJsSdkUrl,
+                uidJsSdkName
             });
         } else if (typeof response.body !== 'object') {
-            res.render('error', { 
-                error: 'Unexpected token generate response format in decrypted response: ' + response, 
-                response,
+            // On error, just re-render the index page without updating (like client-side)
+            res.render('index', {
+                identity: undefined,
+                isOptout: false,
+                uidBaseUrl,
                 identityName,
-                docsBaseUrl
+                docsBaseUrl,
+                uidJsSdkUrl,
+                uidJsSdkName
             });
         } else {
-            res.render('login', { 
-                identity: response.body, 
+            res.render('index', {
+                identity: response.body,
+                isOptout: false,
                 uidBaseUrl,
                 identityName,
                 docsBaseUrl,
@@ -147,11 +168,15 @@ app.post('/login', async (req, res) => {
             });
         }
     } catch (error) {
-        res.render('error', { 
-            error, 
-            response: error.response,
+        // On error, just re-render the index page without updating (like client-side)
+        res.render('index', {
+            identity: undefined,
+            isOptout: false,
+            uidBaseUrl,
             identityName,
-            docsBaseUrl
+            docsBaseUrl,
+            uidJsSdkUrl,
+            uidJsSdkName
         });
     }
 
