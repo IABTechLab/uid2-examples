@@ -11,6 +11,10 @@ RUN npm install
 # Copy source files
 COPY src ./src
 COPY public ./public
+COPY server.js ./
+
+# Build the React app
+RUN npm run build
 
 # Expose port
 EXPOSE 3034
