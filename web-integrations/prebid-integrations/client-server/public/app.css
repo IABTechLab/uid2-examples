@@ -252,8 +252,10 @@ a:hover {
   transform: translateY(0);
 }
 
-/* Full width button for logout */
-#logout_form .button {
+/* Full width button for logout, clear storage, and optout */
+#logout_form .button,
+#clear_storage_form .button,
+#optout_form .button {
   width: 100%;
   max-width: 600px;
   border-radius: 8px;
