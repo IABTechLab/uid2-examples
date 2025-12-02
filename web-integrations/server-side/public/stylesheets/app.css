@@ -337,8 +337,8 @@ a:hover {
 @media (max-width: 1024px) {
   .page-wrapper {
     flex-direction: column;
-  }
-  
+}
+
   .sidebar {
     position: static;
     max-height: none;
