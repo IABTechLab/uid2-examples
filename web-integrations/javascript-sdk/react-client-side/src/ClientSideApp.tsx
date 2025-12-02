@@ -7,15 +7,34 @@ declare global {
   }
 }
 
-// Environment variables 
-const UID_JS_SDK_NAME = process.env.REACT_APP_UID_JS_SDK_NAME;
-const UID_BASE_URL = process.env.REACT_APP_UID_CLIENT_BASE_URL;
-const IDENTITY_NAME = process.env.REACT_APP_IDENTITY_NAME;
-const DOCS_BASE_URL = process.env.REACT_APP_DOCS_BASE_URL;
+// Extend Window interface for runtime environment variables
+interface ReactAppEnv {
+  [key: string]: string | undefined;
+}
+
+// Helper function to get environment variables from runtime (Kubernetes) or build-time
+function getEnvVar(key: string): string | undefined {
+  // First try runtime environment (injected by server.js for Kubernetes)
+  if (typeof window !== 'undefined' && (window as any).__REACT_APP_ENV__) {
+    const env = (window as any).__REACT_APP_ENV__ as ReactAppEnv;
+    const value = env[key];
+    if (value !== undefined && value !== null) {
+      return value;
+    }
+  }
+  // Fallback to build-time environment variable
+  return process.env[key];
+}
+
+// Environment variables (read from runtime or build-time)
+const UID_JS_SDK_NAME = getEnvVar('REACT_APP_UID_JS_SDK_NAME') || '__uid2';
+const UID_BASE_URL = getEnvVar('REACT_APP_UID_CLIENT_BASE_URL');
+const IDENTITY_NAME = getEnvVar('REACT_APP_IDENTITY_NAME') || 'UID2';
+const DOCS_BASE_URL = getEnvVar('REACT_APP_DOCS_BASE_URL') || 'https://unifiedid.com/docs';
 
 const clientSideIdentityOptions = {
-  subscriptionId: process.env.REACT_APP_UID_CSTG_SUBSCRIPTION_ID,
-  serverPublicKey: process.env.REACT_APP_UID_CSTG_SERVER_PUBLIC_KEY,
+  subscriptionId: getEnvVar('REACT_APP_UID_CSTG_SUBSCRIPTION_ID'),
+  serverPublicKey: getEnvVar('REACT_APP_UID_CSTG_SERVER_PUBLIC_KEY'),
 };
 
 const ClientSideApp = () => {

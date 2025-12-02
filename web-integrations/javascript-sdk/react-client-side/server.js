@@ -1,6 +1,11 @@
-require('dotenv').config({ path: '../../../.env' });
-
-console.log('process.env', process.env);
+// Load environment variables from .env file (for local development)
+// In Docker, env_file in docker-compose.yml already provides these, so this is optional
+try {
+  require('dotenv').config({ path: '../../../.env' });
+} catch (error) {
+  // Silently fail if .env file doesn't exist (e.g., in Docker where env vars are provided via env_file)
+  // This is expected behavior when running in Docker
+}
 
 const fs = require('fs');
 const path = require('path');
@@ -21,9 +26,19 @@ app.get('/ops/healthcheck', (req, res) => {
 // Helper function to serve index.html with environment variable replacement
 function serveIndexHtml(req, res) {
   // Try build directory first (production), then public (development)
-  let indexPath = path.join(__dirname, 'build', 'index.html');
-  if (!fs.existsSync(indexPath)) {
-    indexPath = path.join(__dirname, 'public', 'index.html');
+  const buildPath = path.join(__dirname, 'build');
+  const buildIndexPath = path.join(buildPath, 'index.html');
+  const publicIndexPath = path.join(__dirname, 'public', 'index.html');
+  
+  let indexPath;
+  if (fs.existsSync(buildIndexPath)) {
+    indexPath = buildIndexPath;
+  } else if (fs.existsSync(publicIndexPath)) {
+    console.warn('Warning: build directory not found. Serving from public directory. Run "npm run build" to build the React app.');
+    indexPath = publicIndexPath;
+  } else {
+    res.status(500).send('Error: Neither build nor public index.html found. Please run "npm run build" first.');
+    return;
   }
   
   let html = fs.readFileSync(indexPath, 'utf8');
@@ -35,6 +50,21 @@ function serveIndexHtml(req, res) {
   // Replace placeholders (using __PLACEHOLDER__ format to avoid React build processing)
   html = html.replace(/__UID_JS_SDK_URL_PLACEHOLDER__/g, uidJsSdkUrl);
   html = html.replace(/__PUBLIC_URL_PLACEHOLDER__/g, publicUrl);
+  
+  // Inject runtime environment variables as a script tag
+  // This allows the React app to read environment variables at runtime (for Kubernetes)
+  const runtimeEnv = {
+    REACT_APP_UID_JS_SDK_NAME: process.env.REACT_APP_UID_JS_SDK_NAME,
+    REACT_APP_UID_CLIENT_BASE_URL: process.env.REACT_APP_UID_CLIENT_BASE_URL,
+    REACT_APP_IDENTITY_NAME: process.env.REACT_APP_IDENTITY_NAME,
+    REACT_APP_DOCS_BASE_URL: process.env.REACT_APP_DOCS_BASE_URL,
+    REACT_APP_UID_CSTG_SUBSCRIPTION_ID: process.env.REACT_APP_UID_CSTG_SUBSCRIPTION_ID,
+    REACT_APP_UID_CSTG_SERVER_PUBLIC_KEY: process.env.REACT_APP_UID_CSTG_SERVER_PUBLIC_KEY,
+  };
+  
+  // Inject script tag before closing </head> tag
+  const envScript = `<script>window.__REACT_APP_ENV__ = ${JSON.stringify(runtimeEnv)};</script>`;
+  html = html.replace('</head>', `${envScript}</head>`);
   
   // Debug: log if replacement happened
   if (html.includes('__UID_JS_SDK_URL_PLACEHOLDER__')) {
@@ -74,6 +104,15 @@ app.get('*', (req, res, next) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  const buildPath = path.join(__dirname, 'build');
+  if (fs.existsSync(buildPath)) {
+    console.log(`Example app listening at http://localhost:${port}`);
+    console.log('Serving production build from build/ directory');
+  } else {
+    console.log(`Example app listening at http://localhost:${port}`);
+    console.warn('WARNING: build/ directory not found. Serving from public/ directory.');
+    console.warn('For production, run "npm run build" first.');
+    console.warn('For development, use "npm run dev" instead.');
+  }
 });
 
