@@ -7,23 +7,46 @@ declare global {
     getAdvertisingToken: any;
     google: any;
     googletag: any;
+    __REACT_APP_ENV__?: {
+      REACT_APP_UID_JS_SDK_NAME?: string;
+      REACT_APP_UID_CLIENT_BASE_URL?: string;
+      REACT_APP_UID_SECURE_SIGNALS_SDK_URL?: string;
+      REACT_APP_UID_SECURE_SIGNALS_STORAGE_KEY?: string;
+      REACT_APP_IDENTITY_NAME?: string;
+      REACT_APP_DOCS_BASE_URL?: string;
+      REACT_APP_UID_CSTG_SUBSCRIPTION_ID?: string;
+      REACT_APP_UID_CSTG_SERVER_PUBLIC_KEY?: string;
+    };
   }
 }
 
 // Declare global variables
 declare const google: any;
 
-// Environment variables
-const UID_JS_SDK_NAME = process.env.REACT_APP_UID_JS_SDK_NAME;
-const UID_BASE_URL = process.env.REACT_APP_UID_CLIENT_BASE_URL;
-const SECURE_SIGNALS_SDK_URL = process.env.REACT_APP_UID_SECURE_SIGNALS_SDK_URL;
-const SECURE_SIGNALS_STORAGE_KEY = process.env.REACT_APP_UID_SECURE_SIGNALS_STORAGE_KEY;
-const IDENTITY_NAME = process.env.REACT_APP_IDENTITY_NAME;
-const DOCS_BASE_URL = process.env.REACT_APP_DOCS_BASE_URL;
+// Helper function to get environment variables from runtime (Kubernetes) or build-time
+function getEnvVar(key: string): string | undefined {
+  // First try runtime environment (injected by server.js for Kubernetes)
+  if (typeof window !== 'undefined' && window.__REACT_APP_ENV__) {
+    const value = window.__REACT_APP_ENV__[key as keyof typeof window.__REACT_APP_ENV__];
+    if (value !== undefined && value !== null) {
+      return value;
+    }
+  }
+  // Fallback to build-time environment variable
+  return process.env[key];
+}
+
+// Environment variables (read from runtime or build-time)
+const UID_JS_SDK_NAME = getEnvVar('REACT_APP_UID_JS_SDK_NAME') || '__uid2';
+const UID_BASE_URL = getEnvVar('REACT_APP_UID_CLIENT_BASE_URL');
+const SECURE_SIGNALS_SDK_URL = getEnvVar('REACT_APP_UID_SECURE_SIGNALS_SDK_URL') || '';
+const SECURE_SIGNALS_STORAGE_KEY = getEnvVar('REACT_APP_UID_SECURE_SIGNALS_STORAGE_KEY') || '';
+const IDENTITY_NAME = getEnvVar('REACT_APP_IDENTITY_NAME') || 'UID2';
+const DOCS_BASE_URL = getEnvVar('REACT_APP_DOCS_BASE_URL') || 'https://unifiedid.com/docs';
 
 const clientSideIdentityOptions = {
-  subscriptionId: process.env.REACT_APP_UID_CSTG_SUBSCRIPTION_ID,
-  serverPublicKey: process.env.REACT_APP_UID_CSTG_SERVER_PUBLIC_KEY,
+  subscriptionId: getEnvVar('REACT_APP_UID_CSTG_SUBSCRIPTION_ID'),
+  serverPublicKey: getEnvVar('REACT_APP_UID_CSTG_SERVER_PUBLIC_KEY'),
 };
 
 const SecureSignalsApp = () => {
@@ -49,10 +72,19 @@ const SecureSignalsApp = () => {
   const loginAttemptedRef = useRef(false);
 
   // Helper function to get SDK instance
-  const getSDK = () => window[UID_JS_SDK_NAME];
+  const getSDK = () => {
+    const sdk = window[UID_JS_SDK_NAME];
+    if (!sdk) {
+      console.error(`SDK not found at window.${UID_JS_SDK_NAME}. Make sure the SDK script is loaded.`);
+    }
+    return sdk;
+  };
 
   const updateElements = useCallback((status) => {
     const sdk = getSDK();
+    if (!sdk) {
+      return;
+    }
     const token = sdk.getAdvertisingToken();
     
     // Check for opt-out: only if user attempted login, and we got identity null with no token
@@ -178,9 +210,40 @@ const SecureSignalsApp = () => {
   useEffect(() => {
     // Add callbacks for UID2/EUID JS SDK
     let sdk = getSDK();
-    sdk = sdk || { callbacks: [] };
+    if (!sdk) {
+      // SDK not loaded yet, wait for it
+      const checkSDK = setInterval(() => {
+        sdk = getSDK();
+        if (sdk) {
+          clearInterval(checkSDK);
+          if (!sdk.callbacks) {
+            sdk.callbacks = [];
+          }
+          sdk.callbacks.push(onIdentityUpdated);
+          sdk.callbacks.push((eventType: string, payload: any) => {
+            if (eventType === 'SdkLoaded') {
+              sdk.init({
+                baseUrl: UID_BASE_URL,
+              });
+            }
+            if (eventType === 'InitCompleted') {
+              if (sdk.isLoginRequired()) {
+                sdk.setIdentity(identity);
+                setIdentity(identity);
+              }
+            }
+          });
+        }
+      }, 100);
+      return () => clearInterval(checkSDK);
+    }
+    
+    // SDK is available, set up callbacks
+    if (!sdk.callbacks) {
+      sdk.callbacks = [];
+    }
     sdk.callbacks.push(onIdentityUpdated);
-    sdk.callbacks.push((eventType, payload) => {
+    sdk.callbacks.push((eventType: string, payload: any) => {
       if (eventType === 'SdkLoaded') {
         sdk.init({
           baseUrl: UID_BASE_URL,
@@ -261,6 +324,18 @@ const SecureSignalsApp = () => {
 
     try {
       const sdk = getSDK();
+      if (!sdk) {
+        console.error('SDK not available. Make sure the SDK script is loaded.');
+        return;
+      }
+      
+      // Check if crypto.subtle is available (required for SDK)
+      if (typeof window !== 'undefined' && !window.crypto?.subtle) {
+        console.error('crypto.subtle is not available. This requires HTTPS or a secure context.');
+        alert('crypto.subtle is not available. Please access this page over HTTPS.');
+        return;
+      }
+      
       await sdk.setIdentityFromEmail(email, clientSideIdentityOptions);
       loadSecureSignals();
     } catch (e) {
