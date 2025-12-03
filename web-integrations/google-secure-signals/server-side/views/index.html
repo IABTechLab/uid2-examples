@@ -11,19 +11,18 @@
     <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
 
     <script type="text/javascript">
-      const getAdvertisingToken = async () => {
+      const getUid2AdvertisingToken = async () => {
         const response = await fetch('/getFreshToken');
         const result = await response.json();
         console.log(result);
         return result.advertising_token;
       };
 
-      window.getAdvertisingToken = getAdvertisingToken;
+      window.getUid2AdvertisingToken = getUid2AdvertisingToken;
 
-      // If secureSignalProvider is initialized before getAdvertisingToken is assigned, call registerSecureSignalProvider
-      const providerName = '__' + '<%- identityName %>'.toLowerCase() + 'SecureSignalProvider';
-      if (window[providerName]) {
-        window[providerName].registerSecureSignalProvider();
+      // If uid2SecureSignalProvider is initialized before getUid2AdvertisingToken is assigned, call registerSecureSignalProvider
+      if (window.__uid2SecureSignalProvider) {
+        window.__uid2SecureSignalProvider.registerSecureSignalProvider();
       }
     </script>
     <script>
@@ -80,22 +79,33 @@
           [<a href="https://github.com/IABTechLab/uid2-examples/tree/main/web-integrations/google-secure-signals/server-side">Source Code</a>]
         </p>
 
-        <% if (identity) { %>
-        <div id="googleAdContainer">
-          <div id="mainContainer">
-            <div id="content">
-              <video id="contentElement">
-                <source src="https://storage.googleapis.com/gvabox/media/samples/stock.mp4"></source>
-              </video>
+        <!-- Generate/Clear buttons at the top for easy access -->
+        <% if (!identity && !isOptout) { %>
+        <div id="login_form" class="form" style="margin-top: 0; margin-bottom: 2rem;">
+          <form action="/login" method="POST">
+            <div class="form-inline">
+              <input
+                type="text"
+                id="email"
+                name="email"
+                placeholder="Enter an email address"
+                class="email-input"
+              />
+              <input type="submit" value="Generate <%- identityName %>" class="button" />
             </div>
-            <div id="adContainer"></div>
-          </div>
-          <button id="playButton">Play</button>
-          <script type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
-          <script type="text/javascript" src="ads.js"></script>
+          </form>
+        </div>
+        <% } else if (isOptout) { %>
+        <div id="optout_form" class="form" style="margin-top: 0; margin-bottom: 2rem;">
+          <button type="button" class="button" id="try_another">Try Another Email</button>
+        </div>
+        <% } else { %>
+        <div id="logout_form" class="form" style="margin-top: 0; margin-bottom: 2rem;">
+          <button type="button" class="button" id="logout">Clear <%- identityName %></button>
         </div>
         <% } %>
 
+        <!-- UID2 Integration Status Section -->
         <h2><%- identityName %> Integration Status</h2>
 
         <table id="uid_state">
@@ -169,6 +179,12 @@
             </td>
             <td class="value"><pre><%= identity ? JSON.stringify(identity, null, 2) : 'null' %></pre></td>
           </tr>
+        </table>
+
+        <!-- Google Secure Signals Section -->
+        <h2 class="section-teal">Google Secure Signals Status</h2>
+
+        <table id="secure_signals_state">
           <tr>
             <td class="label">
               <div class="tooltip-wrapper">
@@ -181,7 +197,7 @@
                 </div>
               </div>
             </td>
-            <td class="value"><pre id="secure_signals_loaded">checking...</pre></td>
+            <td class="value"><pre id="secure_signals_loaded">no</pre></td>
           </tr>
           <tr>
             <td class="label">
@@ -195,32 +211,24 @@
                 </div>
               </div>
             </td>
-            <td class="value"><pre id="secure_signals_value">checking...</pre></td>
+            <td class="value"><pre id="secure_signals_value">undefined</pre></td>
           </tr>
         </table>
 
-        <% if (!identity && !isOptout) { %>
-        <div id="login_form" class="form">
-          <form action="/login" method="POST">
-            <div class="form-inline">
-              <input
-                type="text"
-                id="email"
-                name="email"
-                placeholder="Enter an email address"
-                class="email-input"
-              />
-              <input type="submit" value="Generate <%- identityName %>" class="button" />
+        <!-- Video Ad Container - at the bottom -->
+        <% if (identity) { %>
+        <div id="googleAdContainer">
+          <div id="mainContainer">
+            <div id="content">
+              <video id="contentElement">
+                <source src="https://storage.googleapis.com/gvabox/media/samples/stock.mp4"></source>
+              </video>
             </div>
-          </form>
-        </div>
-        <% } else if (isOptout) { %>
-        <div id="optout_form" class="form">
-          <button type="button" class="button" id="try_another">Try Another Email</button>
-        </div>
-        <% } else { %>
-        <div id="logout_form" class="form">
-          <button type="button" class="button" id="logout">Clear <%- identityName %></button>
+            <div id="adContainer"></div>
+          </div>
+          <button id="playButton">Play</button>
+          <script type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+          <script type="text/javascript" src="ads.js"></script>
         </div>
         <% } %>
       </div>

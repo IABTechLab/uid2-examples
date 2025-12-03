@@ -128,6 +128,10 @@ h2 {
   border-bottom: 3px solid var(--primary-orange);
 }
 
+h2.section-teal {
+  border-bottom-color: var(--accent-teal);
+}
+
 p {
   font-size: 0.95rem;
   color: var(--text-gray);
@@ -146,8 +150,9 @@ a:hover {
   opacity: 0.8;
 }
 
-/* State Table */
-#uid_state {
+/* State Tables */
+#uid_state,
+#secure_signals_state {
   width: 100%;
   border-collapse: collapse;
   margin: 2rem 0;
@@ -158,19 +163,23 @@ a:hover {
   position: relative;
 }
 
-#uid_state tr {
+#uid_state tr,
+#secure_signals_state tr {
   border-bottom: 1px solid var(--border-color);
 }
 
-#uid_state tr:nth-child(even) {
+#uid_state tr:nth-child(even),
+#secure_signals_state tr:nth-child(even) {
   background-color: var(--bg-light);
 }
 
-#uid_state tr:last-child {
+#uid_state tr:last-child,
+#secure_signals_state tr:last-child {
   border-bottom: none;
 }
 
-#uid_state td {
+#uid_state td,
+#secure_signals_state td {
   padding: 1rem;
   vertical-align: top;
 }
@@ -336,7 +345,7 @@ a:hover {
 
 /* Video Container Styling */
 #googleAdContainer {
-  margin-bottom: 2rem;
+  margin-top: 2rem;
 }
 
 @media (max-width: 1024px) {
