@@ -194,6 +194,23 @@
       This example demonstrates how a content publisher can integrate with <%- identityName %> and Prebid.js using the <a href="<%- docsBaseUrl %>/guides/integration-prebid-client-server"><%- identityName %> Client-Server Integration Guide for Prebid.js</a>, where tokens are generated on the server and passed to Prebid.js on the client side.
         </p>
 
+        <!-- Generate/Clear buttons at the top for easy access -->
+        <div id="login_form" style="display: none" class="form top-form">
+          <div class="form-inline">
+            <input
+              type="text"
+              id="email"
+              name="email"
+              placeholder="Enter an email address"
+              class="email-input"
+            />
+            <button type="button" class="button" id="login">Generate <%- identityName %></button>
+          </div>
+        </div>
+        <div id="clear_storage_form" style="display: none" class="form top-form">
+          <button type="button" class="button" id="clear_storage">Clear <%- identityName %></button>
+        </div>
+
         <h2><%- identityName %> Integration Status</h2>
 
         <table id="uid_state">
@@ -209,9 +226,9 @@
                 </div>
               </div>
             </td>
-        <td class="value"><pre id="targeted_advertising_ready"></pre></td>
-      </tr>
-      <tr>
+            <td class="value"><pre id="targeted_advertising_ready"></pre></td>
+          </tr>
+          <tr>
             <td class="label">
               <div class="tooltip-wrapper">
                 Advertising Token:
@@ -223,8 +240,8 @@
                 </div>
               </div>
             </td>
-        <td class="value"><pre id="advertising_token"></pre></td>
-      </tr>
+            <td class="value"><pre id="advertising_token"></pre></td>
+          </tr>
           <tr>
             <td class="label">
               <div class="tooltip-wrapper">
@@ -239,6 +256,13 @@
             </td>
             <td class="value"><pre id="login_required"></pre></td>
           </tr>
+        </table>
+
+        <!-- Prebid Integration Status Section -->
+        <h2 class="section-teal">Prebid Integration Status</h2>
+        <p class="section-summary">Prebid.js manages token storage in localStorage and shares it with bidders during header bidding auctions.</p>
+
+        <table id="prebid_state">
           <tr>
             <td class="label">
               <div class="tooltip-wrapper">
@@ -253,24 +277,8 @@
             </td>
             <td class="value"><pre id="prebid_storage"></pre></td>
           </tr>
-    </table>
+        </table>
 
-    <div id="login_form" style="display: none" class="form">
-          <div class="form-inline">
-        <input
-          type="text"
-          id="email"
-          name="email"
-          placeholder="Enter an email address"
-              class="email-input"
-            />
-            <button type="button" class="button" id="login">Generate <%- identityName %></button>
-          </div>
-        </div>
-
-        <div id="clear_storage_form" style="display: none" class="form">
-          <button type="button" class="button" id="clear_storage">Clear <%- identityName %></button>
-        </div>
       </div>
 
       <!-- Sidebar for Instructions -->

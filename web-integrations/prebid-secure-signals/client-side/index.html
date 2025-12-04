@@ -97,10 +97,16 @@
         // Check if user is opted out first
         const storedToken = localStorage.getItem(storageKey);
         let isOptedOut = false;
+        let hasTokenInStorage = false;
+        
         if (storedToken) {
           try {
             const tokenData = JSON.parse(storedToken);
             isOptedOut = tokenData.latestToken === 'optout';
+            // Check if there's a valid token in storage
+            if (tokenData.latestToken && tokenData.latestToken.advertising_token) {
+              hasTokenInStorage = true;
+            }
           } catch (e) {
             // Ignore parse errors
           }
@@ -113,9 +119,9 @@
           return;
         }
         
-        // Check if Prebid has the token and encryptedSignalSources is configured
-        const prebidUserIds = pbjs.getUserIds();
-        const uidToken = prebidUserIds[userIdName];
+        // Check if Prebid has the token (either from getUserIds or localStorage)
+        const prebidUserIds = pbjs.getUserIds ? pbjs.getUserIds() : {};
+        const uidToken = prebidUserIds[userIdName] || hasTokenInStorage;
         
         // Check if encryptedSignalSources is configured
         const prebidConfig = pbjs.getConfig('encryptedSignalSources');
