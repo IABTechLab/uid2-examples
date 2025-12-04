@@ -114,7 +114,7 @@ const SecureSignalsApp = () => {
 
   const onIdentityUpdated = useCallback(
     (eventType, payload) => {
-          console.log(`${IDENTITY_NAME} Callback`, payload);
+      console.log(`${IDENTITY_NAME} Callback`, payload);
       updateElements(payload);
     },
     [updateElements]
