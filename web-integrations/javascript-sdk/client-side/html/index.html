@@ -84,98 +84,101 @@
       <!-- Main Content Area -->
       <div class="main-content">
         <h1>Client-Side ${IDENTITY_NAME} Integration Example using JavaScript SDK</h1>
-        <p>
+        <p class="intro">
           This example demonstrates how a content publisher can integrate ${IDENTITY_NAME} using client-side token generation, where the SDK generates tokens directly in the browser using public credentials. For documentation, see the
-          <a href="${DOCS_BASE_URL}/guides/integration-javascript-client-side"
-            >Client-Side Integration Guide for JavaScript</a>.
+          <a href="${DOCS_BASE_URL}/guides/integration-javascript-client-side">Client-Side Integration Guide for JavaScript</a>. [<a href="https://github.com/IABTechLab/uid2-examples/tree/main/web-integrations/javascript-sdk/client-side">Source Code</a>]
         </p>
+
+        <!-- Generate/Clear buttons at the top for easy access -->
+        <div id="login_form" style="display: none" class="form top-form">
+          <div class="email_prompt">
+            <input
+              type="text"
+              id="email"
+              name="email"
+              placeholder="Enter an email address"
+            />
+            <button type="button" class="button" id="login">Generate ${IDENTITY_NAME}</button>
+          </div>
+        </div>
+        <div id="logout_form" style="display: none" class="form top-form">
+          <button type="button" class="button" id="logout">Clear ${IDENTITY_NAME}</button>
+        </div>
+
         <h2>${IDENTITY_NAME} Integration Status</h2>
+
         <table id="uid_state">
-      <tr>
-        <td class="label">
-          <div class="tooltip-wrapper">
-            Ready for Targeted Advertising:
-            <div class="tooltip">
-              <span class="tooltip-trigger">?</span>
-              <div class="tooltip-content">
-                Indicates whether a valid ${IDENTITY_NAME} token is present and can be used for personalized ad targeting.
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Ready for Targeted Advertising:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Indicates whether a valid ${IDENTITY_NAME} token is present and can be used for personalized ad targeting.
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </td>
-        <td class="value"><pre id="targeted_advertising_ready"></pre></td>
-      </tr>
-      <tr>
-        <td class="label">
-          <div class="tooltip-wrapper">
-            Advertising Token:
-            <div class="tooltip">
-              <span class="tooltip-trigger">?</span>
-              <div class="tooltip-content">
-                The encrypted ${IDENTITY_NAME} token that is passed to ad systems without exposing raw user identity. It is automatically refreshed by the SDK in the background when expired.
+            </td>
+            <td class="value"><pre id="targeted_advertising_ready"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Advertising Token:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    The encrypted ${IDENTITY_NAME} token that is passed to ad systems without exposing raw user identity. It is automatically refreshed by the SDK in the background when expired.
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </td>
-        <td class="value"><pre id="advertising_token"></pre></td>
-      </tr>
-      <tr>
-        <td class="label">
-          <div class="tooltip-wrapper">
-            Is Login Required?
-            <div class="tooltip">
-              <span class="tooltip-trigger">?</span>
-              <div class="tooltip-content">
-                Indicates whether a new ${IDENTITY_NAME} token needs to be generated. Returns "yes" when no valid identity exists or the current identity has expired.
+            </td>
+            <td class="value"><pre id="advertising_token"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Is Login Required?
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Indicates whether a new ${IDENTITY_NAME} token needs to be generated. Returns "yes" when no valid identity exists or the current identity has expired.
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </td>
-        <td class="value"><pre id="login_required"></pre></td>
-      </tr>
-      <tr>
-        <td class="label">
-          <div class="tooltip-wrapper">
-            Has opted out?
-            <div class="tooltip">
-              <span class="tooltip-trigger">?</span>
-              <div class="tooltip-content">
-                Shows whether the user has exercised opt-out, in which case no advertising token may be generated or used.
+            </td>
+            <td class="value"><pre id="login_required"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Has opted out?
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Shows whether the user has exercised opt-out, in which case no advertising token may be generated or used.
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </td>
-        <td class="value"><pre id="has_opted_out"></pre></td>
-      </tr>
-      <tr>
-        <td class="label">
-          <div class="tooltip-wrapper">
-            Identity Callback State:
-            <div class="tooltip">
-              <span class="tooltip-trigger">?</span>
-              <div class="tooltip-content">
-                The complete identity object returned by the SDK. Contains the full ${IDENTITY_NAME} identity data including refresh tokens and metadata.
+            </td>
+            <td class="value"><pre id="has_opted_out"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Identity Callback State:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    The complete identity object returned by the SDK. Contains the full ${IDENTITY_NAME} identity data including refresh tokens and metadata.
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </td>
-        <td class="value"><pre id="identity_state"></pre></td>
-      </tr>
-    </table>
-    <div id="login_form" style="display: none" class="form">
-      <div class="email_prompt">
-        <input
-          type="text"
-          id="email"
-          name="email"
-          placeholder="Enter an email address"
-        />
-        <button type="button" class="button" id="login">Generate ${IDENTITY_NAME}</button>
-      </div>
-    </div>
-    <div id="logout_form" style="display: none" class="form">
-      <button type="button" class="button" id="logout">Clear ${IDENTITY_NAME}</button>
-    </div>
+            </td>
+            <td class="value"><pre id="identity_state"></pre></td>
+          </tr>
+        </table>
       </div>
 
       <!-- Sidebar for Instructions -->

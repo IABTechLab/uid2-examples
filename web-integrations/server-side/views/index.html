@@ -1,9 +1,179 @@
-<%- include('header.html'); -%>
-<p>Protected Content &mdash; accessible only with a valid <%- identityName %> identity:</p>
-<ul>
-  <li><a href="/content1">Sample Page 1</a></li>
-  <li><a href="/content2">Sample Page 2</a></li>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Server-Side <%- identityName %> Integration Example</title>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
+    <link rel="shortcut icon" href="/images/favicon.png" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(() => {
+        $('#logout').click(() => {
+          window.location.href = '/logout';
+        });
+
+        $('#try_another').click(() => {
+          window.location.href = '/logout';
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <div class="main-content">
+        <h1>Server-Side <%- identityName %> Integration Example</h1>
+        <p>
+          This example demonstrates how a content publisher can use <%- identityName %> services to implement the
+          <a href="<%- docsBaseUrl %>/guides/integration-publisher-server-side">server-side <%- identityName %> integration workflow</a>.
+          [<a href="https://github.com/IABTechLab/uid2-examples/tree/main/web-integrations/server-side">Source Code</a>]
+        </p>
+
+        <h2><%- identityName %> Integration Status</h2>
+
+        <table id="uid_state">
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Ready for Targeted Advertising:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Indicates whether a valid <%- identityName %> token is present and can be used for personalized ad targeting.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre><%= identity && identity.advertising_token ? 'yes' : 'no' %></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Advertising Token:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    The encrypted <%- identityName %> token that is passed to ad systems without exposing raw user identity. It is automatically refreshed by the server when expired.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre><%= identity ? identity.advertising_token : 'undefined' %></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Is Login Required?
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Indicates whether a new <%- identityName %> token needs to be generated. Returns "yes" when no valid identity exists or the current identity has expired.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre><%= identity ? 'no' : 'yes' %></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Has Opted Out?
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Indicates if the user has opted out of <%- identityName %>. When true, no advertising token is generated or stored.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre><%= isOptout ? 'yes' : 'no' %></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Identity State:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    The complete identity object from the server. Contains the full <%- identityName %> identity data including refresh tokens and metadata.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre><%= identity ? JSON.stringify(identity, null, 2) : 'null' %></pre></td>
+          </tr>
+        </table>
+
+        <% if (!identity && !isOptout) { %>
+        <div id="login_form" class="form">
+          <form action="/login" method="POST">
+            <div class="form-inline">
+              <input
+                type="text"
+                id="email"
+                name="email"
+                placeholder="Enter an email address"
+                class="email-input"
+              />
+              <input type="submit" value="Generate <%- identityName %>" class="button" />
+            </div>
+          </form>
+        </div>
+        <% } else if (isOptout) { %>
+        <div id="optout_form" class="form">
+          <button type="button" class="button" id="try_another">Try Another Email</button>
+        </div>
+        <% } else { %>
+        <div id="logout_form" class="form">
+          <button type="button" class="button" id="logout">Clear <%- identityName %></button>
+        </div>
+        <% } %>
+      </div>
+
+      <!-- Sidebar for Instructions -->
+      <aside class="sidebar">
+        <h3>📋 How to Test</h3>
+        
+        <div class="section">
+          <h4>Step 1: Generate <%- identityName %></h4>
+          <ul>
+            <li>Enter an email address in the input field</li>
+            <li>Click "Generate <%- identityName %>" button</li>
+            <li>The server generates a token using your API key</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>Step 2: Observe Token State</h4>
+          <ul>
+            <li>Watch "Ready for Targeted Advertising" change to "yes"</li>
+            <li>Check the advertising token appears in the table</li>
+            <li>Note "Is Login Required?" becomes "no"</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>Step 3: Test Opt-Out</h4>
+          <ul>
+            <li>Clear your current identity if needed</li>
+            <li>Enter the test opt-out email: <strong>test@example.com</strong></li>
+            <li>Click "Generate <%- identityName %>"</li>
+            <li>Observe that "Has Opted Out?" shows "yes" and no token is generated</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>What's Happening?</h4>
+          <ul>
+            <li><strong>Server-Side Token Generation:</strong> The server generates <%- identityName %> tokens using your private API key and client secret</li>
+            <li><strong>Session Storage:</strong> Tokens are stored in server-side sessions for security</li>
+            <li><strong>Auto-Refresh:</strong> Tokens are automatically refreshed by the server when expired</li>
 </ul>
-<p>Current <%- identityName %> Identity:</p>
-<%- include('identity.html'); -%>
-<%- include('footer.html'); -%>
+        </div>
+
+        <div class="note">
+          <strong>Note:</strong> This is a test-only environment. Do not use real user data.
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

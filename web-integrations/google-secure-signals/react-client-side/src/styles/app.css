@@ -80,16 +80,16 @@ body {
   height: fit-content;
   max-height: calc(100vh - 4rem);
   overflow-y: auto;
-  }
-  
+}
+
 .sidebar h3 {
   color: var(--primary-dark);
   font-size: 1.1rem;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
   border-bottom: 2px solid var(--primary-orange);
-  }
-  
+}
+
 .sidebar .section {
   margin-bottom: 1.5rem;
 }
@@ -143,10 +143,23 @@ h2 {
   border-bottom: 3px solid var(--primary-orange);
 }
 
+/* Teal section header for Google Secure Signals */
+h2.section-teal {
+  border-bottom: 3px solid var(--accent-teal);
+}
+
 p {
   font-size: 0.95rem;
-  color: var(--text-gray);
+  color: var(--text-dark);
   margin-bottom: 2rem;
+  line-height: 1.8;
+}
+
+/* Section summary - same styling as intro but gray */
+p.section-summary {
+  font-size: 0.95rem;
+  color: var(--text-gray);
+  margin-bottom: 1rem;
   line-height: 1.8;
 }
 
@@ -161,30 +174,37 @@ a:hover {
   opacity: 0.8;
 }
 
-/* State Table */
-#uid_state {
+/* State Tables */
+#uid_state,
+#secure_signals_state {
   width: 100%;
-  border-collapse: collapse;
-  margin: 2rem 0;
-  font-size: 0.875rem;
-  border: 1px solid var(--border-color);
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1rem 0 2rem 0;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
-  overflow: hidden;
+  overflow: visible;
+  font-size: 0.875rem;
+  position: relative;
 }
 
-#uid_state tr {
+#uid_state tr,
+#secure_signals_state tr {
   border-bottom: 1px solid var(--border-color);
 }
 
-#uid_state tr:nth-child(even) {
-  background-color: var(--bg-light);
-}
-
-#uid_state tr:last-child {
+#uid_state tr:last-child,
+#secure_signals_state tr:last-child {
   border-bottom: none;
 }
 
-#uid_state td {
+#uid_state tr:nth-child(even),
+#secure_signals_state tr:nth-child(even) {
+  background-color: var(--bg-light);
+}
+
+#uid_state td,
+#secure_signals_state td {
   padding: 1rem;
   vertical-align: top;
 }
@@ -194,26 +214,32 @@ a:hover {
   color: var(--text-dark);
   white-space: nowrap;
   padding-right: 2rem;
-  width: 15em;
+  width: 280px;
 }
 
 .value {
   color: var(--text-gray);
-  font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+  font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+  word-break: break-all;
 }
 
 .value pre {
   white-space: pre-wrap;
   word-break: break-all;
-    margin: 0;
-  }
-  
+  margin: 0;
+}
+
 /* Forms */
-  .form {
+.form {
   margin-top: 2rem;
-  }
-  
-  .email_prompt {
+}
+
+.form.top-form {
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+
+.email_prompt {
   display: flex;
   gap: 0;
   max-width: 600px;
@@ -231,6 +257,7 @@ a:hover {
   color: var(--text-dark);
   outline: none;
   transition: border-color 0.2s ease;
+  background: white;
 }
 
 #email:focus {
@@ -253,6 +280,9 @@ a:hover {
   transition: all 0.2s ease;
   white-space: nowrap;
   box-shadow: var(--shadow);
+  position: static;
+  width: auto;
+  height: auto;
 }
 
 .button:hover {
@@ -265,11 +295,27 @@ a:hover {
   transform: translateY(0);
 }
 
-/* Full width button for logout */
-#logout_form .button {
+/* Full width buttons for logout/optout */
+#logout_form .button,
+#optout_form .button {
   width: 100%;
   max-width: 600px;
   border-radius: 8px;
+}
+
+/* Opt-out banner */
+.optout-banner {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(251, 191, 36, 0.05) 100%);
+  border-left: 4px solid var(--accent-yellow);
+  padding: 1rem 1.25rem;
+  margin: 0 0 2rem 0;
+  border-radius: 6px;
+}
+
+.optout-banner p {
+  margin: 0;
+  color: var(--text-dark);
+  font-weight: 500;
 }
 
 /* Success Message */
@@ -284,23 +330,16 @@ a:hover {
   border-radius: 6px;
 }
 
-.product-tables {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
 /* Tooltip Styles - Matching Self-Serve Portal */
 .tooltip-wrapper {
   display: inline-flex;
-    align-items: center;
+  align-items: center;
   gap: 0.5rem;
 }
 
 .tooltip {
   position: relative;
-    display: inline-flex;
+  display: inline-flex;
   align-items: center;
   cursor: help;
 }
@@ -319,7 +358,7 @@ a:hover {
   justify-content: center;
   cursor: help;
   transition: all 0.2s ease;
-    flex-shrink: 0;
+  flex-shrink: 0;
 }
 
 .tooltip-trigger:hover {
@@ -331,7 +370,7 @@ a:hover {
   visibility: hidden;
   opacity: 0;
   position: absolute;
-  bottom: calc(100% + 8px); /* Position above with gap */
+  bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
   background-color: var(--tooltip-bg);
@@ -339,11 +378,11 @@ a:hover {
   padding: 10px;
   border-radius: 4px;
   font-size: 0.75rem;
-  line-height: 1.125; 
-  min-width: 300px; 
-  max-width: 570px; 
+  line-height: 1.125;
+  min-width: 300px;
+  max-width: 570px;
   white-space: normal;
-  z-index: 10000; 
+  z-index: 10000;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   transition: opacity 0.2s ease, visibility 0.2s ease;
   font-weight: 400;
@@ -351,14 +390,14 @@ a:hover {
 }
 
 .tooltip-content::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 100%;
   left: 50%;
-  transform: translateX(-50%);
-  border-width: 6px;
+  margin-left: -5px;
+  border-width: 5px;
   border-style: solid;
-  border-color: #1F2937 transparent transparent transparent;
+  border-color: var(--tooltip-bg) transparent transparent transparent;
 }
 
 .tooltip:hover .tooltip-content {
@@ -366,12 +405,40 @@ a:hover {
   opacity: 1;
 }
 
-/* Ensure table doesn't clip tooltips */
-#uid_state {
-    position: relative;
-  overflow: visible;
-  }
-  
+/* Video Container Styling */
+#page-content {
+  margin-top: 2rem;
+}
+
+#video-container {
+  position: relative;
+  max-width: 600px;
+}
+
+#video-element {
+  width: 100%;
+  border-radius: 8px;
+}
+
+#play-button {
+  width: 100px;
+  height: 36px;
+  margin-top: 0.5rem;
+  background: var(--button-navy);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#play-button:hover {
+  background: var(--button-navy-hover);
+}
+
+/* Responsive Design */
 @media (max-width: 1024px) {
   .page-wrapper {
     flex-direction: column;
@@ -390,6 +457,10 @@ a:hover {
     padding: 1.5rem;
   }
   
+  h2 {
+    font-size: 1.25rem;
+  }
+  
   .email_prompt {
     flex-direction: column;
   }
@@ -402,5 +473,4 @@ a:hover {
   .button {
     width: 100%;
   }
-  }
-  
+}

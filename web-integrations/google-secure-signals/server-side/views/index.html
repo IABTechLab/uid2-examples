@@ -1,3 +1,295 @@
-<%- include('header.html'); -%> <%- include('ads.html'); -%>
-<p>Current UID2 Identity:</p>
-<%- include('identity.html'); -%> <%- include('footer.html'); -%>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Server-Side <%- identityName %> Integration Example with Google Secure Signals</title>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
+    <link rel="shortcut icon" href="/images/favicon.png" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script async src="<%- secureSignalsSdkUrl %>"></script>
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+
+    <script type="text/javascript">
+      const getUid2AdvertisingToken = async () => {
+        const response = await fetch('/getFreshToken');
+        const result = await response.json();
+        console.log(result);
+        return result.advertising_token;
+      };
+
+      window.getUid2AdvertisingToken = getUid2AdvertisingToken;
+
+      // If uid2SecureSignalProvider is initialized before getUid2AdvertisingToken is assigned, call registerSecureSignalProvider
+      if (window.__uid2SecureSignalProvider) {
+        window.__uid2SecureSignalProvider.registerSecureSignalProvider();
+      }
+    </script>
+    <script>
+      $(document).ready(() => {
+        const secureSignalsStorageKey = '<%- secureSignalsStorageKey %>';
+        
+        function updateSecureSignals() {
+          try {
+            const secureSignalsStorage = localStorage[secureSignalsStorageKey];
+            const secureSignalsStorageJson = secureSignalsStorage && JSON.parse(secureSignalsStorage);
+            
+            if (secureSignalsStorageJson && secureSignalsStorageJson[1]) {
+              $("#secure_signals_loaded").html("yes");
+              $("#secure_signals_value").html(JSON.stringify(secureSignalsStorageJson, null, 2));
+            } else {
+              $("#secure_signals_loaded").html("no");
+              $("#secure_signals_value").html("undefined");
+            }
+          } catch (e) {
+            console.log("Secure signals not yet available", e);
+            $("#secure_signals_loaded").html("no");
+            $("#secure_signals_value").html("undefined");
+          }
+        }
+        
+        // Update Secure Signals display after SDK has time to load and fetch token
+        setTimeout(updateSecureSignals, 1000);
+        
+        $('#logout').click(() => {
+          if (window.googletag && window.googletag.secureSignalProviders) {
+            window.googletag.secureSignalProviders.clearAllCache();
+          }
+          localStorage.removeItem(secureSignalsStorageKey);
+          window.location.href = '/logout';
+        });
+
+        $('#try_another').click(() => {
+          if (window.googletag && window.googletag.secureSignalProviders) {
+            window.googletag.secureSignalProviders.clearAllCache();
+          }
+          localStorage.removeItem(secureSignalsStorageKey);
+          window.location.href = '/logout';
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <div class="main-content">
+        <h1>Server-Side <%- identityName %> Integration Example with Google Secure Signals</h1>
+        <p>
+          This example demonstrates how a content publisher can use the <%- identityName %> services with Secure Signals to implement
+          <a href="<%- docsBaseUrl %>/guides/integration-google-ss#server-side-integration">Server-Side Integration</a>.
+          [<a href="https://github.com/IABTechLab/uid2-examples/tree/main/web-integrations/google-secure-signals/server-side">Source Code</a>]
+        </p>
+
+        <!-- Generate/Clear buttons at the top for easy access -->
+        <% if (!identity && !isOptout) { %>
+        <div id="login_form" class="form" style="margin-top: 0; margin-bottom: 2rem;">
+          <form action="/login" method="POST">
+            <div class="form-inline">
+              <input
+                type="text"
+                id="email"
+                name="email"
+                placeholder="Enter an email address"
+                class="email-input"
+              />
+              <input type="submit" value="Generate <%- identityName %>" class="button" />
+            </div>
+          </form>
+        </div>
+        <% } else if (isOptout) { %>
+        <div id="optout_form" class="form" style="margin-top: 0; margin-bottom: 2rem;">
+          <button type="button" class="button" id="try_another">Try Another Email</button>
+        </div>
+        <% } else { %>
+        <div id="logout_form" class="form" style="margin-top: 0; margin-bottom: 2rem;">
+          <button type="button" class="button" id="logout">Clear <%- identityName %></button>
+        </div>
+        <% } %>
+
+        <!-- UID2 Integration Status Section -->
+        <h2><%- identityName %> Integration Status</h2>
+
+        <table id="uid_state">
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Ready for Targeted Advertising:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Indicates whether a valid <%- identityName %> token is present and can be used for personalized ad targeting.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre><%= identity && identity.advertising_token ? 'yes' : 'no' %></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Advertising Token:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    The encrypted <%- identityName %> token that is passed to ad systems without exposing raw user identity. It is automatically refreshed by the server when expired.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre><%= identity ? identity.advertising_token : 'undefined' %></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Is Login Required?
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Indicates whether a new <%- identityName %> token needs to be generated. Returns "yes" when no valid identity exists or the current identity has expired.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre><%= identity ? 'no' : 'yes' %></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Has Opted Out?
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Shows whether the user has exercised opt-out, in which case no advertising token may be generated or used.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre><%= isOptout ? 'yes' : 'no' %></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Identity State:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    The complete identity object from the server. Contains the full <%- identityName %> identity data including refresh tokens and metadata.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre><%= identity ? JSON.stringify(identity, null, 2) : 'null' %></pre></td>
+          </tr>
+        </table>
+
+        <!-- Google Secure Signals Section -->
+        <h2 class="section-teal">Google Secure Signals Status</h2>
+        <p class="section-summary">Secure Signals automatically reads the server-generated token and shares it with Google Ad Manager.</p>
+
+        <table id="secure_signals_state">
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Secure Signals Loaded?
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Indicates whether Google Secure Signals has successfully loaded and stored the <%- identityName %> token. Returns "yes" when signals are available in localStorage.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="secure_signals_loaded">no</pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Secure Signals Value:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    The encrypted <%- identityName %> signals stored by Google in localStorage under the key '<%- secureSignalsStorageKey %>'. These signals are shared with Google Ad Manager.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="secure_signals_value">undefined</pre></td>
+          </tr>
+        </table>
+
+        <!-- Video Ad Container - at the bottom -->
+        <% if (identity) { %>
+        <div id="googleAdContainer">
+          <div id="mainContainer">
+            <div id="content">
+              <video id="contentElement">
+                <source src="https://storage.googleapis.com/gvabox/media/samples/stock.mp4"></source>
+              </video>
+            </div>
+            <div id="adContainer"></div>
+          </div>
+          <button id="playButton">Play</button>
+          <script type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+          <script type="text/javascript" src="ads.js"></script>
+        </div>
+        <% } %>
+      </div>
+
+      <!-- Sidebar for Instructions -->
+      <aside class="sidebar">
+        <h3>📋 How to Test</h3>
+        
+        <div class="section">
+          <h4>Step 1: Generate <%- identityName %></h4>
+          <ul>
+            <li>Enter an email address in the input field</li>
+            <li>Click "Generate <%- identityName %>" button</li>
+            <li>The server generates a token using your API key</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>Step 2: View Video Ad</h4>
+          <ul>
+            <li>Video player appears after successful token generation</li>
+            <li>Click "Play" to watch the ad</li>
+            <li>Ad request includes <%- identityName %> token via Secure Signals</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>Step 3: Check Secure Signals</h4>
+          <ul>
+            <li>Verify "Secure Signals Loaded?" shows "yes"</li>
+            <li>Check "Secure Signals Value" displays encrypted token data</li>
+            <li>This confirms integration with Google Ad Manager</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>Step 4: Test Opt-Out</h4>
+          <ul>
+            <li>Clear your current identity with the button</li>
+            <li>Try the special email: <strong>test@example.com</strong></li>
+            <li>Observe that "Has Opted Out?" shows "yes"</li>
+            <li>No token or Secure Signals are generated</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>What's Happening?</h4>
+          <ul>
+            <li><strong>Server-Side Token Generation:</strong> The server generates <%- identityName %> tokens using your private API key and client secret</li>
+            <li><strong>Session Storage:</strong> Tokens are stored in server-side sessions for security</li>
+            <li><strong>Auto-Refresh:</strong> Tokens are automatically refreshed by the server when expired</li>
+            <li><strong>Google Secure Signals:</strong> Encrypted tokens are stored in localStorage under <%- secureSignalsStorageKey %> and shared with Google Ad Manager</li>
+            <li><strong>IMA SDK:</strong> Displays video ads with <%- identityName %> targeting</li>
+          </ul>
+        </div>
+
+        <div class="note">
+          <strong>Note:</strong> This is a test-only environment. Do not use real user data.
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

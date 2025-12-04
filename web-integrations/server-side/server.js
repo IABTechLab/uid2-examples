@@ -129,12 +129,12 @@ async function refreshIdentity(identity) {
   };
 
   try {
-    const encryptedResponse = await axios.post(uidBaseUrl + '/v2/token/refresh', identity.refresh_token, headers); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
+    const encryptedResponse = await axios.post(uidBaseUrl + '/v2/token/refresh', identity.refresh_token, headers);
 
     let response;
     if (identity.refresh_response_key) {
       response = decrypt(encryptedResponse.data, identity.refresh_response_key, true);
-    } else { //If refresh_response_key doesn't exist, assume refresh_token came from a v1/token/generate query. In that scenario, /v2/token/refresh will return an unencrypted response.
+    } else {
       response = encryptedResponse.data;
     }
 
@@ -151,98 +151,32 @@ async function refreshIdentity(identity) {
     return Date.now() >= identity.identity_expires ? undefined : identity;
   }
 }
-async function verifyIdentity(req) {
+
+async function getValidIdentity(req) {
   if (!isRefreshableIdentity(req.session.identity)) {
-    return false;
+    return null;
   }
 
   if (Date.now() >= req.session.identity.refresh_from || Date.now() >= req.session.identity.identity_expires) {
     req.session.identity = await refreshIdentity(req.session.identity);
   }
 
-  return !!req.session.identity;
-}
-async function protect(req, res, next){
-  if (await verifyIdentity(req)) {
-    next();
-  } else {
-    req.session = null;
-    res.redirect('/login');
-  }
+  return req.session.identity;
 }
 
-app.get('/', protect, (req, res) => {
+// Main page - shows login form or identity state
+app.get('/', async (req, res) => {
+  const identity = await getValidIdentity(req);
+  
   res.render('index', { 
-    identity: req.session.identity,
+    identity: identity,
+    isOptout: false,
     identityName,
     docsBaseUrl
   });
 });
-app.get('/content1', protect, (req, res) => {
-  res.render('content', { 
-    identity: req.session.identity, 
-    content: 'First Sample Content',
-    identityName,
-    docsBaseUrl
-  });
-});
-app.get('/content2', protect, (req, res) => {
-  res.render('content', { 
-    identity: req.session.identity, 
-    content: 'Second Sample Content',
-    identityName,
-    docsBaseUrl
-  });
-});
-app.get('/login', async (req, res) => {
-  if (await verifyIdentity(req)) {
-    res.redirect('/');
-  } else {
-    req.session = null;
-    res.render('login', {
-      identityName,
-      docsBaseUrl
-    });
-  }
-});
-
-
-function _GenerateTokenV1(req, res) {
-  axios.get(uidBaseUrl + '/v1/token/generate?email=' + encodeURIComponent(req.body.email), { headers: { 'Authorization': 'Bearer ' + uidApiKey } })
-      .then((response) => {
-        if (response.data.status !== 'success') {
-          res.render('error', { 
-            error: 'Got unexpected token generate status: ' + response.data.status, 
-            response,
-            identityName,
-            docsBaseUrl
-          });
-        } else if (typeof response.data.body !== 'object') {
-          res.render('error', { 
-            error: 'Unexpected token generate response format: ' + response.data, 
-            response,
-            identityName,
-            docsBaseUrl
-          });
-        } else {
-          req.session.identity = response.data.body;
-          res.redirect('/');
-        }
-      })
-      .catch((error) => {
-        res.render('error', { 
-          error, 
-          response: error.response,
-          identityName,
-          docsBaseUrl
-        });
-      });
-}
 
 app.post('/login', async (req, res) => {
-  //Uncomment the following line to test that stored v1 sessions will still work when we upgrade to /v2/token/refresh.
-  //_GenerateTokenV1(req, res); return;
-
   const jsonEmail = JSON.stringify({ 'email': req.body.email });
   const { envelope, nonce } = createEnvelope(jsonEmail);
 
@@ -251,41 +185,61 @@ app.post('/login', async (req, res) => {
   };
 
   try {
-    const encryptedResponse = await axios.post(uidBaseUrl + '/v2/token/generate', envelope, headers); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
+    const encryptedResponse = await axios.post(uidBaseUrl + '/v2/token/generate', envelope, headers);
     const response = decrypt(encryptedResponse.data, uidClientSecret, false, nonce);
 
-        if (response.status !== 'success') {
-      res.render('error', { 
-        error: 'Got unexpected token generate status in decrypted response: ' + response.status, 
-        response,
+    if (response.status === 'optout') {
+      // User has opted out - show optout state
+      req.session.identity = null;
+      res.render('index', { 
+        identity: null,
+        isOptout: true,
+        identityName,
+        docsBaseUrl
+      });
+    } else if (response.status !== 'success') {
+      // Error - show error state
+      res.render('index', { 
+        identity: null,
+        isOptout: false,
+        error: 'Got unexpected token generate status: ' + response.status,
         identityName,
         docsBaseUrl
       });
     } else if (typeof response.body !== 'object') {
-      res.render('error', { 
-        error: 'Unexpected token generate response format in decrypted response: ' + response, 
-        response,
+      // Error - show error state
+      res.render('index', { 
+        identity: null,
+        isOptout: false,
+        error: 'Unexpected token generate response format',
         identityName,
         docsBaseUrl
       });
     } else {
+      // Success - store identity and show logged in state
       req.session.identity = response.body;
-      res.redirect('/');
+      res.render('index', { 
+        identity: response.body,
+        isOptout: false,
+        identityName,
+        docsBaseUrl
+      });
     }
   } catch (error) {
-    res.render('error', { 
-      error, 
-      response: error.response,
+    console.error('Token generation failed:', error);
+    res.render('index', { 
+      identity: null,
+      isOptout: false,
+      error: 'Token generation failed: ' + error.message,
       identityName,
       docsBaseUrl
     });
   }
-
 });
 
 app.get('/logout', (req, res) => {
   req.session = null;
-  res.redirect('/login');
+  res.redirect('/');
 });
 
 app.listen(port, () => {

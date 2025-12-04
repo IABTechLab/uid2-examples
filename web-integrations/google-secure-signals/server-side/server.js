@@ -16,6 +16,7 @@ const uidClientSecret = process.env.UID_CLIENT_SECRET;
 
 // Secure Signals configuration
 const secureSignalsSdkUrl = process.env.UID_SECURE_SIGNALS_SDK_URL || 'https://cdn.integ.uidapi.com/uid2SecureSignal.js';
+const secureSignalsStorageKey = process.env.UID_SECURE_SIGNALS_STORAGE_KEY || '_GESPSK-uidapi.com';
 
 // UI/Display configuration
 const identityName = process.env.IDENTITY_NAME;
@@ -66,9 +67,6 @@ function decrypt(base64Response, base64Key, isRefreshResponse, nonceInRequest) {
 
   let payload;
   if (!isRefreshResponse) {
-    //The following code shows how we could consume timestamp if needed.
-    //const timestamp = new DataView(decrypted.subarray(0, timestampLength)).getBigInt64(0);
-    //const _date = new Date(Number(timestamp));
     const nonceInResponse = decrypted.subarray(timestampLength, timestampLength + nonceLength);
     if (!isEqual(nonceInRequest, new Uint8Array(nonceInResponse))) {
       throw new Error('Nonce in request does not match nonce in response');
@@ -140,13 +138,12 @@ async function refreshIdentity(identity) {
       uidBaseUrl + '/v2/token/refresh',
       identity.refresh_token,
       headers
-    ); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
+    );
 
     let response;
     if (identity.refresh_response_key) {
       response = decrypt(encryptedResponse.data, identity.refresh_response_key, true);
     } else {
-      //If refresh_response_key doesn't exist, assume refresh_token came from a v1/token/generate query. In that scenario, /v2/token/refresh will return an unencrypted response.
       response = encryptedResponse.data;
     }
 
@@ -166,9 +163,10 @@ async function refreshIdentity(identity) {
     return Date.now() >= identity.identity_expires ? undefined : identity;
   }
 }
-async function verifyIdentity(req) {
+
+async function getValidIdentity(req) {
   if (!isRefreshableIdentity(req.session.identity)) {
-    return false;
+    return null;
   }
 
   if (
@@ -178,98 +176,35 @@ async function verifyIdentity(req) {
     req.session.identity = await refreshIdentity(req.session.identity);
   }
 
-  return !!req.session.identity;
-}
-async function protect(req, res, next) {
-  if (await verifyIdentity(req)) {
-    next();
-  } else {
-    req.session = null;
-    res.redirect('/login');
-  }
+  return req.session.identity;
 }
 
-app.get('/', protect, (req, res) => {
+// Main page - shows login form or identity state
+app.get('/', async (req, res) => {
+  const identity = await getValidIdentity(req);
+  
   res.render('index', {
-    identity: req.session.identity,
+    identity: identity,
+    isOptout: false,
     secureSignalsSdkUrl,
+    secureSignalsStorageKey,
     identityName,
     docsBaseUrl
   });
 });
 
-app.get('/getFreshToken', protect, async (req, res) => {
-  if (
-    Date.now() >= req.session.identity.refresh_from ||
-    Date.now() >= req.session.identity.identity_expires
-  ) {
-    req.session.identity = await refreshIdentity(req.session.identity);
-    res.cookie('identity', JSON.stringify(req.session.identity));
-  }
-  res.json(req.session.identity);
-});
-
-app.get('/login', async (req, res) => {
-  if (await verifyIdentity(req)) {
-    res.redirect('/');
+app.get('/getFreshToken', async (req, res) => {
+  const identity = await getValidIdentity(req);
+  
+  if (identity) {
+    res.cookie('identity', JSON.stringify(identity));
+    res.json(identity);
   } else {
-    req.session = null;
-    res.render('login', {
-      secureSignalsSdkUrl,
-      identityName,
-      docsBaseUrl
-    });
-  }
-});
-
-function _GenerateTokenV1(req, res) {
-  axios
-    .get(uidBaseUrl + '/v1/token/generate?email=' + encodeURIComponent(req.body.email), {
-      headers: { Authorization: 'Bearer ' + uidApiKey },
-    })
-    .then((response) => {
-      if (response.data.status === 'optout') {
-        res.render('optout', {
-          secureSignalsSdkUrl,
-          identityName,
-          docsBaseUrl
-        });
-      } else if (response.data.status !== 'success') {
-        res.render('error', {
-          error: 'Got unexpected token generate status: ' + response.data.status,
-          response,
-          secureSignalsSdkUrl,
-          identityName,
-          docsBaseUrl
-        });
-      } else if (typeof response.data.body !== 'object') {
-        res.render('error', {
-          error: 'Unexpected token generate response format: ' + response.data,
-          response,
-          secureSignalsSdkUrl,
-          identityName,
-          docsBaseUrl
-        });
-      } else {
-        req.session.identity = response.data.body;
-        res.redirect('/');
+    res.status(401).json({ error: 'No valid identity' });
       }
-    })
-    .catch((error) => {
-      res.render('error', {
-        error,
-        response: error.response,
-        secureSignalsSdkUrl,
-        identityName,
-        docsBaseUrl
-      });
-    });
-}
+});
 
 app.post('/login', async (req, res) => {
-  //Uncomment the following line to test that stored v1 sessions will still work when we upgrade to /v2/token/refresh.
-  //_GenerateTokenV1(req, res); return;
-
   const jsonEmail = JSON.stringify({ email: req.body.email });
   const { envelope, nonce } = createEnvelope(jsonEmail);
 
@@ -282,40 +217,62 @@ app.post('/login', async (req, res) => {
       uidBaseUrl + '/v2/token/generate',
       envelope,
       headers
-    ); //if HTTP response code is not 200, this throws and is caught in the catch handler below.
+    );
     const response = decrypt(encryptedResponse.data, uidClientSecret, false, nonce);
 
     if (response.status === 'optout') {
-      res.render('optout', {
+      // User has opted out - show optout state
+      req.session.identity = null;
+      res.render('index', {
+        identity: null,
+        isOptout: true,
         secureSignalsSdkUrl,
+        secureSignalsStorageKey,
         identityName,
         docsBaseUrl
       });
     } else if (response.status !== 'success') {
-      res.render('error', {
-        error: 'Got unexpected token generate status in decrypted response: ' + response.status,
-        response,
+      // Error - show error state
+      res.render('index', {
+        identity: null,
+        isOptout: false,
+        error: 'Got unexpected token generate status: ' + response.status,
         secureSignalsSdkUrl,
+        secureSignalsStorageKey,
         identityName,
         docsBaseUrl
       });
     } else if (typeof response.body !== 'object') {
-      res.render('error', {
-        error: 'Unexpected token generate response format in decrypted response: ' + response,
-        response,
+      // Error - show error state
+      res.render('index', {
+        identity: null,
+        isOptout: false,
+        error: 'Unexpected token generate response format',
         secureSignalsSdkUrl,
+        secureSignalsStorageKey,
         identityName,
         docsBaseUrl
       });
     } else {
+      // Success - store identity and show logged in state
       req.session.identity = response.body;
-      res.redirect('/');
+      res.render('index', {
+        identity: response.body,
+        isOptout: false,
+        secureSignalsSdkUrl,
+        secureSignalsStorageKey,
+        identityName,
+        docsBaseUrl
+      });
     }
   } catch (error) {
-    res.render('error', {
-      error,
-      response: error.response,
+    console.error('Token generation failed:', error);
+    res.render('index', {
+      identity: null,
+      isOptout: false,
+      error: 'Token generation failed: ' + error.message,
       secureSignalsSdkUrl,
+      secureSignalsStorageKey,
       identityName,
       docsBaseUrl
     });
@@ -324,7 +281,7 @@ app.post('/login', async (req, res) => {
 
 app.get('/logout', (req, res) => {
   req.session = null;
-  res.redirect('/login');
+  res.redirect('/');
 });
 
 app.listen(port, () => {
