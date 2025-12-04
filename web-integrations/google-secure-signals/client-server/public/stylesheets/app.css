@@ -164,7 +164,7 @@ a:hover {
 #secure_signals_state {
   width: 100%;
   border-collapse: collapse;
-  margin: 2rem 0;
+  margin: 1rem 0 2rem 0;
   font-size: 0.875rem;
   border: 1px solid var(--border-color);
   border-radius: 8px;

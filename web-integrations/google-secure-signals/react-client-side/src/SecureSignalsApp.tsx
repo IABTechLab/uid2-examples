@@ -508,6 +508,7 @@ const SecureSignalsApp = () => {
 
         {/* Google Secure Signals Section */}
         <h2 className="section-teal">Google Secure Signals Status</h2>
+        <p className="section-summary">Secure Signals automatically reads the token from storage and shares it with Google Ad Manager.</p>
 
         <table id="secure_signals_state">
           <tbody>

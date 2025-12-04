@@ -180,7 +180,7 @@ a:hover {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  margin: 2rem 0;
+  margin: 1rem 0 2rem 0;
   border: 2px solid var(--border-color);
   border-radius: 8px;
   overflow: visible;

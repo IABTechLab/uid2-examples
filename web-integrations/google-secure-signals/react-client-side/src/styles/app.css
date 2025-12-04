@@ -155,6 +155,14 @@ p {
   line-height: 1.8;
 }
 
+/* Section summary - same styling as intro but gray */
+p.section-summary {
+  font-size: 0.95rem;
+  color: var(--text-gray);
+  margin-bottom: 1rem;
+  line-height: 1.8;
+}
+
 a {
   color: var(--link-color);
   text-decoration: underline;
@@ -172,7 +180,7 @@ a:hover {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  margin: 2rem 0;
+  margin: 1rem 0 2rem 0;
   border: 2px solid var(--border-color);
   border-radius: 8px;
   overflow: visible;
