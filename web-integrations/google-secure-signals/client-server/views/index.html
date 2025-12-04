@@ -138,20 +138,35 @@
       <div class="main-content">
         <%- include('intro.html'); -%>
 
-        <div id="googleAdContainer" style="display: none">
-          <div id="mainContainer">
-            <div id="content">
-              <video id="contentElement">
-                <source src="https://storage.googleapis.com/gvabox/media/samples/stock.mp4"></source>
-              </video>
+        <!-- Generate/Clear buttons at the top for easy access -->
+        <div id="login_form" style="display: none" class="form top-form">
+          <form action="/login" method="POST">
+            <div class="form-inline">
+              <input
+                type="text"
+                id="email"
+                name="email"
+                placeholder="Enter an email address"
+                class="email-input"
+              />
+              <input type="submit" value="Generate <%- identityName %>" class="button" />
             </div>
-            <div id="adContainer"></div>
-          </div>
-          <button id="playButton">Play</button>
-          <script type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
-          <script type="text/javascript" src="ads.js"></script>
+          </form>
         </div>
 
+        <div id="logout_form" style="display: none" class="form top-form">
+          <button type="button" class="button" id="logout">Clear <%- identityName %></button>
+        </div>
+
+        <div id="optout_form" style="display: none" class="form top-form">
+          <button type="button" class="button" id="try_another">Try Another Email</button>
+        </div>
+
+        <div id="optout_banner" style="display: none" class="optout-banner">
+          <p>The email address you entered has opted out of <%- identityName %>.</p>
+        </div>
+
+        <!-- UID2 Integration Status Section -->
         <h2><%- identityName %> Integration Status</h2>
 
         <table id="uid_state">
@@ -211,6 +226,13 @@
             </td>
             <td class="value"><pre id="identity_state"></pre></td>
           </tr>
+        </table>
+
+        <!-- Google Secure Signals Section -->
+        <h2 class="section-teal">Google Secure Signals Status</h2>
+        <p class="section-summary">The Secure Signals SDK reads the <%- identityName %> token from localStorage and encrypts it for Google Ad Manager.</p>
+
+        <table id="secure_signals_state">
           <tr>
             <td class="label">
               <div class="tooltip-wrapper">
@@ -241,31 +263,19 @@
           </tr>
         </table>
 
-        <div id="optout_banner" style="display: none" class="optout-banner">
-          <p>The email address you entered has opted out of <%- identityName %>.</p>
-        </div>
-
-        <div id="login_form" style="display: none" class="form">
-          <form action="/login" method="POST">
-            <div class="form-inline">
-              <input
-                type="text"
-                id="email"
-                name="email"
-                placeholder="Enter an email address"
-                class="email-input"
-              />
-              <input type="submit" value="Generate <%- identityName %>" class="button" />
+        <!-- Video Ad Container - at the bottom -->
+        <div id="googleAdContainer" style="display: none">
+          <div id="mainContainer">
+            <div id="content">
+              <video id="contentElement">
+                <source src="https://storage.googleapis.com/gvabox/media/samples/stock.mp4"></source>
+              </video>
             </div>
-          </form>
-        </div>
-
-        <div id="logout_form" style="display: none" class="form">
-          <button type="button" class="button" id="logout">Clear <%- identityName %></button>
-        </div>
-
-        <div id="optout_form" style="display: none" class="form">
-          <button type="button" class="button" id="try_another">Try Another Email</button>
+            <div id="adContainer"></div>
+          </div>
+          <button id="playButton">Play</button>
+          <script type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+          <script type="text/javascript" src="ads.js"></script>
         </div>
       </div>
 

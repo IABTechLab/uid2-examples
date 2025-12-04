@@ -7,9 +7,6 @@
     <link rel="stylesheet" type="text/css" href="/styles/app.css" />
     <link rel="shortcut icon" href="images/favicon.png" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-
-    </script>
   </head>
   <body>
     <div class="page-wrapper">
@@ -17,9 +14,26 @@
       <div class="main-content">
         <h1>Client-Side ${IDENTITY_NAME} Integration with Google Secure Signals</h1>
         <p class="intro">
-          This example demonstrates how a content publisher can integrate ${IDENTITY_NAME} with <strong>Google Secure Signals</strong> for Google Ad Manager, using client-side token generation. For documentation, see the <a href="${DOCS_BASE_URL}/guides/integration-javascript-client-side">Client-Side Integration Guide for JavaScript</a> and <a href="${DOCS_BASE_URL}/guides/integration-google-ss">Google Ad Manager Secure Signals Integration Guide</a>.
+          This example demonstrates how a content publisher can integrate ${IDENTITY_NAME} with <strong>Google Secure Signals</strong> for Google Ad Manager, using client-side token generation. For documentation, see the <a href="${DOCS_BASE_URL}/guides/integration-javascript-client-side">Client-Side Integration Guide for JavaScript</a> and <a href="${DOCS_BASE_URL}/guides/integration-google-ss">Google Ad Manager Secure Signals Integration Guide</a>. [<a href="https://github.com/IABTechLab/uid2-examples/tree/main/web-integrations/google-secure-signals/client-side">Source Code</a>]
         </p>
 
+        <!-- Generate/Clear buttons at the top for easy access -->
+        <div id="login_form" style="display: none" class="form" style="margin-top: 0; margin-bottom: 2rem;">
+          <div class="email_prompt">
+            <input
+              type="text"
+              id="email"
+              name="email"
+              placeholder="Enter an email address"
+            />
+            <button type="button" class="button" id="login">Generate ${IDENTITY_NAME}</button>
+          </div>
+        </div>
+        <div id="logout_form" style="display: none" class="form top-form">
+          <button type="button" class="button" id="logout">Clear ${IDENTITY_NAME}</button>
+        </div>
+
+        <!-- UID2 Integration Status Section -->
         <h2>${IDENTITY_NAME} Integration Status</h2>
 
         <table id="uid_state">
@@ -93,6 +107,13 @@
             </td>
             <td class="value"><pre id="identity_state"></pre></td>
           </tr>
+        </table>
+
+        <!-- Google Secure Signals Section -->
+        <h2 class="section-teal">Google Secure Signals Status</h2>
+        <p class="section-summary">The Secure Signals SDK reads the ${IDENTITY_NAME} token from localStorage and encrypts it for Google Ad Manager.</p>
+
+        <table id="secure_signals_state">
           <tr>
             <td class="label">
               <div class="tooltip-wrapper">
@@ -123,6 +144,7 @@
           </tr>
         </table>
 
+        <!-- Video Ad Container - at the bottom -->
         <div id="page-content">
           <div id="video-container">
             <video id="video-element">
@@ -132,21 +154,6 @@
             <div id="ad-container"></div>
           </div>
           <button id="play-button">Play</button>
-        </div>
-
-        <div id="login_form" style="display: none" class="form">
-          <div class="email_prompt">
-            <input
-              type="text"
-              id="email"
-              name="email"
-              placeholder="Enter an email address"
-            />
-            <button type="button" class="button" id="login">Generate ${IDENTITY_NAME}</button>
-          </div>
-        </div>
-        <div id="logout_form" style="display: none" class="form">
-          <button type="button" class="button" id="logout">Clear ${IDENTITY_NAME}</button>
         </div>
       </div>
 

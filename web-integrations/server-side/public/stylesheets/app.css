@@ -130,8 +130,16 @@ h2 {
 
 p {
   font-size: 0.95rem;
-  color: var(--text-gray);
+  color: var(--text-dark);
   margin-bottom: 2rem;
+  line-height: 1.8;
+}
+
+/* Section summary - same styling as intro but gray */
+p.section-summary {
+  font-size: 0.95rem;
+  color: var(--text-gray);
+  margin-bottom: 1rem;
   line-height: 1.8;
 }
 
