@@ -454,7 +454,7 @@ const SecureSignalsApp = () => {
                   <div className="tooltip">
                     <span className="tooltip-trigger">?</span>
                     <div className="tooltip-content">
-                      The encrypted {IDENTITY_NAME} token that is passed to ad systems without exposing raw user identity. It is automatically refreshed by the SDK in the background when expired.
+                      The encrypted {IDENTITY_NAME} token passed to Google Ad Manager for advertising. It is automatically refreshed by the SDK in the background when expired.
                     </div>
                   </div>
                 </div>
