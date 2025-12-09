@@ -383,71 +383,86 @@ const SecureSignalsApp = () => {
 
   return (
     <div className="page-wrapper">
+      {/* Main Content Area */}
       <div className="main-content">
-        <h1>
-          React Client-Side {IDENTITY_NAME} SDK Integration Example with Google Secure Signals
-        </h1>
-        <p>
-          This example demonstrates how a content publisher can integrate {IDENTITY_NAME} with Google Secure Signals using client-side token generation with React, where the SDK generates tokens directly in the browser. For documentation, see the{' '}
-          <a href={`${DOCS_BASE_URL}/guides/integration-javascript-client-side`}>
-            Client-Side Integration Guide for JavaScript
-          </a>{' '}
-          and{' '}
-          <a href={`${DOCS_BASE_URL}/guides/integration-google-ss`}>
-            Google Ad Manager Secure Signals Integration Guide
-          </a>.
+        <h1>React Client-Side {IDENTITY_NAME} Integration with Google Secure Signals</h1>
+        <p className="intro">
+          This example demonstrates how a content publisher can integrate {IDENTITY_NAME} with <strong>Google Secure Signals</strong> for Google Ad Manager, using client-side token generation. For documentation, see the{' '}
+          <a href={`${DOCS_BASE_URL}/guides/integration-javascript-client-side`}>Client-Side Integration Guide for JavaScript</a> and{' '}
+          <a href={`${DOCS_BASE_URL}/guides/integration-google-ss`}>Google Ad Manager Secure Signals Integration Guide</a>.
         </p>
 
-        <div id='page-content'>
-          <div id='video-container'>
-            <video id='video-element' ref={videoElementRef} onClick={handlePlay}>
-              <source src='https://storage.googleapis.com/interactive-media-ads/media/android.mp4' />
-              <source src='https://storage.googleapis.com/interactive-media-ads/media/android.webm' />
-            </video>
-            <div id='ad-container' ref={adContainerRef} onClick={handleAdContainerClick}></div>
+        {/* Generate/Clear buttons at the top for easy access */}
+        {isOptedOut ? (
+          <>
+            <div id="optout_banner" className="optout-banner">
+              <p>The email address you entered has opted out of {IDENTITY_NAME}.</p>
+            </div>
+            <div id="optout_form" className="form top-form">
+              <button type="button" className="button" onClick={handleTryAnother}>
+                Try Another Email
+              </button>
+            </div>
+          </>
+        ) : !isLoggedIn ? (
+          <div id="login_form" className="form top-form">
+            <div className="email_prompt">
+              <input
+                type="text"
+                id="email"
+                name="email"
+                placeholder="Enter an email address"
+                value={email}
+                onChange={handleEmailChange}
+              />
+              <button type="button" className="button" onClick={handleLogin}>
+                Generate {IDENTITY_NAME}
+              </button>
+            </div>
           </div>
-          <button id='play-button' onClick={handlePlay}>
-            Play
-          </button>
-        </div>
+        ) : (
+          <div id="logout_form" className="form top-form">
+            <button type="button" className="button" onClick={handleLogout}>
+              Clear {IDENTITY_NAME}
+            </button>
+          </div>
+        )}
 
+        {/* UID2 Integration Status Section */}
         <h2>{IDENTITY_NAME} Integration Status</h2>
-        <table id='uid_state'>
+
+        <table id="uid_state">
           <tbody>
             <tr>
-              <td className='label'>
+              <td className="label">
                 <div className="tooltip-wrapper">
                   Ready for Targeted Advertising:
                   <div className="tooltip">
                     <span className="tooltip-trigger">?</span>
                     <div className="tooltip-content">
-                      Indicates whether a valid {IDENTITY_NAME} token is present and can be passed to Google Secure Signals for targeted advertising.
+                      Indicates whether a valid {IDENTITY_NAME} token is present and can be used for personalized ad targeting.
                     </div>
                   </div>
                 </div>
               </td>
-              <td className='value'>
-                <pre>{targetedAdvertisingReady ? 'yes' : 'no'}</pre>
-              </td>
+              <td className="value"><pre>{targetedAdvertisingReady ? 'yes' : 'no'}</pre></td>
             </tr>
             <tr>
-              <td className='label'>
+              <td className="label">
                 <div className="tooltip-wrapper">
                   Advertising Token:
                   <div className="tooltip">
                     <span className="tooltip-trigger">?</span>
                     <div className="tooltip-content">
-                      The encrypted {IDENTITY_NAME} token passed to Google Secure Signals for advertising. It is automatically refreshed by the SDK in the background when expired.
+                      The encrypted {IDENTITY_NAME} token passed to Google Ad Manager for advertising. It is automatically refreshed by the SDK in the background when expired.
                     </div>
                   </div>
                 </div>
               </td>
-              <td className='value'>
-                <pre>{advertisingToken}</pre>
-              </td>
+              <td className="value"><pre>{advertisingToken}</pre></td>
             </tr>
             <tr>
-              <td className='label'>
+              <td className="label">
                 <div className="tooltip-wrapper">
                   Is Login Required?
                   <div className="tooltip">
@@ -458,14 +473,12 @@ const SecureSignalsApp = () => {
                   </div>
                 </div>
               </td>
-              <td className='value'>
-                <pre>{loginRequired ? 'yes' : 'no'}</pre>
-              </td>
+              <td className="value"><pre>{loginRequired ? 'yes' : 'no'}</pre></td>
             </tr>
             <tr>
-              <td className='label'>
+              <td className="label">
                 <div className="tooltip-wrapper">
-                  Has opted out?
+                  Has Opted Out?
                   <div className="tooltip">
                     <span className="tooltip-trigger">?</span>
                     <div className="tooltip-content">
@@ -474,12 +487,10 @@ const SecureSignalsApp = () => {
                   </div>
                 </div>
               </td>
-              <td className='value'>
-                <pre>{isOptedOut ? 'yes' : 'no'}</pre>
-              </td>
+              <td className="value"><pre>{isOptedOut ? 'yes' : 'no'}</pre></td>
             </tr>
             <tr>
-              <td className='label'>
+              <td className="label">
                 <div className="tooltip-wrapper">
                   Identity Callback State:
                   <div className="tooltip">
@@ -490,81 +501,64 @@ const SecureSignalsApp = () => {
                   </div>
                 </div>
               </td>
-              <td className='value'>
-                <pre>{identityState}</pre>
-              </td>
+              <td className="value"><pre>{identityState}</pre></td>
             </tr>
+          </tbody>
+        </table>
+
+        {/* Google Secure Signals Section */}
+        <h2 className="section-teal">Google Secure Signals Status</h2>
+        <p className="section-summary">Secure Signals automatically reads the token from storage and shares it with Google Ad Manager.</p>
+
+        <table id="secure_signals_state">
+          <tbody>
             <tr>
-              <td className='label'>
+              <td className="label">
                 <div className="tooltip-wrapper">
                   Secure Signals Loaded?
                   <div className="tooltip">
                     <span className="tooltip-trigger">?</span>
                     <div className="tooltip-content">
-                      Indicates whether Google Secure Signals has successfully loaded and cached the {IDENTITY_NAME} token.
+                      Indicates whether Google Secure Signals has successfully loaded and stored the {IDENTITY_NAME} token. Returns "yes" when signals are available in localStorage.
                     </div>
                   </div>
                 </div>
               </td>
-              <td className='value'>
-                <pre>{secureSignalsLoaded ? 'yes' : 'no'}</pre>
-              </td>
+              <td className="value"><pre>{secureSignalsLoaded ? 'yes' : 'no'}</pre></td>
             </tr>
             <tr>
-              <td className='label'>
+              <td className="label">
                 <div className="tooltip-wrapper">
                   Secure Signals Value:
                   <div className="tooltip">
                     <span className="tooltip-trigger">?</span>
                     <div className="tooltip-content">
-                      The {IDENTITY_NAME} data stored by Google Secure Signals in local storage for use in ad requests.
+                      The encrypted {IDENTITY_NAME} signals stored by Google in localStorage under the key '{SECURE_SIGNALS_STORAGE_KEY}'. These signals are shared with Google Ad Manager.
                     </div>
                   </div>
                 </div>
               </td>
-              <td className='value'>
-                <pre>{secureSignalsValue}</pre>
-              </td>
+              <td className="value"><pre>{secureSignalsValue}</pre></td>
             </tr>
           </tbody>
         </table>
 
-        {isOptedOut ? (
-          <>
-            <div id='optout_banner' style={{ border: '3px solid #ffc107', padding: '15px', margin: '20px 0' }}>
-              <p style={{ margin: 0 }}>The email address you entered has opted out of {IDENTITY_NAME}.</p>
-            </div>
-            <div id='optout_message' className='form'>
-              <button type='button' className='button' onClick={handleTryAnother}>
-                Try Another Email
-              </button>
-            </div>
-          </>
-        ) : !isLoggedIn ? (
-          <div id='login_form' className='form'>
-            <div className='email_prompt'>
-              <input
-                type='text'
-                id='email'
-                name='email'
-                placeholder='Enter an email address'
-                value={email}
-                onChange={handleEmailChange}
-              />
-              <button type='button' className='button' onClick={handleLogin}>
-                Generate {IDENTITY_NAME}
-              </button>
-            </div>
+        {/* Video Ad Container - at the bottom */}
+        <div id="page-content">
+          <div id="video-container">
+            <video id="video-element" ref={videoElementRef} onClick={handlePlay}>
+              <source src="https://storage.googleapis.com/interactive-media-ads/media/android.mp4" />
+              <source src="https://storage.googleapis.com/interactive-media-ads/media/android.webm" />
+            </video>
+            <div id="ad-container" ref={adContainerRef} onClick={handleAdContainerClick}></div>
           </div>
-        ) : (
-          <div id='logout_form' className='form'>
-            <button type='button' className='button' onClick={handleLogout}>
-              Clear {IDENTITY_NAME}
-            </button>
-          </div>
-        )}
+          <button id="play-button" onClick={handlePlay}>
+            Play
+          </button>
+        </div>
       </div>
 
+      {/* Sidebar for Instructions */}
       <aside className="sidebar">
         <h3>📋 How to Test</h3>
         
@@ -573,43 +567,45 @@ const SecureSignalsApp = () => {
           <ul>
             <li>Enter an email address in the input field</li>
             <li>Click "Generate {IDENTITY_NAME}" button</li>
-            <li>The SDK will initialize and request a token</li>
+            <li>Wait for the SDK to initialize the token</li>
           </ul>
         </div>
 
         <div className="section">
-          <h4>Step 2: View Video Ad</h4>
+          <h4>Step 2: Observe Integration</h4>
           <ul>
-            <li>Click the "Play" button to start the video</li>
-            <li>Google Secure Signals will use the {IDENTITY_NAME} token</li>
-            <li>Observe ad targeting with {IDENTITY_NAME}</li>
+            <li>Check "Integration Status" table for token values</li>
+            <li>Verify Secure Signals data appears</li>
+            <li>Note: Reload the page to update Secure Signals in localStorage</li>
           </ul>
         </div>
 
         <div className="section">
-          <h4>Step 3: Verify Secure Signals</h4>
+          <h4>Step 3: View Video Ad</h4>
           <ul>
-            <li>Check "Secure Signals Loaded?" changes to "yes"</li>
-            <li>View the Secure Signals value in the table</li>
-            <li>Token is stored in localStorage for ad requests</li>
+            <li>Video player appears after successful token generation</li>
+            <li>Click "Play" to watch the ad</li>
+            <li>Ad request includes {IDENTITY_NAME} token via Secure Signals</li>
           </ul>
         </div>
 
         <div className="section">
           <h4>Step 4: Test Opt-Out</h4>
           <ul>
-            <li>Clear {IDENTITY_NAME}, then try: <strong>test@example.com</strong></li>
+            <li>Try the special email: <strong>test@example.com</strong></li>
             <li>Observe "Has opted out?" changes to "yes"</li>
-            <li>No advertising token or Secure Signals are generated</li>
+            <li>No advertising token is generated</li>
           </ul>
         </div>
 
         <div className="section">
           <h4>What's Happening?</h4>
           <ul>
-            <li><strong>Client-Side Token Generation:</strong> The SDK generates tokens directly in the browser using your public credentials</li>
-            <li><strong>Secure Signals Integration:</strong> Google Secure Signals automatically retrieves and caches the {IDENTITY_NAME} token</li>
-            <li><strong>Local Storage:</strong> Both SDK identity and Secure Signals data are stored in localStorage for persistence</li>
+            <li><strong>Client-Side Token Generation:</strong> The SDK generates tokens directly in the browser</li>
+            <li><strong>Auto-Refresh:</strong> Tokens are automatically refreshed by the SDK in the background when expired</li>
+            <li><strong>Local Storage:</strong> The SDK stores identity in localStorage (__uid2_advertising_token or __euid_advertising_token) for persistence across page loads</li>
+            <li><strong>Google Secure Signals:</strong> Encrypted tokens are stored in localStorage under {SECURE_SIGNALS_STORAGE_KEY} and shared with Google Ad Manager</li>
+            <li><strong>IMA SDK:</strong> Displays video ads with {IDENTITY_NAME} targeting</li>
           </ul>
         </div>
 

@@ -16,21 +16,32 @@
 
       function updateGuiElements() {
         console.log('Updating displayed values.');
-        const identity = pbjs.getUserIds()[userIdName];
         
+        // Try to get identity from Prebid first, then fall back to localStorage
+        let identity = pbjs.getUserIds ? pbjs.getUserIds()[userIdName] : null;
+        let advertisingToken = identity ? identity.id : null;
+        
+        // Check localStorage for token data
         let isOptedOut = false;
         const storedToken = localStorage.getItem('${UID_STORAGE_KEY}');
         if (storedToken) {
           try {
             const tokenData = JSON.parse(storedToken);
             isOptedOut = tokenData.latestToken === 'optout';
+            // If Prebid didn't return the identity, get token from localStorage
+            if (!advertisingToken && tokenData.latestToken && tokenData.latestToken.advertising_token) {
+              advertisingToken = tokenData.latestToken.advertising_token;
+            }
           } catch (e) {
             console.log('Could not parse stored token');
           }
         }
         
-        $('#targeted_advertising_ready').text(identity ? 'yes' : 'no');
-        $('#login_required').text(identity ? 'no' : 'yes');
+        const hasValidToken = !!advertisingToken;
+        
+        $('#targeted_advertising_ready').text(hasValidToken ? 'yes' : 'no');
+        $('#login_required').text(hasValidToken ? 'no' : 'yes');
+        $('#has_opted_out').text(isOptedOut ? 'yes' : 'no');
         
         if (isOptedOut) {
           $('#advertising_token').text('This email has opted out.');
@@ -38,7 +49,7 @@
           $('#login_form').hide();
           $('#clear_storage_form').show();
         } else {
-          $('#advertising_token').text(identity ? String(identity.id) : 'undefined');
+          $('#advertising_token').text(advertisingToken ? String(advertisingToken) : 'undefined');
           
           // Show localStorage content with formatted structure
           const localStorageValue = localStorage.getItem('${UID_STORAGE_KEY}');
@@ -57,7 +68,7 @@
             $('#prebid_storage').text('No token stored yet.');
           }
           
-          if (!identity) {
+          if (!hasValidToken) {
             $('#login_form').show();
             $('#clear_storage_form').hide();
           } else {
@@ -201,10 +212,27 @@
       <!-- Main Content Area -->
       <div class="main-content">
         <h1>Client-Side ${IDENTITY_NAME} Integration with Prebid.js</h1>
-    <p class="intro">
-          This example demonstrates how a content publisher can integrate ${IDENTITY_NAME} with <strong>Prebid.js</strong> for header bidding, using client-side token generation. For documentation, see the <a href="${DOCS_BASE_URL}/guides/integration-prebid-client-side">${IDENTITY_NAME} Client-Side Integration Guide for Prebid.js</a>.
+        <p class="intro">
+          This example demonstrates how a content publisher can integrate ${IDENTITY_NAME} with <strong>Prebid.js</strong> for header bidding, using client-side token generation. For documentation, see the <a href="${DOCS_BASE_URL}/guides/integration-prebid-client-side">${IDENTITY_NAME} Client-Side Integration Guide for Prebid.js</a>. [<a href="https://github.com/IABTechLab/uid2-examples/tree/main/web-integrations/prebid-integrations/client-side">Source Code</a>]
         </p>
 
+        <!-- Generate/Clear buttons at the top for easy access -->
+        <div id="login_form" style="display: none" class="form top-form">
+          <div class="email_prompt">
+            <input
+              type="text"
+              id="email"
+              name="email"
+              placeholder="Enter an email address"
+            />
+            <button type="button" class="button" id="login">Generate ${IDENTITY_NAME}</button>
+          </div>
+        </div>
+        <div id="clear_storage_form" style="display: none" class="form top-form">
+          <button type="button" class="button" id="clear_storage">Clear ${IDENTITY_NAME}</button>
+        </div>
+
+        <!-- UID2 Integration Status Section -->
         <h2>${IDENTITY_NAME} Integration Status</h2>
 
         <table id="uid_state">
@@ -216,25 +244,26 @@
                   <span class="tooltip-trigger">?</span>
                   <div class="tooltip-content">
                     Indicates whether a valid ${IDENTITY_NAME} token is present and can be used for personalized ad targeting.
+                  </div>
                 </div>
               </div>
             </td>
-        <td class="value"><pre id="targeted_advertising_ready"></pre></td>
-      </tr>
-      <tr>
+            <td class="value"><pre id="targeted_advertising_ready"></pre></td>
+          </tr>
+          <tr>
             <td class="label">
               <div class="tooltip-wrapper">
                 Advertising Token:
                 <div class="tooltip">
                   <span class="tooltip-trigger">?</span>
                   <div class="tooltip-content">
-                    The encrypted ${IDENTITY_NAME} token that is passed to ad systems without exposing raw user identity. It is automatically refreshed by the SDK in the background when expired.
+                    The encrypted ${IDENTITY_NAME} token that is passed to ad systems without exposing raw user identity.
                   </div>
                 </div>
               </div>
             </td>
-        <td class="value"><pre id="advertising_token"></pre></td>
-      </tr>
+            <td class="value"><pre id="advertising_token"></pre></td>
+          </tr>
           <tr>
             <td class="label">
               <div class="tooltip-wrapper">
@@ -252,6 +281,27 @@
           <tr>
             <td class="label">
               <div class="tooltip-wrapper">
+                Has Opted Out?
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Shows whether the user has exercised opt-out, in which case no advertising token may be generated or used.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="has_opted_out"></pre></td>
+          </tr>
+        </table>
+
+        <!-- Prebid Integration Status Section -->
+        <h2 class="section-teal">Prebid Integration Status</h2>
+        <p class="section-summary">Prebid.js is configured to handle the entire token lifecycle—generation, storage, and automatic refresh.</p>
+
+        <table id="prebid_state">
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
                 Prebid Token Storage:
                 <div class="tooltip">
                   <span class="tooltip-trigger">?</span>
@@ -263,22 +313,7 @@
             </td>
             <td class="value"><pre id="prebid_storage"></pre></td>
           </tr>
-    </table>
-
-    <div id="login_form" style="display: none" class="form">
-      <div class="email_prompt">
-        <input
-          type="text"
-          id="email"
-          name="email"
-          placeholder="Enter an email address"
-        />
-            <button type="button" class="button" id="login">Generate ${IDENTITY_NAME}</button>
-      </div>
-    </div>
-    <div id="clear_storage_form" style="display: none" class="form">
-        <button type="button" class="button" id="clear_storage">Clear ${IDENTITY_NAME}</button>
-        </div>
+        </table>
       </div>
 
       <!-- Sidebar for Instructions -->
@@ -317,14 +352,14 @@
           <ul>
             <li><strong>Configuration:</strong> Prebid's ${IDENTITY_NAME} module is configured with your public credentials (subscription ID and server public key)</li>
             <li><strong>Token Management:</strong> Prebid generates, stores, and automatically refreshes ${IDENTITY_NAME} tokens in the background when expired</li>
-            <li><strong>Local Storage:</strong> Prebid stores tokens in localStorage (__uid2_advertising_token or __euid_advertising_token) for persistence</li>
+            <li><strong>Local Storage:</strong> Prebid stores tokens in localStorage (${UID_STORAGE_KEY}) for persistence</li>
             <li><strong>Header Bidding:</strong> Prebid shares ${IDENTITY_NAME} tokens with bidders automatically</li>
           </ul>
         </div>
 
         <div class="note">
           <strong>Note:</strong> This is a test-only environment. Do not use real user data.
-    </div>
+        </div>
       </aside>
     </div>
   </body>

@@ -143,10 +143,23 @@ h2 {
   border-bottom: 3px solid var(--primary-orange);
 }
 
+/* Teal section header for Prebid/GSS */
+h2.section-teal {
+  border-bottom: 3px solid var(--accent-teal);
+}
+
 .intro {
   font-size: 0.95rem;
-  color: var(--text-gray);
+  color: var(--text-dark);
   margin-bottom: 2rem;
+  line-height: 1.8;
+}
+
+/* Section summary - same styling as intro but gray */
+p.section-summary {
+  font-size: 0.95rem;
+  color: var(--text-gray);
+  margin-bottom: 1rem;
   line-height: 1.8;
 }
 
@@ -161,35 +174,42 @@ a:hover {
   opacity: 0.8;
 }
 
-/* Video Container - Styles are in ads.css */
-
-/* Integration State Table */
-#uid_state {
+/* State Tables */
+#uid_state,
+#prebid_state,
+#secure_signals_state {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  margin: 2rem 0;
+  margin: 1rem 0 2rem 0;
   border: 2px solid var(--border-color);
   border-radius: 8px;
-  overflow: hidden;
+  overflow: visible;
   font-size: 0.875rem;
   position: relative;
-  overflow: visible;
 }
 
-#uid_state tr {
+#uid_state tr,
+#prebid_state tr,
+#secure_signals_state tr {
   border-bottom: 1px solid var(--border-color);
 }
 
-#uid_state tr:last-child {
+#uid_state tr:last-child,
+#prebid_state tr:last-child,
+#secure_signals_state tr:last-child {
   border-bottom: none;
 }
 
-#uid_state tr:nth-child(even) {
+#uid_state tr:nth-child(even),
+#prebid_state tr:nth-child(even),
+#secure_signals_state tr:nth-child(even) {
   background-color: var(--bg-light);
 }
 
-#uid_state td {
+#uid_state td,
+#prebid_state td,
+#secure_signals_state td {
   padding: 1rem;
   vertical-align: top;
 }
@@ -293,6 +313,11 @@ a:hover {
   margin-top: 2rem;
 }
 
+.form.top-form {
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+
 .email_prompt {
   display: flex;
   gap: 0;
@@ -362,6 +387,39 @@ a:hover {
   font-size: 0.9rem;
   line-height: 1.7;
   color: var(--text-dark);
+}
+
+/* Video Container Styling */
+#page-content {
+  margin-top: 2rem;
+}
+
+#video-container {
+  position: relative;
+  max-width: 600px;
+}
+
+#video-element {
+  width: 100%;
+  border-radius: 8px;
+}
+
+#play-button {
+  width: 100px;
+  height: 36px;
+  margin-top: 0.5rem;
+  background: var(--button-navy);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#play-button:hover {
+  background: var(--button-navy-hover);
 }
 
 /* Success Message */
