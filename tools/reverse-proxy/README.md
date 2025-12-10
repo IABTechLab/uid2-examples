@@ -31,6 +31,7 @@ The following subdomains are configured (using `${DOMAIN}` as the base domain):
 - `secure-signals-react.${DOMAIN}` → Google Secure Signals React Client Side (port 3044)
 - `prebid-client.${DOMAIN}` → Prebid Client Side (port 3051)
 - `prebid-client-server.${DOMAIN}` → Prebid Client Server (port 3052)
+- `prebid-deferred.${DOMAIN}` → Prebid Client Side Deferred/mergeConfig (port 3053)
 - `prebid-secure-signals.${DOMAIN}` → Prebid Secure Signals Client Side (port 3061)
 
 **Example with default domain (`sample-dev.com`):**
@@ -67,6 +68,7 @@ To use the subdomain-based routing, you must add entries to your hosts file so t
    127.0.0.1 secure-signals-react.sample-dev.com
    127.0.0.1 prebid-client.sample-dev.com
    127.0.0.1 prebid-client-server.sample-dev.com
+   127.0.0.1 prebid-deferred.sample-dev.com
    127.0.0.1 prebid-secure-signals.sample-dev.com
    ```
 
@@ -97,6 +99,7 @@ To use the subdomain-based routing, you must add entries to your hosts file so t
    127.0.0.1 secure-signals-react.sample-dev.com
    127.0.0.1 prebid-client.sample-dev.com
    127.0.0.1 prebid-client-server.sample-dev.com
+   127.0.0.1 prebid-deferred.sample-dev.com
    127.0.0.1 prebid-secure-signals.sample-dev.com
    ```
 
