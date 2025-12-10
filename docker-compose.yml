@@ -115,6 +115,16 @@ services:
     env_file:
       - .env
 
+  prebid-client-side-deferred:
+    build:
+      context: web-integrations/prebid-integrations
+      dockerfile: client-side-deferred/Dockerfile
+    ports:
+      - "3053:3053"
+    container_name: prebid-client-side-deferred
+    env_file:
+      - .env
+
   # prebid + secure signals integrations
   prebid-secure-signals-client-side:
     build:

@@ -14,7 +14,7 @@ server {
     location / {
         add_header Content-Type text/html;
         # Use protocol-relative URLs (//) so they work with both http and https
-        return 200 "<!DOCTYPE html><html><head><title>UID2 Sample Pages</title><style>body{font-family:Arial,sans-serif;max-width:800px;margin:50px auto;padding:20px;background:#f5f5f5}h1{color:#333}a{display:block;padding:10px;margin:5px 0;background:white;border-left:4px solid #007bff;text-decoration:none;color:#007bff;border-radius:4px}a:hover{background:#e7f3ff;border-left-color:#0056b3}.info{margin-top:30px;padding:15px;background:#fff3cd;border-left:4px solid #ffc107;border-radius:4px}</style></head><body><h1>UID2 Sample Pages</h1><p>Access services using the following subdomains:</p><a href=\"//js-client-side.${DOMAIN}\">js-client-side.${DOMAIN}</a><a href=\"//js-client-server.${DOMAIN}\">js-client-server.${DOMAIN}</a><a href=\"//js-react.${DOMAIN}\">js-react.${DOMAIN}</a><a href=\"//server-side.${DOMAIN}\">server-side.${DOMAIN}</a><a href=\"//secure-signals-client-server.${DOMAIN}\">secure-signals-client-server.${DOMAIN}</a><a href=\"//secure-signals-client-side.${DOMAIN}\">secure-signals-client-side.${DOMAIN}</a><a href=\"//secure-signals-server-side.${DOMAIN}\">secure-signals-server-side.${DOMAIN}</a><a href=\"//secure-signals-react.${DOMAIN}\">secure-signals-react.${DOMAIN}</a><a href=\"//prebid-client.${DOMAIN}\">prebid-client.${DOMAIN}</a><a href=\"//prebid-client-server.${DOMAIN}\">prebid-client-server.${DOMAIN}</a><a href=\"//prebid-secure-signals.${DOMAIN}\">prebid-secure-signals.${DOMAIN}</a><div class=\"info\"><strong>Note:</strong> For local development, add ${DOMAIN} and all subdomains to your hosts file (127.0.0.1) to use them. Example: <code>127.0.0.1 ${DOMAIN} js-client-side.${DOMAIN} ...</code></div></body></html>";
+        return 200 "<!DOCTYPE html><html><head><title>UID2 Sample Pages</title><style>body{font-family:Arial,sans-serif;max-width:800px;margin:50px auto;padding:20px;background:#f5f5f5}h1{color:#333}a{display:block;padding:10px;margin:5px 0;background:white;border-left:4px solid #007bff;text-decoration:none;color:#007bff;border-radius:4px}a:hover{background:#e7f3ff;border-left-color:#0056b3}.info{margin-top:30px;padding:15px;background:#fff3cd;border-left:4px solid #ffc107;border-radius:4px}</style></head><body><h1>UID2 Sample Pages</h1><p>Access services using the following subdomains:</p><a href=\"//js-client-side.${DOMAIN}\">js-client-side.${DOMAIN}</a><a href=\"//js-client-server.${DOMAIN}\">js-client-server.${DOMAIN}</a><a href=\"//js-react.${DOMAIN}\">js-react.${DOMAIN}</a><a href=\"//server-side.${DOMAIN}\">server-side.${DOMAIN}</a><a href=\"//secure-signals-client-server.${DOMAIN}\">secure-signals-client-server.${DOMAIN}</a><a href=\"//secure-signals-client-side.${DOMAIN}\">secure-signals-client-side.${DOMAIN}</a><a href=\"//secure-signals-server-side.${DOMAIN}\">secure-signals-server-side.${DOMAIN}</a><a href=\"//secure-signals-react.${DOMAIN}\">secure-signals-react.${DOMAIN}</a><a href=\"//prebid-client.${DOMAIN}\">prebid-client.${DOMAIN}</a><a href=\"//prebid-client-server.${DOMAIN}\">prebid-client-server.${DOMAIN}</a><a href=\"//prebid-deferred.${DOMAIN}\">prebid-deferred.${DOMAIN} (mergeConfig example)</a><a href=\"//prebid-secure-signals.${DOMAIN}\">prebid-secure-signals.${DOMAIN}</a><div class=\"info\"><strong>Note:</strong> For local development, add ${DOMAIN} and all subdomains to your hosts file (127.0.0.1) to use them. Example: <code>127.0.0.1 ${DOMAIN} js-client-side.${DOMAIN} ...</code></div></body></html>";
     }
 }
 
@@ -215,6 +215,24 @@ server {
 
     location / {
         proxy_pass http://${PREBID_CLIENT_SERVER_BACKEND}:3052;
+        proxy_redirect off;
+        proxy_connect_timeout 5s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# Prebid - Client Side Deferred (port 3053) - mergeConfig example
+server {
+    listen 80;
+    server_name prebid-deferred.${DOMAIN} *.prebid-deferred.${DOMAIN};
+
+    location / {
+        proxy_pass http://${PREBID_CLIENT_SIDE_DEFERRED_BACKEND}:3053;
         proxy_redirect off;
         proxy_connect_timeout 5s;
         proxy_send_timeout 60s;

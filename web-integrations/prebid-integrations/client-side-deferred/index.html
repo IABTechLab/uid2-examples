@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Deferred ${IDENTITY_NAME} Integration with Prebid.js (using mergeConfig)</title>
+    <link rel="stylesheet" type="text/css" href="./app.css" />
+    <link rel="shortcut icon" href="/img/favicon.ico" />
+    <script async src="../prebid.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      console.log('Initializing deferred ${IDENTITY_NAME} + Prebid example.');
+
+      const identityName = '${IDENTITY_NAME}';  // 'UID2' or 'EUID'
+      const apiBaseKey = identityName === 'EUID' ? 'euidApiBase' : 'uid2ApiBase';
+      const userIdName = identityName.toLowerCase();  // 'uid2' or 'euid'
+      const storageKey = '${UID_STORAGE_KEY}';
+
+      // Track the current state
+      let uidConfigured = false;
+
+      function updateGuiElements() {
+        console.log('Updating displayed values.');
+        
+        // Try to get identity from Prebid
+        let identity = pbjs.getUserIds ? pbjs.getUserIds()[userIdName] : null;
+        let advertisingToken = identity ? identity.id : null;
+        
+        // Check localStorage for token data
+        let isOptedOut = false;
+        const storedToken = localStorage.getItem(storageKey);
+        if (storedToken) {
+          try {
+            const tokenData = JSON.parse(storedToken);
+            isOptedOut = tokenData.latestToken === 'optout';
+            if (!advertisingToken && tokenData.latestToken && tokenData.latestToken.advertising_token) {
+              advertisingToken = tokenData.latestToken.advertising_token;
+            }
+          } catch (e) {
+            console.log('Could not parse stored token');
+          }
+        }
+        
+        const hasValidToken = !!advertisingToken;
+        
+        // Update token status
+        $('#targeted_advertising_ready').text(hasValidToken ? 'yes' : 'no');
+        $('#login_required').text(hasValidToken ? 'no' : 'yes');
+        $('#has_opted_out').text(isOptedOut ? 'yes' : 'no');
+        
+        if (isOptedOut) {
+          $('#advertising_token').text('This email has opted out.');
+          $('#prebid_storage').text('N/A (opted out)');
+        } else {
+          $('#advertising_token').text(advertisingToken ? String(advertisingToken) : 'undefined');
+          
+          const localStorageValue = localStorage.getItem(storageKey);
+          if (localStorageValue) {
+            try {
+              const parsedToken = JSON.parse(localStorageValue);
+              const displayObject = { latestToken: parsedToken.latestToken };
+              if (parsedToken.originalIdentity) {
+                displayObject.originalIdentity = parsedToken.originalIdentity;
+              }
+              $('#prebid_storage').text(JSON.stringify(displayObject, null, 2));
+            } catch (e) {
+              $('#prebid_storage').text(localStorageValue);
+            }
+          } else {
+            $('#prebid_storage').text('No token stored yet.');
+          }
+        }
+        
+        // Update UI visibility
+        updateFormVisibility(hasValidToken, isOptedOut);
+      }
+
+      function updateFormVisibility(hasToken, isOptedOut) {
+        if (isOptedOut || hasToken) {
+          $('#login_form').hide();
+          $('#clear_storage_form').show();
+        } else if (uidConfigured) {
+          // UID is configured but no token yet - might be loading
+          $('#login_form').hide();
+          $('#clear_storage_form').show();
+        } else {
+          $('#login_form').show();
+          $('#clear_storage_form').hide();
+        }
+      }
+
+      // This is called when user clicks "Configure UID with mergeConfig()"
+      async function handleDeferredLogin() {
+        const email = $('#email').val();
+        if (!email) {
+          alert('Please enter an email address');
+          return;
+        }
+
+        console.log('=== DEFERRED LOGIN: Using mergeConfig() to add UID configuration ===');
+        
+        // Build the UID config to merge
+        const uidConfig = {
+          userSync: {
+            userIds: [
+              {
+                name: userIdName,
+                params: {
+                  [apiBaseKey]: '${BASE_URL}',
+                  email: email,
+                  subscriptionId: '${SUBSCRIPTION_ID}',
+                  serverPublicKey: '${SERVER_PUBLIC_KEY}',
+                },
+              },
+            ],
+          },
+        };
+
+        // Add consent management for EUID
+        if (identityName === 'EUID') {
+          uidConfig.consentManagement = consentManagementObj;
+        }
+
+        // Show what we're merging
+        console.log('Calling pbjs.mergeConfig() with:', JSON.stringify(uidConfig, null, 2));
+        $('#merged_config').text(JSON.stringify(uidConfig, null, 2));
+        $('#merge_config_display').show();
+
+        // *** KEY STEP 1: Use mergeConfig() to add UID configuration ***
+        pbjs.mergeConfig(uidConfig);
+        
+        // *** KEY STEP 2: Call refreshUserIds() to trigger token generation ***
+        console.log('Calling pbjs.refreshUserIds() to generate token...');
+        await pbjs.refreshUserIds();
+        
+        uidConfigured = true;
+        
+        // Wait a moment for token to be generated
+        setTimeout(() => {
+          updateGuiElements();
+        }, 2000);
+      }
+
+      function handleClearStorage() {
+        console.log('Clearing storage and resetting state.');
+        localStorage.removeItem(storageKey);
+        uidConfigured = false;
+        location.reload();
+      }
+
+      function onDocumentReady() {
+        console.log('Setting up interface handlers.');
+        $('#configure_uid').click(handleDeferredLogin);
+        $('#clear_storage').click(handleClearStorage);
+        
+        // Display initial config immediately
+        displayInitialConfig();
+        
+        pbjs.que.push(function() {
+          pbjs.onEvent('userIds', updateGuiElements);
+          updateGuiElements();
+        });
+      }
+
+      // Display the initial config (called on document ready, before Prebid loads)
+      function displayInitialConfig() {
+        const initialConfig = {
+          debug: true,
+          userSync: {
+            // Note: NO userIds configured here - deferred loading!
+            syncDelay: 5000,
+            auctionDelay: 1000,
+          },
+        };
+        $('#initial_config').text(JSON.stringify(initialConfig, null, 2));
+      }
+
+      // Initial Prebid config - WITHOUT UID (this is the key difference!)
+      function setInitialConfig() {
+        const initialConfig = {
+          debug: true,
+          userSync: {
+            // Note: NO userIds configured here - deferred loading!
+            syncDelay: 5000,
+            auctionDelay: 1000,
+          },
+        };
+        
+        console.log('=== INITIAL CONFIG: Setting up Prebid WITHOUT UID ===');
+        console.log('Initial config (no UID):', JSON.stringify(initialConfig, null, 2));
+        
+        pbjs.setConfig(initialConfig);
+      }
+
+      // Consent management for GDPR compliance (required for EUID)
+      const consentManagementObj = {
+        "cmpApi": "static",
+        "consentData": {
+          "getTCData": {
+            "tcString": "CO-HDlqO-HDlqAKAXCENBDCsAP_AAH_AACiQHKNd_X_fb39j-_59_9t0eY1f9_7_v20zjgeds-8Nyd_X_L8X42M7vF36pq4KuR4Eu3LBIQFlHOHcTUmw6IkVqTPsak2Mr7NKJ7PEinMbe2dYGHtfn9VTuZKYr97s___z__-__v__75f_r-3_3_vp9V---_fA5QAkw1L4CLMSxwJJo0qhRAhCuJDoAQAUUIwtE1hASuCnZXAR-ggYAIDUBGBECDEFGLIIAAAAAkoiAkAPBAIgCIBAACAFSAhAARoAgsAJAwCAAUA0LACKAIQJCDI4KjlMCAiRaKCeSMASi72MMIQyigBoFH4AAAAA.cAAAAAAAAAAA",
+            "cmpId": 10,
+            "cmpVersion": 23,
+            "tcfPolicyVersion": 2,
+            "gdprApplies": true, 
+            "cmpStatus": "loaded",
+            "eventStatus": "tcloaded",
+            "purpose": {
+              "consents": { "1": true, "2": true }
+            },
+            "vendor": {
+              "consents": {
+                "52": true, "21": true, "131": true, "929": true,
+                "97": true, "887": true, "95": true, "301": true,
+                "91": true, "737": true, "58": true
+              }
+            }
+          }
+        }
+      };
+
+      var adUnits = [
+        {
+          code: 'test-div',
+          mediaTypes: {
+            banner: {
+              sizes: [[300, 250], [300, 600], [728, 90]],
+            },
+          },
+          bids: [
+            {
+              bidder: 'appnexus',
+              params: { placementId: 13144370 },
+            },
+          ],
+        },
+      ];
+
+      var pbjs = pbjs || {};
+      pbjs.que = pbjs.que || [];
+      pbjs.que.push(function () {
+        // Set initial config WITHOUT UID - this is the deferred pattern!
+        setInitialConfig();
+        pbjs.addAdUnits(adUnits);
+        pbjs.requestBids();
+      });
+
+      $(document).ready(onDocumentReady);
+    </script>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <!-- Main Content Area -->
+      <div class="main-content">
+        <h1>Deferred ${IDENTITY_NAME} Integration with Prebid.js</h1>
+        <p class="intro">
+          This example demonstrates how to integrate ${IDENTITY_NAME} with Prebid.js using <strong>deferred configuration</strong>. 
+          Unlike the standard integration where ${IDENTITY_NAME} is configured on page load, this pattern uses 
+          <code>mergeConfig()</code> and <code>refreshUserIds()</code> to add ${IDENTITY_NAME} <em>after</em> the page has loaded. 
+          This is useful for scenarios like async login, delayed consent, or Single Page Applications (SPAs).
+          [<a href="https://github.com/IABTechLab/uid2-examples/tree/main/web-integrations/prebid-integrations/client-side-deferred">Source Code</a>]
+        </p>
+
+        <!-- Initial Config Display - right under intro -->
+        <div class="config-display">
+          <h3>📄 Initial Prebid Config (on page load)</h3>
+          <p class="config-note">Notice: No ${IDENTITY_NAME} userIds configured - this is intentional for deferred loading.</p>
+          <pre id="initial_config" class="code-block"></pre>
+        </div>
+
+        <!-- Generate/Clear buttons -->
+        <div id="login_form" style="display: none" class="form top-form">
+          <div class="email_prompt">
+            <input
+              type="text"
+              id="email"
+              name="email"
+              placeholder="Enter an email address"
+            />
+            <button type="button" class="button" id="configure_uid">Configure ${IDENTITY_NAME} with mergeConfig()</button>
+          </div>
+        </div>
+        <div id="clear_storage_form" style="display: none" class="form top-form">
+          <button type="button" class="button" id="clear_storage">Clear ${IDENTITY_NAME}</button>
+        </div>
+
+        <!-- Instructions - simple, no box styling -->
+        <div id="merge_instructions" class="merge-instructions">
+          <p><strong>What happens when you click:</strong></p>
+          <ol>
+            <li><code>pbjs.mergeConfig(uidConfig)</code> - Adds ${IDENTITY_NAME} module to existing Prebid config</li>
+            <li><code>pbjs.refreshUserIds()</code> - Triggers ${IDENTITY_NAME} token generation</li>
+          </ol>
+        </div>
+
+        <!-- UID Token Status Section -->
+        <h2>${IDENTITY_NAME} Integration Status</h2>
+
+        <table id="uid_state">
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Ready for Targeted Advertising:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Indicates whether a valid ${IDENTITY_NAME} token is present and can be used for personalized ad targeting.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="targeted_advertising_ready"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Advertising Token:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    The encrypted ${IDENTITY_NAME} token that is passed to ad systems without exposing raw user identity.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="advertising_token"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Is Login Required?
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Indicates whether a new ${IDENTITY_NAME} token needs to be generated. Returns "yes" when no valid identity exists or the current identity has expired.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="login_required"></pre></td>
+          </tr>
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Has Opted Out?
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Shows whether the user has exercised opt-out, in which case no advertising token may be generated or used.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="has_opted_out"></pre></td>
+          </tr>
+        </table>
+
+        <!-- Prebid Integration Status Section -->
+        <h2 class="section-teal">Prebid Integration Status</h2>
+        <p class="section-summary">Prebid.js uses mergeConfig() to add ${IDENTITY_NAME} after the page has loaded, then refreshUserIds() triggers token generation.</p>
+
+        <table id="prebid_state">
+          <tr>
+            <td class="label">
+              <div class="tooltip-wrapper">
+                Prebid Token Storage:
+                <div class="tooltip">
+                  <span class="tooltip-trigger">?</span>
+                  <div class="tooltip-content">
+                    Shows the ${IDENTITY_NAME} token stored by Prebid in localStorage under the key '${UID_STORAGE_KEY}'. Prebid manages this storage for header bidding.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="value"><pre id="prebid_storage"></pre></td>
+          </tr>
+        </table>
+
+        <!-- Merged Config Display (shown after mergeConfig) - at the bottom of Prebid section -->
+        <div id="merge_config_display" class="config-display" style="display: none;">
+          <h3>📄 Config Merged via mergeConfig()</h3>
+          <p class="config-note">This ${IDENTITY_NAME} configuration was added after page load:</p>
+          <pre id="merged_config" class="code-block"></pre>
+        </div>
+      </div>
+
+      <!-- Sidebar for Instructions -->
+      <aside class="sidebar">
+        <h3>📋 Deferred Loading Flow</h3>
+        
+        <div class="section">
+          <h4>Step 1: Page Loads</h4>
+          <ul>
+            <li>Prebid.js loads and initializes</li>
+            <li><code>setConfig()</code> is called <strong>without</strong> ${IDENTITY_NAME}</li>
+            <li>Ads can still be requested (without ${IDENTITY_NAME} targeting)</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>Step 2: User Action</h4>
+          <ul>
+            <li>User logs in, gives consent, or other trigger</li>
+            <li>Your code calls <code>mergeConfig()</code> with ${IDENTITY_NAME} params</li>
+            <li>Then calls <code>refreshUserIds()</code></li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>Step 3: Token Generated</h4>
+          <ul>
+            <li>${IDENTITY_NAME} token is generated</li>
+            <li>Token stored in localStorage</li>
+            <li>Future ad requests include ${IDENTITY_NAME}</li>
+          </ul>
+        </div>
+
+        <div class="section highlight-section">
+          <h4>🔑 Key APIs Used</h4>
+          <ul>
+            <li><code>pbjs.mergeConfig()</code> - Add/update config without replacing</li>
+            <li><code>pbjs.refreshUserIds()</code> - Trigger user ID module refresh</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>Use Cases</h4>
+          <ul>
+            <li><strong>Async Login:</strong> User logs in after page load</li>
+            <li><strong>Delayed Consent:</strong> Consent given after initial load</li>
+            <li><strong>SPAs:</strong> Single Page Apps with dynamic login</li>
+            <li><strong>Lazy Loading:</strong> Load ${IDENTITY_NAME} only when needed</li>
+          </ul>
+        </div>
+
+        <div class="note">
+          <strong>Note:</strong> This is a test-only environment. Do not use real user data.
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>
