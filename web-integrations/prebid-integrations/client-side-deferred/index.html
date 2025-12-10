@@ -161,34 +161,23 @@
         });
       }
 
-      // Display the initial config (called on document ready, before Prebid loads)
+      // Initial Prebid config - WITHOUT UID 
+      const initialPrebidConfig = {
+        debug: true,
+        userSync: {
+          syncDelay: 5000,
+          auctionDelay: 1000,
+        },
+      };
+
+      // Display the initial config (called on document ready)
       function displayInitialConfig() {
-        const initialConfig = {
-          debug: true,
-          userSync: {
-            // Note: NO userIds configured here - deferred loading!
-            syncDelay: 5000,
-            auctionDelay: 1000,
-          },
-        };
-        $('#initial_config').text(JSON.stringify(initialConfig, null, 2));
+        $('#initial_config').text(JSON.stringify(initialPrebidConfig, null, 2));
       }
 
-      // Initial Prebid config - WITHOUT UID (this is the key difference!)
+      // Apply the initial Prebid config
       function setInitialConfig() {
-        const initialConfig = {
-          debug: true,
-          userSync: {
-            // Note: NO userIds configured here - deferred loading!
-            syncDelay: 5000,
-            auctionDelay: 1000,
-          },
-        };
-        
-        console.log('=== INITIAL CONFIG: Setting up Prebid WITHOUT UID ===');
-        console.log('Initial config (no UID):', JSON.stringify(initialConfig, null, 2));
-        
-        pbjs.setConfig(initialConfig);
+        pbjs.setConfig(initialPrebidConfig);
       }
 
       // Consent management for GDPR compliance (required for EUID)
