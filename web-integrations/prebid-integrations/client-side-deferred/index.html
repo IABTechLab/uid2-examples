@@ -254,8 +254,7 @@
         <p class="intro">
           This example demonstrates how to integrate ${IDENTITY_NAME} with Prebid.js using <strong>deferred configuration</strong>. 
           Unlike the standard integration where ${IDENTITY_NAME} is configured on page load, this pattern uses 
-          <code>mergeConfig()</code> and <code>refreshUserIds()</code> to add ${IDENTITY_NAME} <em>after</em> the page has loaded. 
-          This is useful for scenarios like async login, delayed consent, or Single Page Applications (SPAs).
+          <code>mergeConfig()</code> and <code>refreshUserIds()</code> to add ${IDENTITY_NAME} <em>after</em> the page has loaded.
           [<a href="https://github.com/IABTechLab/uid2-examples/tree/main/web-integrations/prebid-integrations/client-side-deferred">Source Code</a>]
         </p>
 
@@ -282,12 +281,12 @@
           <button type="button" class="button" id="clear_storage">Clear ${IDENTITY_NAME}</button>
         </div>
 
-        <!-- Instructions - simple, no box styling -->
+        <!-- Instructions -->
         <div id="merge_instructions" class="merge-instructions">
           <p><strong>What happens when you click:</strong></p>
           <ol>
-            <li><code>pbjs.mergeConfig(uidConfig)</code> - Adds ${IDENTITY_NAME} module to existing Prebid config</li>
-            <li><code>pbjs.refreshUserIds()</code> - Triggers ${IDENTITY_NAME} token generation</li>
+            <li><code>pbjs.mergeConfig(uidConfig)</code> - Merges ${IDENTITY_NAME} user ID module configuration into the existing Prebid config without overwriting other settings. This allows adding ${IDENTITY_NAME} after the page has already loaded.</li>
+            <li><code>pbjs.refreshUserIds()</code> - Triggers Prebid to re-fetch all configured user IDs, including the newly added ${IDENTITY_NAME} module, which initiates token generation using the provided email and CSTG credentials.</li>
           </ol>
         </div>
 
@@ -384,50 +383,51 @@
 
       <!-- Sidebar for Instructions -->
       <aside class="sidebar">
-        <h3>📋 Deferred Loading Flow</h3>
+        <h3>📋 How to Test</h3>
         
         <div class="section">
-          <h4>Step 1: Page Loads</h4>
+          <h4>Step 1: Observe Initial State</h4>
           <ul>
-            <li>Prebid.js loads and initializes</li>
-            <li><code>setConfig()</code> is called <strong>without</strong> ${IDENTITY_NAME}</li>
+            <li>Notice the "Initial Prebid Config" box shows no userIds configured</li>
+            <li>This demonstrates Prebid loading without ${IDENTITY_NAME}</li>
             <li>Ads can still be requested (without ${IDENTITY_NAME} targeting)</li>
           </ul>
         </div>
 
         <div class="section">
-          <h4>Step 2: User Action</h4>
+          <h4>Step 2: Configure ${IDENTITY_NAME}</h4>
           <ul>
-            <li>User logs in, gives consent, or other trigger</li>
-            <li>Your code calls <code>mergeConfig()</code> with ${IDENTITY_NAME} params</li>
-            <li>Then calls <code>refreshUserIds()</code></li>
+            <li>Enter an email address in the input field</li>
+            <li>Click "Configure ${IDENTITY_NAME} with mergeConfig()" button</li>
+            <li>This adds ${IDENTITY_NAME} to the existing Prebid config</li>
           </ul>
         </div>
 
         <div class="section">
-          <h4>Step 3: Token Generated</h4>
+          <h4>Step 3: Observe Token Generation</h4>
           <ul>
-            <li>${IDENTITY_NAME} token is generated</li>
-            <li>Token stored in localStorage</li>
-            <li>Future ad requests include ${IDENTITY_NAME}</li>
-          </ul>
-        </div>
-
-        <div class="section highlight-section">
-          <h4>🔑 Key APIs Used</h4>
-          <ul>
-            <li><code>pbjs.mergeConfig()</code> - Add/update config without replacing</li>
-            <li><code>pbjs.refreshUserIds()</code> - Trigger user ID module refresh</li>
+            <li>Check "Integration Status" table for token values</li>
+            <li>Verify "Ready for Targeted Advertising" changes to "yes"</li>
+            <li>See the merged config displayed at the bottom</li>
           </ul>
         </div>
 
         <div class="section">
-          <h4>Use Cases</h4>
+          <h4>Step 4: Test Opt-Out</h4>
           <ul>
-            <li><strong>Async Login:</strong> User logs in after page load</li>
-            <li><strong>Delayed Consent:</strong> Consent given after initial load</li>
-            <li><strong>SPAs:</strong> Single Page Apps with dynamic login</li>
-            <li><strong>Lazy Loading:</strong> Load ${IDENTITY_NAME} only when needed</li>
+            <li>Clear ${IDENTITY_NAME} and try: <strong>test@example.com</strong></li>
+            <li>Advertising token shows "This email has opted out"</li>
+            <li>No advertising token is stored</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h4>What's Happening?</h4>
+          <ul>
+            <li><strong>Initial Load:</strong> Prebid initializes with <code>setConfig()</code> but no ${IDENTITY_NAME} module configured yet</li>
+            <li><strong>Deferred Config:</strong> When user provides email, <code>mergeConfig()</code> adds ${IDENTITY_NAME} without overwriting existing settings</li>
+            <li><strong>Token Generation:</strong> <code>refreshUserIds()</code> triggers Prebid to generate the ${IDENTITY_NAME} token using CSTG credentials</li>
+            <li><strong>Local Storage:</strong> Prebid stores tokens in localStorage (${UID_STORAGE_KEY}) for persistence across page loads</li>
           </ul>
         </div>
 
