@@ -4,6 +4,22 @@ set -e
 # Default domain if not set
 DOMAIN=${DOMAIN:-sample-dev.com}
 
+# Check if SSL certificates exist
+if [ ! -f /etc/nginx/certs/cert.crt ] || [ ! -f /etc/nginx/certs/cert.key ]; then
+  echo "WARNING: SSL certificates not found at /etc/nginx/certs/"
+  echo "HTTPS will not work until you generate certificates."
+  echo "Run 'npm install && npm run createCA' in the project root to generate certificates."
+  echo "Then trust the CA certificate (ca/ca.crt) in your system/browser."
+  echo ""
+  echo "Creating self-signed fallback certificates for startup..."
+  # Create fallback self-signed certificate so nginx can start
+  mkdir -p /etc/nginx/certs
+  openssl req -x509 -nodes -days 1 -newkey rsa:2048 \
+    -keyout /etc/nginx/certs/cert.key \
+    -out /etc/nginx/certs/cert.crt \
+    -subj "/CN=localhost" 2>/dev/null || true
+fi
+
 # Default backend host pattern (defaults to localhost for Kubernetes same-pod)
 # For Docker Compose with separate containers, set BACKEND_HOST="" to use service names
 # Check if BACKEND_HOST is explicitly set to empty string - if so, use service names

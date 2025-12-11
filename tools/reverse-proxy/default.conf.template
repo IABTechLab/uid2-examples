@@ -2,7 +2,13 @@
 # Matches localhost (for local dev) and root domain (for production)
 server {
     listen 80;
-    server_name localhost 127.0.0.1 ${DOMAIN} www.${DOMAIN};
+    listen 443 ssl;
+    server_name localhost 127.0.0.1 ${DOMAIN};
+
+    ssl_certificate /etc/nginx/certs/cert.crt;
+    ssl_certificate_key /etc/nginx/certs/cert.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
 
     # Exact match for /ops/healthcheck (highest priority)
     location = /ops/healthcheck {
@@ -21,7 +27,13 @@ server {
 # Default server block - catch-all for unmatched subdomains
 server {
     listen 80 default_server;
+    listen 443 ssl default_server;
     server_name _;
+
+    ssl_certificate /etc/nginx/certs/cert.crt;
+    ssl_certificate_key /etc/nginx/certs/cert.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
 
     # Exact match for /ops/healthcheck (highest priority)
     location = /ops/healthcheck {
@@ -39,7 +51,13 @@ server {
 # JavaScript SDK - Client Side (port 3031)
 server {
     listen 80;
+    listen 443 ssl;
     server_name js-client-side.${DOMAIN} *.js-client-side.${DOMAIN};
+
+    ssl_certificate /etc/nginx/certs/cert.crt;
+    ssl_certificate_key /etc/nginx/certs/cert.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
 
     location / {
         proxy_pass http://${JS_CLIENT_SIDE_BACKEND}:3031;
@@ -57,7 +75,13 @@ server {
 # JavaScript SDK - Client Server (port 3032)
 server {
     listen 80;
+    listen 443 ssl;
     server_name js-client-server.${DOMAIN} *.js-client-server.${DOMAIN};
+
+    ssl_certificate /etc/nginx/certs/cert.crt;
+    ssl_certificate_key /etc/nginx/certs/cert.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
 
     location / {
         proxy_pass http://${JS_CLIENT_SERVER_BACKEND}:3032;
@@ -75,7 +99,13 @@ server {
 # JavaScript SDK - React Client Side (port 3034)
 server {
     listen 80;
+    listen 443 ssl;
     server_name js-react.${DOMAIN} *.js-react.${DOMAIN};
+
+    ssl_certificate /etc/nginx/certs/cert.crt;
+    ssl_certificate_key /etc/nginx/certs/cert.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
 
     location / {
         proxy_pass http://${JS_REACT_CLIENT_SIDE_BACKEND}:3034;
@@ -93,7 +123,13 @@ server {
 # Server Side Integration (port 3033)
 server {
     listen 80;
+    listen 443 ssl;
     server_name server-side.${DOMAIN} *.server-side.${DOMAIN};
+
+    ssl_certificate /etc/nginx/certs/cert.crt;
+    ssl_certificate_key /etc/nginx/certs/cert.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
 
     location / {
         proxy_pass http://${SERVER_SIDE_BACKEND}:3033;
@@ -111,7 +147,13 @@ server {
 # Google Secure Signals - Client Server (port 3041)
 server {
     listen 80;
+    listen 443 ssl;
     server_name secure-signals-client-server.${DOMAIN} *.secure-signals-client-server.${DOMAIN};
+
+    ssl_certificate /etc/nginx/certs/cert.crt;
+    ssl_certificate_key /etc/nginx/certs/cert.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
 
     location / {
         proxy_pass http://${SECURE_SIGNALS_CLIENT_SERVER_BACKEND}:3041;
@@ -129,7 +171,13 @@ server {
 # Google Secure Signals - Client Side (port 3042)
 server {
     listen 80;
+    listen 443 ssl;
     server_name secure-signals-client-side.${DOMAIN} *.secure-signals-client-side.${DOMAIN};
+
+    ssl_certificate /etc/nginx/certs/cert.crt;
+    ssl_certificate_key /etc/nginx/certs/cert.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
 
     location / {
         proxy_pass http://${SECURE_SIGNALS_CLIENT_SIDE_BACKEND}:3042;
@@ -147,7 +195,13 @@ server {
 # Google Secure Signals - Server Side (port 3043)
 server {
     listen 80;
+    listen 443 ssl;
     server_name secure-signals-server-side.${DOMAIN} *.secure-signals-server-side.${DOMAIN};
+
+    ssl_certificate /etc/nginx/certs/cert.crt;
+    ssl_certificate_key /etc/nginx/certs/cert.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
 
     location / {
         proxy_pass http://${SECURE_SIGNALS_SERVER_SIDE_BACKEND}:3043;
@@ -165,7 +219,13 @@ server {
 # Google Secure Signals - React Client Side (port 3044)
 server {
     listen 80;
+    listen 443 ssl;
     server_name secure-signals-react.${DOMAIN} *.secure-signals-react.${DOMAIN};
+
+    ssl_certificate /etc/nginx/certs/cert.crt;
+    ssl_certificate_key /etc/nginx/certs/cert.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
 
     location / {
         proxy_pass http://${SECURE_SIGNALS_REACT_CLIENT_SIDE_BACKEND}:3044;
@@ -183,7 +243,13 @@ server {
 # Prebid - Client Side (port 3051)
 server {
     listen 80;
+    listen 443 ssl;
     server_name prebid-client.${DOMAIN} *.prebid-client.${DOMAIN};
+
+    ssl_certificate /etc/nginx/certs/cert.crt;
+    ssl_certificate_key /etc/nginx/certs/cert.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
 
     location / {
         proxy_pass http://${PREBID_CLIENT_BACKEND}:3051;
@@ -211,7 +277,13 @@ server {
 # Prebid - Client Server (port 3052)
 server {
     listen 80;
+    listen 443 ssl;
     server_name prebid-client-server.${DOMAIN} *.prebid-client-server.${DOMAIN};
+
+    ssl_certificate /etc/nginx/certs/cert.crt;
+    ssl_certificate_key /etc/nginx/certs/cert.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
 
     location / {
         proxy_pass http://${PREBID_CLIENT_SERVER_BACKEND}:3052;
@@ -229,7 +301,13 @@ server {
 # Prebid - Client Side Deferred (port 3053) - mergeConfig example
 server {
     listen 80;
+    listen 443 ssl;
     server_name prebid-deferred.${DOMAIN} *.prebid-deferred.${DOMAIN};
+
+    ssl_certificate /etc/nginx/certs/cert.crt;
+    ssl_certificate_key /etc/nginx/certs/cert.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
 
     location / {
         proxy_pass http://${PREBID_CLIENT_SIDE_DEFERRED_BACKEND}:3053;
@@ -247,7 +325,13 @@ server {
 # Prebid Secure Signals - Client Side (port 3061)
 server {
     listen 80;
+    listen 443 ssl;
     server_name prebid-secure-signals.${DOMAIN} *.prebid-secure-signals.${DOMAIN};
+
+    ssl_certificate /etc/nginx/certs/cert.crt;
+    ssl_certificate_key /etc/nginx/certs/cert.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
 
     location / {
         proxy_pass http://${PREBID_SECURE_SIGNALS_CLIENT_SIDE_BACKEND}:3061;
@@ -261,4 +345,3 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
-
