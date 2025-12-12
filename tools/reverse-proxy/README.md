@@ -2,6 +2,29 @@
 
 Routes HTTPS requests to UID sample sites based on subdomain.
 
+## Prerequisites: Environment Variables
+
+Before running the sample sites, create a `.env` file in the project root (`uid2-examples/`) with your API credentials.
+
+1. Copy one of the sample files:
+   ```bash
+   # For UID2
+   cp .env.sample.uid2 .env
+
+   # For EUID
+   cp .env.sample.euid .env
+   ```
+
+2. Edit `.env` and add your credentials:
+   - `UID_API_KEY` - Your API key
+   - `UID_CLIENT_SECRET` - Your client secret
+   - `UID_CSTG_SERVER_PUBLIC_KEY` - Your CSTG public key
+   - `UID_CSTG_SUBSCRIPTION_ID` - Your CSTG subscription ID
+
+See the sample files for all available configuration options.
+
+---
+
 ## Quick Start
 
 ### 1. Install Dependencies & Generate Certificates
