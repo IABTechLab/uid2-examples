@@ -1,174 +1,161 @@
 # Nginx Reverse Proxy
 
-A nginx reverse proxy configuration that routes requests to different backend services based on subdomain.
+Routes HTTPS requests to UID sample sites based on subdomain.
 
-## Configuration
+## Prerequisites: Environment Variables
 
-This reverse proxy is configured to forward requests to different ports based on subdomain. Each subdomain maps to a specific service defined in `docker-compose.yml`.
+Before running the sample sites, create a `.env` file in the project root (`uid2-examples/`) with your API credentials.
 
-### Environment Variables
-
-The domain used for subdomain routing can be configured using the `DOMAIN` environment variable. This allows you to use different domains for different environments (dev, test, prod).
-
-**Default:** `sample-dev.com` (if `DOMAIN` is not set)
-
-**Examples:**
-- Development: `DOMAIN=sample-dev.com`
-- Test: `DOMAIN=sample-test.com`
-- Production: `DOMAIN=sample-prod.com`
-
-### Subdomain Routing
-
-The following subdomains are configured (using `${DOMAIN}` as the base domain):
-
-- `js-client-side.${DOMAIN}` → JavaScript SDK Client Side (port 3031)
-- `js-client-server.${DOMAIN}` → JavaScript SDK Client Server (port 3032)
-- `js-react.${DOMAIN}` → JavaScript SDK React Client Side (port 3034)
-- `server-side.${DOMAIN}` → Server Side Integration (port 3033)
-- `secure-signals-client-server.${DOMAIN}` → Google Secure Signals Client Server (port 3041)
-- `secure-signals-client-side.${DOMAIN}` → Google Secure Signals Client Side (port 3042)
-- `secure-signals-server-side.${DOMAIN}` → Google Secure Signals Server Side (port 3043)
-- `secure-signals-react.${DOMAIN}` → Google Secure Signals React Client Side (port 3044)
-- `prebid-client.${DOMAIN}` → Prebid Client Side (port 3051)
-- `prebid-client-server.${DOMAIN}` → Prebid Client Server (port 3052)
-- `prebid-secure-signals.${DOMAIN}` → Prebid Secure Signals Client Side (port 3061)
-
-**Example with default domain (`sample-dev.com`):**
-- `js-client-side.sample-dev.com` → JavaScript SDK Client Side (port 3031)
-- `js-client-server.sample-dev.com` → JavaScript SDK Client Server (port 3032)
-- etc.
-
-## Required Hosts File Configuration
-
-To use the subdomain-based routing, you must add entries to your hosts file so that these subdomains resolve to localhost.
-
-**Note:** Replace `sample-dev.com` with your configured `DOMAIN` value in the examples below.
-
-### Windows
-
-1. Open Notepad (or your preferred text editor) **as Administrator**
-   - Right-click Notepad → "Run as administrator"
-   - Or use PowerShell as Administrator
-
-2. Open the hosts file:
-   ```
-   C:\Windows\System32\drivers\etc\hosts
-   ```
-
-3. Add the following entries at the end of the file:
-   ```
-   127.0.0.1 js-client-side.sample-dev.com
-   127.0.0.1 js-client-server.sample-dev.com
-   127.0.0.1 js-react.sample-dev.com
-   127.0.0.1 server-side.sample-dev.com
-   127.0.0.1 secure-signals-client-server.sample-dev.com
-   127.0.0.1 secure-signals-client-side.sample-dev.com
-   127.0.0.1 secure-signals-server-side.sample-dev.com
-   127.0.0.1 secure-signals-react.sample-dev.com
-   127.0.0.1 prebid-client.sample-dev.com
-   127.0.0.1 prebid-client-server.sample-dev.com
-   127.0.0.1 prebid-secure-signals.sample-dev.com
-   ```
-
-4. Save the file
-
-5. Flush DNS cache (run in PowerShell as Administrator):
-   ```powershell
-   ipconfig /flushdns
-   ```
-
-### macOS / Linux
-
-1. Open the hosts file with sudo:
+1. Copy one of the sample files:
    ```bash
-   sudo nano /etc/hosts
-   ```
-   (or use `vim`, `vi`, or your preferred editor)
+   # For UID2
+   cp .env.sample.uid2 .env
 
-2. Add the following entries:
-   ```
-   127.0.0.1 js-client-side.sample-dev.com
-   127.0.0.1 js-client-server.sample-dev.com
-   127.0.0.1 js-react.sample-dev.com
-   127.0.0.1 server-side.sample-dev.com
-   127.0.0.1 secure-signals-client-server.sample-dev.com
-   127.0.0.1 secure-signals-client-side.sample-dev.com
-   127.0.0.1 secure-signals-server-side.sample-dev.com
-   127.0.0.1 secure-signals-react.sample-dev.com
-   127.0.0.1 prebid-client.sample-dev.com
-   127.0.0.1 prebid-client-server.sample-dev.com
-   127.0.0.1 prebid-secure-signals.sample-dev.com
+   # For EUID
+   cp .env.sample.euid .env
    ```
 
-3. Save and exit
+2. Edit `.env` and add your credentials:
+   - `UID_API_KEY` - Your API key
+   - `UID_CLIENT_SECRET` - Your client secret
+   - `UID_CSTG_SERVER_PUBLIC_KEY` - Your CSTG public key
+   - `UID_CSTG_SUBSCRIPTION_ID` - Your CSTG subscription ID
 
-4. Flush DNS cache (if needed):
-   ```bash
-   # macOS
-   sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
-   
-   # Linux (systemd-resolved)
-   sudo systemd-resolve --flush-caches
-   ```
+See the sample files for all available configuration options.
 
-## Usage
+---
 
-### Using Docker Compose (Recommended)
+## Quick Start
 
-When using `docker-compose.yml` from the project root, the reverse proxy will automatically connect to other services on the same Docker network:
+### 1. Install Dependencies & Generate Certificates
 
-**Default domain (sample-dev.com):**
 ```bash
-docker-compose up reverse-proxy
+cd /path/to/uid2-examples
+npm install
+npm run createCA
 ```
 
-**Custom domain:**
+### 2. Trust the CA Certificate (macOS)
+
 ```bash
-DOMAIN=sample-test.com docker-compose up reverse-proxy
+sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ./ca/ca.crt
 ```
 
-**Or set in your `.env` file:**
+Enter your password when prompted.
+
+<details>
+<summary>Windows instructions</summary>
+
+1. Double-click `ca/ca.crt`
+2. Click `Install Certificate...` → `Current User` → `Next`
+3. Select `Place all certificates in the following store` → `Browse...`
+4. Choose `Trusted Root Certification Authorities` → `OK` → `Next` → `Finish`
+
+</details>
+
+### 3. Add Hosts File Entries
+
+Open your hosts file:
 ```bash
-DOMAIN=sample-prod.com
+# macOS/Linux
+sudo nano /etc/hosts
+
+# Windows (run Notepad as Administrator)
+# Open: C:\Windows\System32\drivers\etc\hosts
 ```
 
-Then run:
-```bash
-docker-compose up reverse-proxy
+Add these entries:
+
+```
+127.0.0.1 sample-dev.com
+127.0.0.1 js-client-side.sample-dev.com
+127.0.0.1 js-client-server.sample-dev.com
+127.0.0.1 js-react.sample-dev.com
+127.0.0.1 server-side.sample-dev.com
+127.0.0.1 secure-signals-client-server.sample-dev.com
+127.0.0.1 secure-signals-client-side.sample-dev.com
+127.0.0.1 secure-signals-server-side.sample-dev.com
+127.0.0.1 secure-signals-react.sample-dev.com
+127.0.0.1 prebid-client.sample-dev.com
+127.0.0.1 prebid-client-server.sample-dev.com
+127.0.0.1 prebid-deferred.sample-dev.com
+127.0.0.1 prebid-secure-signals.sample-dev.com
 ```
 
-### Standalone Build and Run
-
-#### Build the image
+Flush DNS cache after saving:
 ```bash
-docker build -t nginx-reverse-proxy .
+# macOS
+sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
 ```
 
-#### Run the container
+### 4. Start All Services
 
-**Default domain:**
 ```bash
-docker run -d -p 80:80 --name nginx-proxy nginx-reverse-proxy
+docker-compose up -d
 ```
 
-**Custom domain:**
+> **Important:** This starts ALL containers (reverse-proxy + all sample sites). The reverse-proxy only routes traffic—it doesn't contain the sites themselves.
+
+### 5. Access the Sites
+
+Go to **https://sample-dev.com** — this index page has clickable links to all sample sites.
+
+---
+
+## Available Sites
+
+| URL | Description | Port |
+|-----|-------------|------|
+| `https://sample-dev.com` | Index page (links to all sites) | — |
+| `https://js-client-side.sample-dev.com` | JavaScript SDK Client Side | 3031 |
+| `https://js-client-server.sample-dev.com` | JavaScript SDK Client Server | 3032 |
+| `https://server-side.sample-dev.com` | Server Side Integration | 3033 |
+| `https://js-react.sample-dev.com` | JavaScript SDK React | 3034 |
+| `https://secure-signals-client-server.sample-dev.com` | Google Secure Signals Client Server | 3041 |
+| `https://secure-signals-client-side.sample-dev.com` | Google Secure Signals Client Side | 3042 |
+| `https://secure-signals-server-side.sample-dev.com` | Google Secure Signals Server Side | 3043 |
+| `https://secure-signals-react.sample-dev.com` | Google Secure Signals React | 3044 |
+| `https://prebid-client.sample-dev.com` | Prebid Client Side | 3051 |
+| `https://prebid-client-server.sample-dev.com` | Prebid Client Server | 3052 |
+| `https://prebid-deferred.sample-dev.com` | Prebid Client Side Deferred | 3053 |
+| `https://prebid-secure-signals.sample-dev.com` | Prebid Secure Signals | 3061 |
+
+---
+
+## Troubleshooting
+
+### Browser shows "Not Secure" warning
+1. Make sure you trusted the CA certificate (step 2)
+2. **Fully quit Chrome** (Cmd+Q) and reopen it
+3. Verify trust worked: `security dump-trust-settings -d | grep -A2 "UID2 Examples"`
+
+### 502 Bad Gateway
+The backend service isn't running. Make sure you ran `docker-compose up -d` (not just the reverse-proxy).
+
+### Site not loading at all
+- Check hosts file entries are correct
+- Flush DNS cache
+- Make sure you're using `https://` not `http://`
+
+### Re-generating certificates
+If you add new domains or delete the `ca/` folder:
 ```bash
-docker run -d -p 80:80 -e DOMAIN=sample-test.com --name nginx-proxy nginx-reverse-proxy
+npm run createCA
+# Then re-trust the CA certificate (step 2)
 ```
 
-**Note:** When running standalone, you'll need to ensure the backend services are accessible. You may need to modify the `proxy_pass` directives in `default.conf.template` to use `host.docker.internal` or the appropriate Docker network hostname.
+---
 
-## Customization
+## Alternative: Direct Access (No Certificates)
 
-Edit `default.conf.template` to customize the nginx configuration:
-- Add or remove server blocks for different subdomains
-- Modify subdomain names in the `server_name` directives (use `${DOMAIN}` for the domain variable)
-- Adjust proxy headers as needed
-- Add additional location blocks for specific routes
+You can skip all certificate setup and access services directly via localhost:
 
-**Important:** After modifying `default.conf.template`, rebuild the Docker image:
-```bash
-docker-compose build reverse-proxy
-docker-compose up -d reverse-proxy
-```
+| URL | Service |
+|-----|---------|
+| `http://localhost:3051` | Prebid Client Side |
+| `http://localhost:3052` | Prebid Client Server |
+| `http://localhost:3053` | Prebid Client Side Deferred |
+| `http://localhost:3031` | JavaScript SDK Client Side |
+| *(etc.)* |
 
+This bypasses the reverse-proxy entirely—no HTTPS, no subdomains needed.

@@ -6,6 +6,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - ./ca:/etc/nginx/certs:ro
     container_name: reverse-proxy
     environment:
       - DOMAIN=${DOMAIN:-sample-dev.com}
@@ -112,6 +115,16 @@ services:
     ports:
       - "3052:3052"
     container_name: prebid-client-server
+    env_file:
+      - .env
+
+  prebid-client-side-deferred:
+    build:
+      context: web-integrations/prebid-integrations
+      dockerfile: client-side-deferred/Dockerfile
+    ports:
+      - "3053:3053"
+    container_name: prebid-client-side-deferred
     env_file:
       - .env
 

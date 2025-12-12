@@ -1,108 +1,104 @@
 # UID2 Integration Examples
 
-The [UID2 framework](https://unifiedid.com/docs/intro) enables publishers to integrate in either of the following ways:
+Sample sites demonstrating UID2/EUID integration patterns.
 
-- Via the standard integration workflow, using the [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/client-side-identity) (also known as the UID2 SDK).
-- Via the server-only (custom) integration workflow, by building a direct integration without using the UID2 SDK.
+## Prerequisites
 
-If you are a content publisher interested in generating UID2 tokens for the real-time bidding (RTB) bid stream and want to see how you can use the UID2 services and which integration fits your needs best, you can build and run an example application for each integration.
+### 1. Set Up Environment Variables
 
-The following table summarizes both examples and provides links to the example applications, their documentation, and the respective step-by-step integration guides.
+Copy one of the sample environment files:
 
-| Environment | Documentation                                                                          | Description                                                                                                                                                                                                     | Primary Audience                                             | Integration Guide                                                                                                                                                                                                    |
-|-------------|----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Node.js     | [UID2 SDK Integration Example](./publisher/standard/README.md)                         | Demonstrates how to use the UID2 services with the [UID2 client SDK](https://unifiedid.com/docs/sdks/client-side-identity) to implement the standard UID2 integration workflow. | Publishers with web assets                                   | [Client SDK Integration Guide](https://unifiedid.com/docs/guides/publisher-client-side)                                                                                              |
-| Node.js     | [Server-Only UID2 Integration Example](https://github.com/UnifiedID2/uid2-examples/tree/main/publisher/server_only) | Demonstrates how to use the UID2 services to implement a custom (server-only) UID2 integration workflow without relying on an SDK for establishing client UID2 identity and retrieving advertising tokens.      | App developers and CTV broadcasters                          | [Server-Only UID2 Integration Guide](https://unifiedid.com/docs/guides/custom-publisher-integration)                                                                                 |
-| Java        | [Java SDK Integration Example](./publisher/uid2-java-test-site/README.md)              | Demonstrates use of the [UID2 Java SDK](https://github.com/IABTechLab/uid2-client-java) for both a server-only UID2 integration, and a standard (client SDK and server SDK) integration.                        | Publishers with web assets, app developers, CTV broadcasters | [Server-Only](https://unifiedid.com/docs/guides/custom-publisher-integration); [Client SDK](https://unifiedid.com/docs/guides/publisher-client-side) |
-
-The example applications illustrate the basic steps that you need to consider for your integration. For example, you need to decide how to do the following:
-- Implement user login and logout.
-- Manage UID2 identity information and use it for targeted advertising.
-- Refresh tokens.
-- Deal with missing identities.
-- Handle user opt-outs.
-
-## Docker Compose Setup
-
-This repository includes Docker Compose configuration for easy development and testing of multiple UID2 integration examples.
-
-### Quick Start
-
-**Start all services:**
 ```bash
+# For UID2
+cp .env.sample.uid2 .env
+
+# For EUID
+cp .env.sample.euid .env
+```
+
+Edit `.env` and add your credentials:
+- `UID_API_KEY` - Your API key
+- `UID_CLIENT_SECRET` - Your client secret
+- `UID_CSTG_SERVER_PUBLIC_KEY` - Your CSTG public key
+- `UID_CSTG_SUBSCRIPTION_ID` - Your CSTG subscription ID
+
+### 2. Run a Local Operator (Required)
+
+These sample sites require a local UID2 operator instance.
+
+1. Clone the operator repo:
+   ```bash
+   git clone https://github.com/IABTechLab/uid2-operator.git
+   ```
+
+2. Follow the setup instructions in the [uid2-operator README](https://github.com/IABTechLab/uid2-operator#readme)
+
+3. Ensure the operator is running on `http://localhost:8080`
+
+---
+
+## Running the Sample Sites
+
+### Start All Services
+
+```bash
+# Start all sample sites
 docker-compose up -d
-```
 
-**Start a single service:**
-```bash
-# Start only the Prebid.js client-side integration
-docker-compose up -d prebid-client
-
-# Start with live logs (foreground)
-docker-compose up prebid-client
-```
-
-**Stop services:**
-```bash
 # Stop all services
 docker-compose down
+```
+
+### Start a Single Service
+
+```bash
+# Start only prebid-client
+docker-compose up -d prebid-client
 
 # Stop a single service
 docker-compose stop prebid-client
 ```
 
-**View logs:**
-```bash
-# View all logs
-docker-compose logs -f
 
-# View logs for a specific service
-docker-compose logs -f prebid-client
-```
+### Rebuild After Code Changes
 
-**Rebuild and restart:**
 ```bash
-# Rebuild and restart all services
+# Rebuild all
 docker-compose up -d --build
 
-# Rebuild and restart a single service
+# Rebuild a single service
 docker-compose up -d --build prebid-client
 ```
+See the list below for the name of all individual services. 
 
-### Available Services
+---
 
-- **`prebid-client`** - Prebid.js client-side integration (Port: 3031)
-- **`javascript-sdk-client`** - JavaScript SDK client-server integration (Port: 3051)
-- *More services will be added as they are containerized*
+## Available Sample Sites
 
-### Environment Configuration
+| Service Name | Description | Port | URL |
+|--------------|-------------|------|-----|
+| `javascript-sdk-client-side` | JavaScript SDK Client Side | 3031 | http://localhost:3031 |
+| `javascript-sdk-client-server` | JavaScript SDK Client Server | 3032 | http://localhost:3032 |
+| `server-side` | Server Side Integration | 3033 | http://localhost:3033 |
+| `javascript-sdk-react-client-side` | JavaScript SDK React | 3034 | http://localhost:3034 |
+| `google-secure-signals-client-server` | Google Secure Signals Client Server | 3041 | http://localhost:3041 |
+| `google-secure-signals-client-side` | Google Secure Signals Client Side | 3042 | http://localhost:3042 |
+| `google-secure-signals-server-side` | Google Secure Signals Server Side | 3043 | http://localhost:3043 |
+| `google-secure-signals-react-client-side` | Google Secure Signals React | 3044 | http://localhost:3044 |
+| `prebid-client` | Prebid Client Side | 3051 | http://localhost:3051 |
+| `prebid-client-server` | Prebid Client Server | 3052 | http://localhost:3052 |
+| `prebid-client-side-deferred` | Prebid Client Side Deferred | 3053 | http://localhost:3053 |
+| `prebid-secure-signals-client-side` | Prebid Secure Signals | 3061 | http://localhost:3061 |
 
-This repository includes sample environment files for both UID2 and EUID configurations:
+---
 
-- **`.env.sample.uid2`** - UID2 configuration template
-- **`.env.sample.euid`** - EUID configuration template
+## Run Without Local Operator (Using Integ Environment)
 
-**To get started:**
+If you don't want to run a local operator, you can use HTTPS with custom domains to hit the integration environment operator instead.
 
-1. Copy the appropriate sample file to `.env`:
-   ```bash
-   # For UID2
-   cp .env.sample.uid2 .env
-   
-   # For EUID
-   cp .env.sample.euid .env
-   ```
+This setup:
+- Uses `https://` with subdomains (e.g., `https://prebid-client.sample-dev.com`)
+- Connects to the UID2 integration operator (no local operator required)
+- Requires certificate setup and hosts file configuration
 
-2. Update the `.env` file with your credentials:
-   - Replace `your-api-key` with your actual API key
-   - Replace `your-client-secret` with your actual client secret
-   - Update other placeholder values as needed
-
-The sample files include all necessary environment variables for running the examples, including configuration for:
-- Core API endpoints
-- JavaScript SDK settings
-- Google Secure Signals integration
-- Prebid integration
-- React client examples
-- UI/Display preferences
-
+See [tools/reverse-proxy/README.md](tools/reverse-proxy/README.md) for setup instructions.
