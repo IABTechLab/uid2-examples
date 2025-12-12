@@ -58,14 +58,6 @@
             // Read from localStorage 
             const secureSignalsStorageKey = '<%- secureSignalsStorageKey %>';
             const secureSignalsStorage = localStorage[secureSignalsStorageKey];
-            const token = sdk.getAdvertisingToken();
-            
-            // Safety net: If token exists but Secure Signals haven't loaded yet, reload the page
-            if (token && !secureSignalsStorage && !<%= isOptout %>) {
-              console.log("Token exists but Secure Signals not loaded yet, reloading page...");
-              location.reload();
-              return;
-            }
             
             const secureSignalsStorageJson = secureSignalsStorage && JSON.parse(secureSignalsStorage);
             
