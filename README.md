@@ -42,12 +42,10 @@ These sample sites require a local UID2 operator instance.
 ### Start All Services
 
 ```bash
+# Start all sample sites
 docker-compose up -d
-```
 
-### Stop All Services
-
-```bash
+# Stop all services
 docker-compose down
 ```
 
@@ -57,15 +55,10 @@ docker-compose down
 # Start only prebid-client
 docker-compose up -d prebid-client
 
-# Start with live logs (foreground)
-docker-compose up prebid-client
-```
-
-### Stop a Single Service
-
-```bash
+# Stop a single service
 docker-compose stop prebid-client
 ```
+
 
 ### Rebuild After Code Changes
 
@@ -76,6 +69,7 @@ docker-compose up -d --build
 # Rebuild a single service
 docker-compose up -d --build prebid-client
 ```
+See the list below for the name of all individual services. 
 
 ---
 
