@@ -17,7 +17,6 @@ const port = process.env.PORT || 3044;
 
 // Healthcheck endpoint for Kubernetes probes - must be before all other routes and middleware
 app.get('/ops/healthcheck', (req, res) => {
-  console.log('Healthcheck endpoint hit');
   res.type('text/plain');
   res.status(200).send('healthy\n');
   return; // Explicit return to prevent further processing

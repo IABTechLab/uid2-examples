@@ -4,7 +4,7 @@ Routes HTTPS requests to UID sample sites based on subdomain.
 
 ## Prerequisites: Environment Variables
 
-Before running the sample sites, you need to create a `.env` file in the project root (`uid2-examples/`) with your API credentials.
+Before running the sample sites, create a `.env` file in the project root (`uid2-examples/`) with your API credentials.
 
 1. Copy one of the sample files:
    ```bash

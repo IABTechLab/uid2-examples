@@ -124,7 +124,7 @@ function createEnvelope(payload) {
 }
 
 app.post('/login', async (req, res) => {
-  const jsonEmail = JSON.stringify({ email: req.body.email });
+  const jsonEmail = JSON.stringify({ email: req.body.email, policy: 1 });
   const { envelope, nonce } = createEnvelope(jsonEmail);
 
   const headers = {
