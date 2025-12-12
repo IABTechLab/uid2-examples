@@ -8,24 +8,17 @@
     <script async src="../prebid.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-      console.log('Initializing deferred ${IDENTITY_NAME} + Prebid example.');
-
-      const identityName = '${IDENTITY_NAME}';  // 'UID2' or 'EUID'
+      const identityName = '${IDENTITY_NAME}';
       const apiBaseKey = identityName === 'EUID' ? 'euidApiBase' : 'uid2ApiBase';
-      const userIdName = identityName.toLowerCase();  // 'uid2' or 'euid'
+      const userIdName = identityName.toLowerCase();
       const storageKey = '${UID_STORAGE_KEY}';
 
-      // Track the current state
       let uidConfigured = false;
 
       function updateGuiElements() {
-        console.log('Updating displayed values.');
-        
-        // Try to get identity from Prebid
         let identity = pbjs.getUserIds ? pbjs.getUserIds()[userIdName] : null;
         let advertisingToken = identity ? identity.id : null;
         
-        // Check localStorage for token data
         let isOptedOut = false;
         const storedToken = localStorage.getItem(storageKey);
         if (storedToken) {
@@ -35,14 +28,11 @@
             if (!advertisingToken && tokenData.latestToken && tokenData.latestToken.advertising_token) {
               advertisingToken = tokenData.latestToken.advertising_token;
             }
-          } catch (e) {
-            console.log('Could not parse stored token');
-          }
+          } catch (e) {}
         }
         
         const hasValidToken = !!advertisingToken;
         
-        // Update token status
         $('#targeted_advertising_ready').text(hasValidToken ? 'yes' : 'no');
         $('#login_required').text(hasValidToken ? 'no' : 'yes');
         $('#has_opted_out').text(isOptedOut ? 'yes' : 'no');
@@ -70,7 +60,6 @@
           }
         }
         
-        // Update UI visibility
         updateFormVisibility(hasValidToken, isOptedOut);
       }
 
@@ -79,7 +68,6 @@
           $('#login_form').hide();
           $('#clear_storage_form').show();
         } else if (uidConfigured) {
-          // UID is configured but no token yet - might be loading
           $('#login_form').hide();
           $('#clear_storage_form').show();
         } else {
@@ -88,7 +76,6 @@
         }
       }
 
-      // This is called when user clicks "Configure UID with mergeConfig()"
       async function handleDeferredLogin() {
         const email = $('#email').val();
         if (!email) {
@@ -96,9 +83,7 @@
           return;
         }
 
-        console.log('=== DEFERRED LOGIN: Using mergeConfig() to add UID configuration ===');
-        
-        // Build the UID config to merge
+        // Build UID config to merge - this adds UID AFTER page load
         const uidConfig = {
           userSync: {
             userIds: [
@@ -115,44 +100,36 @@
           },
         };
 
-        // Add consent management for EUID
         if (identityName === 'EUID') {
           uidConfig.consentManagement = consentManagementObj;
         }
 
-        // Show what we're merging
-        console.log('Calling pbjs.mergeConfig() with:', JSON.stringify(uidConfig, null, 2));
         $('#merged_config').text(JSON.stringify(uidConfig, null, 2));
         $('#merge_config_display').show();
 
-        // *** KEY STEP 1: Use mergeConfig() to add UID configuration ***
+        // Use mergeConfig() to add UID configuration after page load
         pbjs.mergeConfig(uidConfig);
         
-        // *** KEY STEP 2: Call refreshUserIds() to trigger token generation ***
-        console.log('Calling pbjs.refreshUserIds() to generate token...');
+        // Call refreshUserIds() to trigger token generation
         await pbjs.refreshUserIds();
         
         uidConfigured = true;
         
-        // Wait a moment for token to be generated
         setTimeout(() => {
           updateGuiElements();
         }, 2000);
       }
 
       function handleClearStorage() {
-        console.log('Clearing storage and resetting state.');
         localStorage.removeItem(storageKey);
         uidConfigured = false;
         location.reload();
       }
 
       function onDocumentReady() {
-        console.log('Setting up interface handlers.');
         $('#configure_uid').click(handleDeferredLogin);
         $('#clear_storage').click(handleClearStorage);
         
-        // Display initial config immediately
         displayInitialConfig();
         
         pbjs.que.push(function() {
@@ -161,7 +138,7 @@
         });
       }
 
-      // Initial Prebid config - WITHOUT UID 
+      // Initial Prebid config - WITHOUT UID (deferred pattern)
       const initialPrebidConfig = {
         debug: true,
         userSync: {
@@ -170,12 +147,10 @@
         },
       };
 
-      // Display the initial config (called on document ready)
       function displayInitialConfig() {
         $('#initial_config').text(JSON.stringify(initialPrebidConfig, null, 2));
       }
 
-      // Apply the initial Prebid config
       function setInitialConfig() {
         pbjs.setConfig(initialPrebidConfig);
       }
@@ -226,7 +201,7 @@
       var pbjs = pbjs || {};
       pbjs.que = pbjs.que || [];
       pbjs.que.push(function () {
-        // Set initial config WITHOUT UID - this is the deferred pattern!
+        // Initial config WITHOUT UID - UID is added later via mergeConfig()
         setInitialConfig();
         pbjs.addAdUnits(adUnits);
         pbjs.requestBids();
