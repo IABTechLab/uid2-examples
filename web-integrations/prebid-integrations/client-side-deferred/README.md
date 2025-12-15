@@ -65,8 +65,8 @@ await pbjs.refreshUserIds();
 
 ## Live Examples
 
-- **UID2**: [https://unifiedid.com/examples/cstg-prebid-deferred-example/](https://unifiedid.com/examples/cstg-prebid-deferred-example/)
-- **EUID**: [https://euid.eu/examples/cstg-prebid-deferred-example/](https://euid.eu/examples/cstg-prebid-deferred-example/)
+- **UID2**: [https://prebid-deferred.samples.uidapi.com/](https://prebid-deferred.samples.uidapi.com/)
+- **EUID**: [https://prebid-deferred.samples.integ.euid.eu/](https://prebid-deferred.samples.integ.euid.eu/)
 
 ## Running Locally
 
@@ -114,7 +114,7 @@ Access at: http://prebid-deferred.sample-dev.com (requires hosts file configurat
 - [UID2 Client-Side Integration Guide for Prebid.js](https://unifiedid.com/docs/guides/integration-prebid-client-side)
 - [EUID Client-Side Integration Guide for Prebid.js](https://euid.eu/docs/guides/integration-prebid-client-side)
 - [Prebid.js User ID Module](https://docs.prebid.org/dev-docs/modules/userId.html)
-- [Prebid.js setConfig/mergeConfig](https://docs.prebid.org/dev-docs/publisher-api-reference/setConfig.html)
+- [Prebid.js mergeConfig](https://docs.prebid.org/dev-docs/publisher-api-reference/mergeConfig.html)
 
 ## Related Examples
 
