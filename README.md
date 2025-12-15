@@ -89,6 +89,7 @@ See the list below for the name of all individual services.
 | `prebid-client-server` | Prebid Client Server | 3052 | http://localhost:3052 |
 | `prebid-client-side-deferred` | Prebid Client Side Deferred | 3053 | http://localhost:3053 |
 | `prebid-secure-signals-client-side` | Prebid Secure Signals | 3061 | http://localhost:3061 |
+| `hashing-tool` | Hashing Tool | 3071 | http://localhost:3071 |
 
 ---
 

@@ -85,6 +85,14 @@ const sites = [
     port: 3061,
     description: 'Prebid Secure Signals Client Side',
   },
+
+  // Tools
+  {
+    name: 'hashing-tool',
+    domain: 'hashing-tool.sample-dev.com',
+    port: 3071,
+    description: 'Hashing Tool',
+  },
 ];
 
 // Export for CommonJS (used by createCA.ts)

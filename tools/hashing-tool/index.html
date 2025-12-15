@@ -2,22 +2,30 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>UID2 Hashing Tool</title>
+    <title>${IDENTITY_NAME} Hashing Tool</title>
     <link rel="stylesheet" type="text/css" href="./app.css" />
-    <link rel="shortcut icon" href="/img/favicon.ico" />
-    <script src="./uid2-sdk-3.3.0.js"></script>
+    <script src="${UID_JS_SDK_URL}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <script>
-    console.log('Initializing example.');
+    console.log('Initializing ${IDENTITY_NAME} Hashing Tool.');
+    
+    // __uid2 for UID2 SDK, __euid for EUID SDK
+    const sdkName = '${UID_JS_SDK_NAME}';
+    
+    // Helper object is named __uid2Helper or __euidHelper based on SDK
+    function getHelper() {
+      return window[sdkName + 'Helper'];
+    }
     
     async function updateGuiElements(normalizedInput, inputType) {
       console.log('Updating displayed values.');
+      const helper = getHelper();
 
-      if (normalizedInput) {
-        const hashedValue = await window.__uid2Helper.hashIdentifier(normalizedInput);
+      if (normalizedInput && helper) {
+        const hashedValue = await helper.hashIdentifier(normalizedInput);
         $('#hashed').text(hashedValue);
-        const encodedValue = await window.__uid2Helper.hashAndEncodeIdentifier(normalizedInput);
+        const encodedValue = await helper.hashAndEncodeIdentifier(normalizedInput);
         $('#base64_encoded').text(encodedValue);  
       }
       else {
@@ -73,15 +81,22 @@
         $('.alert').hide();
         const inputValue = $('#input_value').val();
         const inputType = document.querySelector('input[name="toggle_input_type"]:checked').value;
+        const helper = getHelper();
         let normalizedInput = undefined;
+        
+        if (!helper) {
+          console.error('SDK helper not loaded yet');
+          return;
+        }
+        
         if (inputType == "mobile") {
-          const isNormalizedPhone = window.__uid2Helper.isNormalizedPhone(inputValue)
+          const isNormalizedPhone = helper.isNormalizedPhone(inputValue)
           if (isNormalizedPhone) {
             normalizedInput = inputValue;
           }
         }
         if (inputType === "email") {
-          normalizedInput = window.__uid2Helper.normalizeEmail(inputValue);
+          normalizedInput = helper.normalizeEmail(inputValue);
           $('#normalization_value').text(normalizedInput);
         }
         updateGuiElements(normalizedInput, inputType);
@@ -91,13 +106,13 @@
 
   </script>
   <body>
-    <h1>UID2 Hashing Tool</h1>
+    <h1>${IDENTITY_NAME} Hashing Tool</h1>
     <p class="intro">
      Use this tool to verify that your own implementation is normalizing and 
      encoding correctly. Choose Email or Phone Number, then type or paste the
      value and click Enter. <br><br>
      <b>NOTE:</b> Normalize phone numbers before using the tool.
-     For details and examples, see <a href="https://unifiedid.com/docs/getting-started/gs-normalization-encoding">Normalization and Encoding</a>.
+     For details and examples, see <a href="${DOCS_BASE_URL}/getting-started/gs-normalization-encoding" target="_blank">Normalization and Encoding</a>.
     </p>
 
     <input type="radio" id="toggle_email" name="toggle_input_type" value="email" onclick="handleRadioClick(this)" checked>
