@@ -139,4 +139,13 @@ services:
     env_file:
       - .env
 
-
+  # tools
+  hashing-tool:
+    build:
+      context: tools/hashing-tool
+      dockerfile: Dockerfile
+    ports:
+      - "3071:3071"
+    container_name: hashing-tool
+    env_file:
+      - .env

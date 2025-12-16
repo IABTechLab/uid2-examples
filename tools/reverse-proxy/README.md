@@ -80,6 +80,7 @@ Add these entries:
 127.0.0.1 prebid-client-server.sample-dev.com
 127.0.0.1 prebid-deferred.sample-dev.com
 127.0.0.1 prebid-secure-signals.sample-dev.com
+127.0.0.1 hashing-tool.sample-dev.com
 ```
 
 Flush DNS cache after saving:
@@ -119,6 +120,7 @@ Go to **https://sample-dev.com** — this index page has clickable links to all 
 | `https://prebid-client-server.sample-dev.com` | Prebid Client Server | 3052 |
 | `https://prebid-deferred.sample-dev.com` | Prebid Client Side Deferred | 3053 |
 | `https://prebid-secure-signals.sample-dev.com` | Prebid Secure Signals | 3061 |
+| `https://hashing-tool.sample-dev.com` | Hashing Tool | 3071 |
 
 ---
 
@@ -155,6 +157,7 @@ You can skip all certificate setup and access services directly via localhost:
 | `http://localhost:3051` | Prebid Client Side |
 | `http://localhost:3052` | Prebid Client Server |
 | `http://localhost:3053` | Prebid Client Side Deferred |
+| `http://localhost:3071` | Hashing Tool |
 | `http://localhost:3031` | JavaScript SDK Client Side |
 | *(etc.)* |
 

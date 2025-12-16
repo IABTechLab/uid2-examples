@@ -74,6 +74,27 @@
       <div class="main-content">
         <%- include('intro.html'); -%>
 
+        <!-- Generate/Clear buttons at the top for easy access -->
+        <div id="login_form" style="display: none" class="form top-form">
+          <form action="/login" method="POST">
+            <div class="email_prompt">
+              <input
+                type="text"
+                id="email"
+                name="email"
+                placeholder="Enter an email address"
+              />
+              <input type="submit" value="Generate <%- identityName %>" class="button" />
+            </div>
+          </form>
+        </div>
+        <div id="logout_form" style="display: none" class="form top-form">
+          <button type="button" class="button" id="logout">Clear <%- identityName %></button>
+        </div>
+        <div id="optout_form" style="display: none" class="form top-form">
+          <button type="button" class="button" id="try_another">Try Another Email</button>
+        </div>
+
         <h2><%- identityName %> Integration Status</h2>
 
         <table id="uid_state">
@@ -148,33 +169,6 @@
             <td class="value"><pre id="identity_state"></pre></td>
           </tr>
         </table>
-
-        <div id="login_form" style="display: none" class="form">
-          <form action="/login" method="POST">
-            <div class="form-inline">
-              <input
-                type="text"
-                id="email"
-                name="email"
-                placeholder="Enter an email address"
-                class="email-input"
-              />
-              <input type="submit" value="Generate <%- identityName %>" class="button" />
-            </div>
-          </form>
-        </div>
-
-        <div id="logout_form" style="display: none" class="form">
-          <form>
-            <button type="button" class="button" id="logout">Clear <%- identityName %></button>
-          </form>
-        </div>
-
-        <div id="optout_form" style="display: none" class="form">
-          <form>
-            <button type="button" class="button" id="try_another">Try Another Email</button>
-          </form>
-        </div>
       </div>
 
       <!-- Sidebar for Instructions -->
