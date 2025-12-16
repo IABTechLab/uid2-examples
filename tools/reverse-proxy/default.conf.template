@@ -12,7 +12,6 @@ server {
 
     # Exact match for /ops/healthcheck (highest priority)
     location = /ops/healthcheck {
-        access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
     }
@@ -37,7 +36,6 @@ server {
 
     # Exact match for /ops/healthcheck (highest priority)
     location = /ops/healthcheck {
-        access_log off;
         return 200 "healthy\n";
         add_header Content-Type text/plain;
     }
