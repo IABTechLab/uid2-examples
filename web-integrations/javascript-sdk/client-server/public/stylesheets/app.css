@@ -200,7 +200,12 @@ a:hover {
   margin-top: 2rem;
 }
 
-.form-inline {
+.form.top-form {
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+
+.email_prompt {
   display: flex;
   gap: 0;
   max-width: 600px;
@@ -209,7 +214,7 @@ a:hover {
   overflow: hidden;
 }
 
-.email-input {
+#email {
   flex: 1;
   padding: 0.875rem 1.25rem;
   border: 2px solid var(--border-color);
@@ -220,11 +225,11 @@ a:hover {
   transition: border-color 0.2s ease;
 }
 
-.email-input:focus {
+#email:focus {
   border-color: var(--primary-orange);
 }
 
-.email-input::placeholder {
+#email::placeholder {
   color: var(--text-gray);
 }
 
@@ -258,6 +263,11 @@ a:hover {
   width: 100%;
   max-width: 600px;
   border-radius: 8px;
+}
+
+/* Rounded corners for login button in form */
+#login_form .button {
+  border-radius: 0 8px 8px 0;
 }
 
 /* Tooltip Styles - Matching Self-Serve Portal */
@@ -353,11 +363,11 @@ a:hover {
     padding: 1.5rem;
   }
   
-  .form-inline {
+  .email_prompt {
     flex-direction: column;
   }
   
-  .email-input {
+  #email {
     border-right: 2px solid var(--border-color);
     border-bottom: none;
   }

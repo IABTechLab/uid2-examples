@@ -110,7 +110,7 @@ const ClientSideApp = () => {
           This example demonstrates how a content publisher can integrate {IDENTITY_NAME} using client-side token generation with React, where the SDK generates tokens directly in the browser using public credentials. For documentation, see the{' '}
           <a href={`${DOCS_BASE_URL}/guides/integration-javascript-client-side`}>
             Client-Side Integration Guide for JavaScript
-          </a>.
+          </a>. [<a href="https://github.com/IABTechLab/uid2-examples/tree/main/web-integrations/javascript-sdk/react-client-side">Source Code</a>]
         </p>
 
         {/* Generate/Clear buttons at the top for easy access */}
