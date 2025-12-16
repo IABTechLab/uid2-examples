@@ -28,6 +28,31 @@
           [<a href="https://github.com/IABTechLab/uid2-examples/tree/main/web-integrations/server-side">Source Code</a>]
         </p>
 
+        <!-- Generate/Clear buttons at the top for easy access -->
+        <% if (!identity && !isOptout) { %>
+        <div id="login_form" class="form top-form">
+          <form action="/login" method="POST">
+            <div class="email_prompt">
+              <input
+                type="text"
+                id="email"
+                name="email"
+                placeholder="Enter an email address"
+              />
+              <input type="submit" value="Generate <%- identityName %>" class="button" />
+            </div>
+          </form>
+        </div>
+        <% } else if (isOptout) { %>
+        <div id="optout_form" class="form top-form">
+          <button type="button" class="button" id="try_another">Try Another Email</button>
+        </div>
+        <% } else { %>
+        <div id="logout_form" class="form top-form">
+          <button type="button" class="button" id="logout">Clear <%- identityName %></button>
+        </div>
+        <% } %>
+
         <h2><%- identityName %> Integration Status</h2>
 
         <table id="uid_state">
@@ -102,31 +127,6 @@
             <td class="value"><pre><%= identity ? JSON.stringify(identity, null, 2) : 'null' %></pre></td>
           </tr>
         </table>
-
-        <% if (!identity && !isOptout) { %>
-        <div id="login_form" class="form">
-          <form action="/login" method="POST">
-            <div class="form-inline">
-              <input
-                type="text"
-                id="email"
-                name="email"
-                placeholder="Enter an email address"
-                class="email-input"
-              />
-              <input type="submit" value="Generate <%- identityName %>" class="button" />
-            </div>
-          </form>
-        </div>
-        <% } else if (isOptout) { %>
-        <div id="optout_form" class="form">
-          <button type="button" class="button" id="try_another">Try Another Email</button>
-        </div>
-        <% } else { %>
-        <div id="logout_form" class="form">
-          <button type="button" class="button" id="logout">Clear <%- identityName %></button>
-        </div>
-        <% } %>
       </div>
 
       <!-- Sidebar for Instructions -->

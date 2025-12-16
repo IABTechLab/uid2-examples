@@ -113,6 +113,31 @@ const ClientSideApp = () => {
           </a>.
         </p>
 
+        {/* Generate/Clear buttons at the top for easy access */}
+        {showLoginForm ? (
+          <div id="login_form" className="form top-form">
+            <div className="email_prompt">
+              <input
+                type="text"
+                id="email"
+                name="email"
+                placeholder="Enter an email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <button type="button" className="button" onClick={handleLogin}>
+                Generate {IDENTITY_NAME}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div id="logout_form" className="form top-form">
+            <button type="button" className="button" onClick={handleLogout}>
+              Clear {IDENTITY_NAME}
+            </button>
+          </div>
+        )}
+
         <h2>{IDENTITY_NAME} Integration Status</h2>
         <table id="uid_state">
           <tbody>
@@ -198,30 +223,6 @@ const ClientSideApp = () => {
             </tr>
           </tbody>
         </table>
-
-        {showLoginForm ? (
-          <div id="login_form" className="form">
-            <div className="email_prompt">
-              <input
-                type="text"
-                id="email"
-                name="email"
-                placeholder="Enter an email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <button type="button" className="button" onClick={handleLogin}>
-                Generate {IDENTITY_NAME}
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div id="logout_form" className="form">
-            <button type="button" className="button" onClick={handleLogout}>
-              Clear {IDENTITY_NAME}
-            </button>
-          </div>
-        )}
       </div>
 
       <aside className="sidebar">
