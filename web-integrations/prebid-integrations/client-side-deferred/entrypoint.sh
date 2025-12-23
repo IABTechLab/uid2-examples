@@ -6,6 +6,7 @@ export SERVER_PUBLIC_KEY=${UID_CSTG_SERVER_PUBLIC_KEY:-"UID2-X-I-MFkwEwYHKoZIzj0
 export SUBSCRIPTION_ID=${UID_CSTG_SUBSCRIPTION_ID:-"DMr7uHxqLU"}
 export UID_STORAGE_KEY=${UID_STORAGE_KEY:-"__uid2_advertising_token"}
 export IDENTITY_NAME=${IDENTITY_NAME:-"UID2"}
+export IDENTITY_NAME_LOWER=$(echo "$IDENTITY_NAME" | tr '[:upper:]' '[:lower:]')
 export DOCS_BASE_URL=${DOCS_BASE_URL:-"https://unifiedid.com/docs"}
 
 # Copy static files

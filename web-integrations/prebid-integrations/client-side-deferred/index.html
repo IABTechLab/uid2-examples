@@ -110,8 +110,12 @@
         // Use mergeConfig() to add UID configuration after page load
         pbjs.mergeConfig(uidConfig);
         
-        // Call refreshUserIds() to trigger token generation
-        await pbjs.refreshUserIds();
+        console.log(`[${identityName}] Config merged. Calling refreshUserIds for ${userIdName} only...`);
+        
+        // Call refreshUserIds() with submoduleNames to only refresh UID2/EUID specifically
+        await pbjs.refreshUserIds({ submoduleNames: [userIdName] });
+        
+        console.log(`[${identityName}] refreshUserIds complete. Current getUserIds():`, pbjs.getUserIds());
         
         uidConfigured = true;
         
@@ -121,8 +125,12 @@
       }
 
       function handleClearStorage() {
+        // Clear UID2 identity from browser storage
         localStorage.removeItem(storageKey);
-        uidConfigured = false;
+        
+        // Page reload is required to clear Prebid's in-memory cache.
+        // Unlike the UID2 SDK which has disconnect(), Prebid's UID2 module
+        // doesn't expose a method to clear just UID2 without affecting other ID modules.
         location.reload();
       }
 
@@ -247,11 +255,17 @@
 
         <!-- Instructions -->
         <div id="merge_instructions" class="merge-instructions">
-          <p><strong>What happens when you click:</strong></p>
+          <p><strong>What happens when you click "Configure":</strong></p>
           <ol>
             <li><code>pbjs.mergeConfig(uidConfig)</code> - Merges ${IDENTITY_NAME} user ID module configuration into the existing Prebid config without overwriting other settings. This allows adding ${IDENTITY_NAME} after the page has already loaded.</li>
-            <li><code>pbjs.refreshUserIds()</code> - Triggers Prebid to re-fetch all configured user IDs, including the newly added ${IDENTITY_NAME} module, which initiates token generation using the provided email and CSTG credentials.</li>
+            <li><code>pbjs.refreshUserIds({ submoduleNames: ['${IDENTITY_NAME_LOWER}'] })</code> - Triggers Prebid to re-fetch the ${IDENTITY_NAME} user ID specifically, which initiates token generation using the provided email and CSTG credentials.</li>
           </ol>
+          <p><strong>What happens when you click "Clear":</strong></p>
+          <ol>
+            <li><code>localStorage.removeItem(storageKey)</code> - Clears the ${IDENTITY_NAME} identity from browser storage.</li>
+            <li><code>location.reload()</code> - Reloads the page to clear Prebid's in-memory cache, preventing future bid requests from using the old token.</li>
+          </ol>
+          <p class="config-note"><strong>Why reload?</strong> ${IDENTITY_NAME} state lives in browser storage and Prebid's memory. Prebid only reads the token—it doesn't provide a method to clear just ${IDENTITY_NAME} without affecting other ID modules. Page reload ensures a clean state.</p>
         </div>
 
         <!-- UID Token Status Section -->

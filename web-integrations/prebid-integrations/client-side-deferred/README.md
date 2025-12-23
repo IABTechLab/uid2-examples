@@ -109,6 +109,36 @@ Access at: http://prebid-deferred.sample-dev.com (requires hosts file configurat
 4. **Observe results** - Token appears in the status tables
 5. **Test opt-out** - Use `test@example.com` to see opt-out behavior
 
+## Clearing UID2 Identity (Logout)
+
+UID2 state lives in two places:
+- **Browser storage** (localStorage) - where the token is persisted
+- **Prebid's in-memory cache** - where Prebid holds the token during the session
+
+To fully clear UID2 and prevent future bid requests from using the token:
+
+```javascript
+// Step 1: Clear UID2 from browser storage
+localStorage.removeItem('__uid2_advertising_token');
+
+// Step 2: Page reload clears Prebid's in-memory cache
+location.reload();
+```
+
+### Why Page Reload?
+
+Prebid's UID2 module doesn't expose a method to clear just UID2 without affecting other user ID modules. The `mergeConfig()` API is additive—once UID2 is added to `userSync.userIds`, there's no built-in way to remove only that configuration. Page reload ensures Prebid reinitializes fresh with an empty localStorage.
+
+### Alternative: Using the UID2 JavaScript SDK
+
+If you're using the [UID2 JavaScript SDK](https://unifiedid.com/docs/sdks/sdk-ref-javascript) directly (not just Prebid's module), you can use:
+
+```javascript
+__uid2.disconnect();
+```
+
+This automatically clears both storage and in-memory state without page reload. However, this method is **not available** when using Prebid's UID2 module alone—Prebid uses an internal implementation that doesn't expose the full SDK globally.
+
 ## Documentation
 
 - [UID2 Client-Side Integration Guide for Prebid.js](https://unifiedid.com/docs/guides/integration-prebid-client-side)
