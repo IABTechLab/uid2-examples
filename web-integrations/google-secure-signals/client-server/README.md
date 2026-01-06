@@ -7,9 +7,9 @@ This example demonstrates how to combine server-side UID2/EUID token generation 
 
 For configuration details, see the [Google Secure Signals README](../README.md#how-it-works).
 
-## Prerequisites
+## Build and Run Locally
 
-The following environment variables are required. Add them to your `.env` file in the repository root.
+> **Before running:** Follow the [main README](../../../README.md#running-locally) to set up your local operator and ensure the following environment variables are in the `.env` file in the repository root:
 
 | Parameter | Description |
 |:----------|:------------|
@@ -22,10 +22,6 @@ The following environment variables are required. Add them to your `.env` file i
 | `UID_SECURE_SIGNALS_STORAGE_KEY` | Storage key for Secure Signals (`_GESPSK-uidapi.com` or `_GESPSK-euid.eu`) |
 | `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
 | `DOCS_BASE_URL` | Used for UI links to public documentation (`https://unifiedid.com/docs` or `https://euid.eu/docs`) |
-
-## Build and Run Locally
-
-> **Before running:** Follow the [main README](../../../README.md#running-locally) to set up your local operator and environment variables.
 
 From the repository root directory:
 

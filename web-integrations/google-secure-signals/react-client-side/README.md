@@ -7,9 +7,9 @@ This example demonstrates how to integrate UID2/EUID with Google Secure Signals 
 
 For configuration details, see the [Google Secure Signals README](../README.md#how-it-works).
 
-## Prerequisites
+## Build and Run Locally
 
-The following environment variables are required. Add them to your `.env` file in the repository root.
+> **Before running:** Follow the [main README](../../../README.md#running-locally) to set up your local operator and ensure the following environment variables are in the `.env` file in the repository root:
 
 > **Note:** React requires environment variables to be prefixed with `REACT_APP_` to be accessible in the browser.
 
@@ -24,10 +24,6 @@ The following environment variables are required. Add them to your `.env` file i
 | `REACT_APP_UID_SECURE_SIGNALS_STORAGE_KEY` | Storage key for Secure Signals (`_GESPSK-uidapi.com` or `_GESPSK-euid.eu`) |
 | `REACT_APP_IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
 | `REACT_APP_DOCS_BASE_URL` | Used for UI links to public documentation |
-
-## Build and Run Locally
-
-> **Before running:** Follow the [main README](../../../README.md#running-locally) to set up your local operator and environment variables.
 
 From the repository root directory:
 
