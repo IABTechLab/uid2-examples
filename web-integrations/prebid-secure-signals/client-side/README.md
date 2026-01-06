@@ -5,6 +5,8 @@ This example demonstrates how to combine Prebid.js with Google Secure Signals fo
 - UID2: [Running Site](https://prebid-secure-signals.samples.uidapi.com/) | [Documentation](https://unifiedid.com/docs/guides/integration-google-ss)
 - EUID: [Running Site](https://prebid-secure-signals.samples.integ.euid.eu/) | [Documentation](https://euid.eu/docs/guides/integration-google-ss)
 
+For configuration details, see the [Prebid.js + Secure Signals README](../README.md#how-it-works).
+
 ## Prerequisites
 
 The following environment variables are required. Add them to your `.env` file in the repository root.

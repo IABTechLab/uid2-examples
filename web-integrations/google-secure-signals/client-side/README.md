@@ -5,6 +5,8 @@ This example demonstrates how to combine client-side UID2/EUID token generation 
 - UID2: [Running Site](https://ss-client-side.samples.uidapi.com/) | [Documentation](https://unifiedid.com/docs/guides/integration-google-ss)
 - EUID: [Running Site](https://ss-client-side.samples.integ.euid.eu/) | [Documentation](https://euid.eu/docs/guides/integration-google-ss)
 
+For configuration details, see the [Google Secure Signals README](../README.md#how-it-works).
+
 ## Prerequisites
 
 The following environment variables are required. Add them to your `.env` file in the repository root.

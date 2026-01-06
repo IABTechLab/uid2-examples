@@ -5,6 +5,8 @@ This example demonstrates how to integrate the UID2/EUID JavaScript SDK into a R
 - UID2: [Running Site](https://js-react.samples.uidapi.com/) | [Documentation](https://unifiedid.com/docs/guides/integration-javascript-client-side)
 - EUID: [Running Site](https://js-react.samples.integ.euid.eu/) | [Documentation](https://euid.eu/docs/guides/integration-javascript-client-side)
 
+For configuration details, see the [JavaScript SDK README](../README.md#how-it-works).
+
 ## Prerequisites
 
 The following environment variables are required. Add them to your `.env` file in the repository root.

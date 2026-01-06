@@ -5,6 +5,8 @@ This example demonstrates how to generate UID2/EUID tokens on the server side wh
 - UID2: [Running Site](https://prebid-client-server.samples.uidapi.com/) | [Documentation](https://unifiedid.com/docs/guides/integration-prebid-client-server)
 - EUID: [Running Site](https://prebid-client-server.samples.integ.euid.eu/) | [Documentation](https://euid.eu/docs/guides/integration-prebid-client-server)
 
+For configuration details, see the [Prebid.js README](../README.md#how-it-works).
+
 ## Prerequisites
 
 The following environment variables are required. Add them to your `.env` file in the repository root.

@@ -5,6 +5,8 @@ This example demonstrates how a content publisher can use the UID2/EUID JavaScri
 - UID2: [Running Site](https://js-client-side.samples.uidapi.com/) | [Documentation](https://unifiedid.com/docs/guides/integration-javascript-client-side)
 - EUID: [Running Site](https://js-client-side.samples.integ.euid.eu/) | [Documentation](https://euid.eu/docs/guides/integration-javascript-client-side)
 
+For configuration details, see the [JavaScript SDK README](../README.md#how-it-works).
+
 ## Prerequisites
 
 The following environment variables are required. Add them to your `.env` file in the repository root.

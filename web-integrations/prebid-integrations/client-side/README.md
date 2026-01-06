@@ -5,6 +5,8 @@ This example demonstrates how to integrate UID2/EUID with Prebid.js using client
 - UID2: [Running Site](https://prebid-client.samples.uidapi.com/) | [Documentation](https://unifiedid.com/docs/guides/integration-prebid-client-side)
 - EUID: [Running Site](https://prebid-client.samples.integ.euid.eu/) | [Documentation](https://euid.eu/docs/guides/integration-prebid-client-side)
 
+For configuration details, see the [Prebid.js README](../README.md#how-it-works).
+
 ## Prerequisites
 
 The following environment variables are required. Add them to your `.env` file in the repository root.

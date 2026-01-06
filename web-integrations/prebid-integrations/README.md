@@ -11,7 +11,9 @@ When using Prebid.js for UID2/EUID integration, Prebid handles the entire token 
 3. **Token Refresh** — Prebid automatically refreshes tokens before expiration
 4. **Bid Requests** — Token is automatically included in bid requests via the User ID module
 
-### Key Configuration
+### Client-Side Configuration (CSTG)
+
+Prebid generates the token directly from an email address:
 
 ```javascript
 pbjs.setConfig({
@@ -19,13 +21,28 @@ pbjs.setConfig({
     userIds: [{
       name: 'uid2',  // or 'euid'
       params: {
-        // Client-side (CSTG): Prebid generates the token
         email: userEmail,
         subscriptionId: 'your-sub-id',
         serverPublicKey: 'your-public-key'
-        
-        // OR Client-server: Server provides the token
-        // uid2Token: tokenFromServer
+      }
+    }]
+  }
+});
+```
+
+### Client-Server Configuration
+
+Server provides the initial token, but CSTG credentials are still required for Prebid to refresh it:
+
+```javascript
+pbjs.setConfig({
+  userSync: {
+    userIds: [{
+      name: 'uid2',  // or 'euid'
+      params: {
+        uid2Token: tokenFromServer,         // Initial token from server
+        subscriptionId: 'your-sub-id',      // Required for refresh
+        serverPublicKey: 'your-public-key'  // Required for refresh
       }
     }]
   }
@@ -33,14 +50,6 @@ pbjs.setConfig({
 ```
 
 > **EUID Note:** If using EUID, you must configure consent management for GDPR compliance. See the [EUID Permissions documentation](https://euid.eu/docs/getting-started/gs-permissions).
-
-### Integration Types
-
-| Type | Token Generation | Use Case |
-|------|------------------|----------|
-| **Client-Side** | Prebid uses CSTG | Simple setup, all client-side |
-| **Client-Server** | Server generates, Prebid refreshes | More control, server-side validation |
-| **Deferred** | Added after page load via `mergeConfig()` | Add UID2/EUID to existing Prebid setup |
 
 ## Available Examples
 

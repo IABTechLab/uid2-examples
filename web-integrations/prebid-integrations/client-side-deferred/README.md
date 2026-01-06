@@ -5,6 +5,8 @@ This example demonstrates how to add the UID2/EUID module to an existing Prebid.
 - UID2: [Running Site](https://prebid-deferred.samples.uidapi.com/) | [Documentation](https://unifiedid.com/docs/guides/integration-prebid-client-side)
 - EUID: [Running Site](https://prebid-deferred.samples.integ.euid.eu/) | [Documentation](https://euid.eu/docs/guides/integration-prebid-client-side)
 
+For configuration details, see the [Prebid.js README](../README.md#how-it-works).
+
 ## Prerequisites
 
 The following environment variables are required. Add them to your `.env` file in the repository root.
