@@ -7,9 +7,9 @@ This example demonstrates how a content publisher can use the UID2/EUID JavaScri
 
 For configuration details, see the [JavaScript SDK README](../README.md#how-it-works).
 
-## Prerequisites
+## Build and Run Locally
 
-The following environment variables are required. Add them to your `.env` file in the repository root.
+> **Before running:** Follow the [main README](../../../README.md#running-locally) to set up your local operator and ensure the following environment variables are in the `.env` file in the repository root:
 
 | Parameter | Description |
 |:----------|:------------|
@@ -20,8 +20,6 @@ The following environment variables are required. Add them to your `.env` file i
 | `UID_JS_SDK_NAME` | Global variable name for the SDK (`__uid2` or `__euid`) |
 | `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
 | `DOCS_BASE_URL` | Used for UI links to public documentation (`https://unifiedid.com/docs` or `https://euid.eu/docs`) |
-
-## Build and Run Locally
 
 From the repository root directory:
 

@@ -7,9 +7,9 @@ This example demonstrates how to integrate the UID2/EUID JavaScript SDK into a R
 
 For configuration details, see the [JavaScript SDK README](../README.md#how-it-works).
 
-## Prerequisites
+## Build and Run Locally
 
-The following environment variables are required. Add them to your `.env` file in the repository root.
+> **Before running:** Follow the [main README](../../../README.md#running-locally) to set up your local operator and ensure the following environment variables are in the `.env` file in the repository root:
 
 > **Note:** React requires environment variables to be prefixed with `REACT_APP_` to be accessible in the browser.
 
@@ -22,8 +22,6 @@ The following environment variables are required. Add them to your `.env` file i
 | `REACT_APP_UID_JS_SDK_NAME` | Global variable name for the SDK (`__uid2` or `__euid`) |
 | `REACT_APP_IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
 | `REACT_APP_DOCS_BASE_URL` | Used for UI links to public documentation |
-
-## Build and Run Locally
 
 From the repository root directory:
 

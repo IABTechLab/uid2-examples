@@ -7,9 +7,9 @@ This example demonstrates how to generate UID2/EUID tokens on the server side wh
 
 For configuration details, see the [Prebid.js README](../README.md#how-it-works).
 
-## Prerequisites
+## Build and Run Locally
 
-The following environment variables are required. Add them to your `.env` file in the repository root.
+> **Before running:** Follow the [main README](../../../README.md#running-locally) to set up your local operator and ensure the following environment variables are in the `.env` file in the repository root:
 
 | Parameter | Description |
 |:----------|:------------|
@@ -19,8 +19,6 @@ The following environment variables are required. Add them to your `.env` file i
 | `UID_STORAGE_KEY` | localStorage key for token storage (`__uid2_advertising_token` or `__euid_advertising_token`) |
 | `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
 | `DOCS_BASE_URL` | Used for UI links to public documentation (`https://unifiedid.com/docs` or `https://euid.eu/docs`) |
-
-## Build and Run Locally
 
 From the repository root directory:
 

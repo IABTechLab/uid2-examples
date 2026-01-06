@@ -5,9 +5,9 @@ This example demonstrates a full server-side UID2/EUID implementation where all 
 - UID2: [Running Site](https://server-side.samples.uidapi.com/) | [Documentation](https://unifiedid.com/docs/guides/integration-publisher-server-side)
 - EUID: [Running Site](https://server-side.samples.integ.euid.eu/) | [Documentation](https://euid.eu/docs/guides/integration-publisher-server-side)
 
-## Prerequisites
+## Build and Run Locally
 
-The following environment variables are required. Add them to your `.env` file in the repository root.
+> **Before running:** Follow the [main README](../../README.md#running-locally) to set up your local operator and ensure the following environment variables are in the `.env` file in the repository root:
 
 | Parameter | Description |
 |:----------|:------------|
@@ -16,8 +16,6 @@ The following environment variables are required. Add them to your `.env` file i
 | `UID_CLIENT_SECRET` | Your client secret for server-side token generation |
 | `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
 | `DOCS_BASE_URL` | Used for UI links to public documentation (`https://unifiedid.com/docs` or `https://euid.eu/docs`) |
-
-## Build and Run Locally
 
 From the repository root directory:
 
