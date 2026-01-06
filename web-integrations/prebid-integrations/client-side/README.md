@@ -22,6 +22,8 @@ The following environment variables are required. Add them to your `.env` file i
 
 ## Build and Run Locally
 
+> **Before running:** Follow the [main README](../../../README.md#running-locally) to set up your local operator and environment variables.
+
 From the repository root directory:
 
 ```bash
