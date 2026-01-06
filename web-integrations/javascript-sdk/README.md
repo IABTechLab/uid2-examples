@@ -122,3 +122,23 @@ Open Developer Tools (F12) and check:
 | Token not persisting | localStorage blocked | Check browser privacy settings |
 | SDK not loading | Wrong SDK URL | Verify `UID_JS_SDK_URL` is accessible |
 | "Unexpected origin" | Domain not allowed | Use local operator or verify domain is registered |
+
+## Troubleshooting (Client-Server)
+
+### "Request failed with status code 401"
+
+- Verify your `UID_API_KEY` and `UID_CLIENT_SECRET` are correct
+- Ensure your API key has the **GENERATOR** role
+- Check that credentials match your environment (local vs. integration)
+- For EUID, ensure your operator's `identity_scope` is set to `"euid"` and you're using `EUID-C-` keys
+
+### "Request failed with status code 500"
+
+**For local operator:**
+- Verify the operator is running at `localhost:8080`
+- Check `enable_v2_encryption: true` is set in the operator's config
+- Review operator logs for errors
+- Ensure `identity_scope` matches your credentials (e.g., `"uid2"` or `"euid"`)
+
+**For Docker:**
+- Ensure `UID_SERVER_BASE_URL` uses `host.docker.internal:8080` not `localhost:8080`

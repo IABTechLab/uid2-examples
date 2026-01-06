@@ -128,3 +128,14 @@ docker compose up -d --build prebid-secure-signals-client-side
 | Prebid token present but Secure Signals empty | Secure Signals SDK not loaded | Verify `UID_SECURE_SIGNALS_SDK_URL` |
 | Neither token present | CSTG credentials incorrect | Check subscription ID and public key |
 | Video ads not showing | Ad blocker | Disable ad blocker for testing |
+
+## Troubleshooting
+
+### Prebid Doesn't Have the Identity
+
+Run `pbjs.getUserIds()` in console. If empty or missing `uid2`/`euid`:
+- Check console for Prebid errors
+- Verify Prebid.js loaded correctly (check Network tab)
+- Ensure `pbjs.setConfig()` is being called after token generation
+- Check the browser console for "Configuring Prebid.js with..." message to confirm configuration
+- Check that `IDENTITY_NAME` matches the expected identity type (UID2 or EUID)
