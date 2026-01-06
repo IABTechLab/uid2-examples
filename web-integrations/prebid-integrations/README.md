@@ -61,8 +61,8 @@ pbjs.setConfig({
 
 ## Documentation
 
-- UID2: [Client-Side Guide](https://unifiedid.com/docs/guides/integration-prebid-client-side) | [Client-Server Guide](https://unifiedid.com/docs/guides/integration-prebid-client-server)
-- EUID: [Client-Side Guide](https://euid.eu/docs/guides/integration-prebid-client-side) | [Client-Server Guide](https://euid.eu/docs/guides/integration-prebid-client-server)
+- UID2: [Client-Side Guide](https://unifiedid.com/docs/guides/integration-prebid-client-side) | [Client-Server Guide](https://unifiedid.com/docs/guides/integration-prebid-client-server) | [Deferred Configuration](https://unifiedid.com/docs/guides/integration-prebid-client-side#deferred-client-side-uid2-configuration-with-mergeconfig)
+- EUID: [Client-Side Guide](https://euid.eu/docs/guides/integration-prebid-client-side) | [Client-Server Guide](https://euid.eu/docs/guides/integration-prebid-client-server) | [Deferred Configuration](https://euid.eu/docs/guides/integration-prebid-client-side#deferred-client-side-euid-configuration-with-mergeconfig)
 
 ## Prebid.js Build
 
