@@ -1,6 +1,6 @@
 # Prebid.js Integrations
 
-This folder contains sample integrations using Prebid.js with the UID2/EUID User ID module. Prebid.js handles the entire token workflow—generation, storage, and automatic refresh.
+This folder contains sample integrations using Prebid.js with the UID2/EUID User ID module. Prebid.js manages token storage, refresh, and inclusion in bid requests.
 
 ## Available Examples
 
