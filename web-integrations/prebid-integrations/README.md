@@ -140,3 +140,32 @@ docker compose up -d --build SERVICE_NAME
 | "Invalid subscription ID" | Wrong credentials | Verify credentials match operator URL |
 | Token not in bid requests | Token not generated yet | Wait for `pbjs.refreshUserIds()` to complete |
 | Module not loading | Prebid build missing module | Use the provided `prebid.js` build |
+
+## Troubleshooting
+
+### "Request failed with status code 401"
+
+- Verify your `UID_API_KEY` and `UID_CLIENT_SECRET` are correct
+- Ensure your API key has the **GENERATOR** role
+- Check that credentials match your environment (local vs. integration)
+- For EUID, ensure your operator's `identity_scope` is set to `"euid"` and you're using `EUID-C-` keys
+
+### "Request failed with status code 500"
+
+**For local operator:**
+- Verify the operator is running at `localhost:8080`
+- Check `enable_v2_encryption: true` is set in the operator's config
+- Review operator logs for errors
+- Ensure `identity_scope` matches your credentials (e.g., `"uid2"` or `"euid"`)
+
+**For Docker:**
+- Ensure `UID_SERVER_BASE_URL` uses `host.docker.internal:8080` not `localhost:8080`
+
+### Prebid Doesn't Have the Identity
+
+Run `pbjs.getUserIds()` in console. If empty or missing `uid2`/`euid`:
+- Check console for Prebid errors
+- Verify Prebid.js loaded correctly (check Network tab)
+- Ensure `pbjs.setConfig()` is being called after token generation
+- Check the browser console for "Configuring Prebid.js with..." message to confirm configuration
+- Check that `IDENTITY_NAME` matches the expected identity type (UID2 or EUID)
