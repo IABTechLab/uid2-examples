@@ -17,7 +17,7 @@ The following environment variables are required. Add them to your `.env` file i
 | `UID_JS_SDK_URL` | URL to the JavaScript SDK. Example: `https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js` |
 | `UID_JS_SDK_NAME` | Global variable name for the SDK (`__uid2` or `__euid`) |
 | `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
-| `DOCS_BASE_URL` | Documentation base URL |
+| `DOCS_BASE_URL` | Used for UI links to public documentation (`https://unifiedid.com/docs` or `https://euid.eu/docs`) |
 
 ## Build and Run Locally
 

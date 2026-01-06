@@ -32,7 +32,7 @@ All integrations in this folder require common variables plus integration-specif
 |:---------|:------------|
 | `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
 | `UID_STORAGE_KEY` | localStorage key for Prebid token storage |
-| `DOCS_BASE_URL` | Documentation base URL |
+| `DOCS_BASE_URL` | Used for UI links to public documentation (`https://unifiedid.com/docs` or `https://euid.eu/docs`) |
 
 ### Client-Side Specific
 

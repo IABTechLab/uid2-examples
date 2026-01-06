@@ -18,7 +18,7 @@ The following environment variables are required. Add them to your `.env` file i
 | `UID_SECURE_SIGNALS_SDK_URL` | URL to the Secure Signals SDK |
 | `UID_SECURE_SIGNALS_STORAGE_KEY` | Storage key for Secure Signals (`_GESPSK-uidapi.com` or `_GESPSK-euid.eu`) |
 | `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
-| `DOCS_BASE_URL` | Documentation base URL |
+| `DOCS_BASE_URL` | Used for UI links to public documentation (`https://unifiedid.com/docs` or `https://euid.eu/docs`) |
 
 ## Build and Run Locally
 

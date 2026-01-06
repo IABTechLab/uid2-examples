@@ -24,7 +24,7 @@ All integrations in this folder require common variables plus integration-specif
 | Variable | Description |
 |:---------|:------------|
 | `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
-| `DOCS_BASE_URL` | Documentation base URL |
+| `DOCS_BASE_URL` | Used for UI links to public documentation (`https://unifiedid.com/docs` or `https://euid.eu/docs`) |
 
 ### Client-Side Specific
 
