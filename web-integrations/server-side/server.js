@@ -226,7 +226,7 @@ app.post('/login', async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Token generation failed:', error);
+    console.error('Token generation failed:', error.message);
     res.render('index', { 
       identity: null,
       isOptout: false,
