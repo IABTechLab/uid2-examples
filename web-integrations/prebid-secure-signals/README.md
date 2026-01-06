@@ -2,6 +2,55 @@
 
 This folder contains a sample integration combining Prebid.js with Google Secure Signals and UID2/EUID, enabling both header bidding and encrypted identity signals to Google Ad Manager.
 
+## How It Works
+
+This integration combines two powerful frameworks:
+
+1. **Prebid.js** — Manages UID2/EUID token generation (CSTG), refresh, and sends encrypted signals to Google Ad Manager
+2. **Google Ad Manager** — Receives encrypted signals directly from Prebid via the **Prebid User ID Module**
+
+**Important:** Unlike [standalone Secure Signals integrations](../google-secure-signals/), this approach does NOT use the separate UID2/EUID Secure Signals SDK. Prebid handles the entire integration natively through its `encryptedSignalSources` configuration.
+
+### Key Configuration
+
+The integration requires adding the `encryptedSignalSources` configuration to Prebid:
+
+```javascript
+pbjs.setConfig({
+  userSync: {
+    userIds: [{
+      name: 'uid2',  // or 'euid'
+      params: {
+        email: userEmail,
+        subscriptionId: 'your-sub-id',
+        serverPublicKey: 'your-public-key'
+      }
+    }]
+  },
+  // Enable Google Secure Signals integration
+  encryptedSignalSources: {
+    sources: [{
+      source: ['uidapi.com'],  // or 'euid.eu' for EUID
+      encrypt: false
+    }]
+  }
+});
+```
+
+> **EUID Note:** If using EUID, you must configure consent management for GDPR compliance. See the example's `index.html` for an implementation using `consentManagementObj`. For more details, see the [EUID Permissions documentation](https://euid.eu/docs/getting-started/gs-permissions).
+
+### Google Ad Manager Configuration
+
+In your Google Ad Manager account, you must:
+
+1. Enable Secure Signals for third-party bidders
+2. Choose **"Prebid User ID Module"** as the deployment option
+3. Enable **"Use your Prebid configuration to automatically configure your Secure signals settings"**
+
+For details, see:
+- UID2: [Allow Secure Signals Sharing](https://unifiedid.com/docs/guides/integration-google-ss#allow-secure-signals-sharing)
+- EUID: [Allow Secure Signals Sharing](https://euid.eu/docs/guides/integration-google-ss#allow-secure-signals-sharing)
+
 ## Available Examples
 
 | Folder | Description | Port |

@@ -2,6 +2,46 @@
 
 This folder contains sample integrations using Prebid.js with the UID2/EUID User ID module. Prebid.js manages token storage, refresh, and inclusion in bid requests.
 
+## How It Works
+
+When using Prebid.js for UID2/EUID integration, Prebid handles the entire token workflow:
+
+1. **Token Generation** — Either client-side (CSTG) or via server-provided token
+2. **Token Storage** — Stored in localStorage under `__uid2_advertising_token` or `__euid_advertising_token`
+3. **Token Refresh** — Prebid automatically refreshes tokens before expiration
+4. **Bid Requests** — Token is automatically included in bid requests via the User ID module
+
+### Key Configuration
+
+```javascript
+pbjs.setConfig({
+  userSync: {
+    userIds: [{
+      name: 'uid2',  // or 'euid'
+      params: {
+        // Client-side (CSTG): Prebid generates the token
+        email: userEmail,
+        subscriptionId: 'your-sub-id',
+        serverPublicKey: 'your-public-key'
+        
+        // OR Client-server: Server provides the token
+        // uid2Token: tokenFromServer
+      }
+    }]
+  }
+});
+```
+
+> **EUID Note:** If using EUID, you must configure consent management for GDPR compliance. See the [EUID Permissions documentation](https://euid.eu/docs/getting-started/gs-permissions).
+
+### Integration Types
+
+| Type | Token Generation | Use Case |
+|------|------------------|----------|
+| **Client-Side** | Prebid uses CSTG | Simple setup, all client-side |
+| **Client-Server** | Server generates, Prebid refreshes | More control, server-side validation |
+| **Deferred** | Added after page load via `mergeConfig()` | Add UID2/EUID to existing Prebid setup |
+
 ## Available Examples
 
 | Folder | Description | Port |

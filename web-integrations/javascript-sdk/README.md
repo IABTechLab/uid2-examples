@@ -2,6 +2,44 @@
 
 This folder contains sample integrations using the UID2/EUID JavaScript SDK directly, without Prebid.js or Google Secure Signals.
 
+## How It Works
+
+The JavaScript SDK provides a straightforward way to manage UID2/EUID tokens:
+
+1. **Token Generation** — Either client-side (CSTG) or via server-provided token
+2. **Token Storage** — Stored in localStorage or first-party cookie
+3. **Token Refresh** — SDK automatically refreshes tokens before expiration
+4. **Callbacks** — SDK notifies your code when token state changes
+
+### Key SDK Methods
+
+```javascript
+// Initialize with server-generated token (client-server)
+__uid2.init({ identity: tokenFromServer });
+
+// OR generate token client-side (CSTG)
+__uid2.setIdentityFromEmail(email, {
+  subscriptionId: 'your-sub-id',
+  serverPublicKey: 'your-public-key'
+});
+
+// Get current advertising token
+__uid2.getAdvertisingToken();
+
+// Check if login is needed
+__uid2.isLoginRequired();
+
+// Clear identity (logout)
+__uid2.disconnect();
+```
+
+### Integration Types
+
+| Type | Token Generation | Use Case |
+|------|------------------|----------|
+| **Client-Side** | SDK uses CSTG | Simple setup, all client-side |
+| **Client-Server** | Server generates, SDK refreshes | More control, server-side validation |
+
 ## Available Examples
 
 | Folder | Description | Port |

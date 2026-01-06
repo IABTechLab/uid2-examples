@@ -2,6 +2,43 @@
 
 This folder contains sample integrations combining UID2/EUID with Google Ad Manager's Secure Signals feature, enabling encrypted identity signals to be passed to Google for ad requests.
 
+## How It Works
+
+These integrations use the **UID2/EUID Secure Signals SDK** alongside the main UID2/EUID SDK:
+
+1. **UID2/EUID SDK** — Manages token generation, refresh, and storage
+2. **Secure Signals SDK** — Encrypts and stores the identity signal for Google Ad Manager
+3. **Google Ad Manager** — Retrieves the encrypted signal from localStorage during ad requests
+
+### Key Configuration
+
+The Secure Signals SDK is loaded as a separate script and automatically picks up the UID2/EUID token:
+
+```html
+<!-- Load the main UID2/EUID SDK -->
+<script src="https://cdn.integ.uidapi.com/uid2-sdk-4.0.1.js"></script>
+
+<!-- Load the Secure Signals SDK -->
+<script src="https://cdn.integ.uidapi.com/uid2SecureSignal.js"></script>
+```
+
+Once both SDKs are loaded and a token is generated, the Secure Signals SDK automatically stores an encrypted signal in localStorage under:
+- `_GESPSK-uidapi.com` (UID2)
+- `_GESPSK-euid.eu` (EUID)
+
+### Google Ad Manager Configuration
+
+In your Google Ad Manager account, you must:
+
+1. Enable Secure Signals for third-party bidders
+2. Add **UID2** or **EUID** as a signal provider
+
+For details, see:
+- UID2: [Allow Secure Signals Sharing](https://unifiedid.com/docs/guides/integration-google-ss#allow-secure-signals-sharing)
+- EUID: [Allow Secure Signals Sharing](https://euid.eu/docs/guides/integration-google-ss#allow-secure-signals-sharing)
+
+> **Prebid.js Alternative:** If you're using Prebid.js, you can use the [Prebid.js + Secure Signals integration](../prebid-secure-signals/) instead, which handles Secure Signals natively without requiring the separate SDK.
+
 ## Available Examples
 
 | Folder | Description | Port |
