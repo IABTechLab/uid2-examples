@@ -9,15 +9,17 @@ This example demonstrates how to integrate the UID2/EUID JavaScript SDK into a R
 
 The following environment variables are required. Add them to your `.env` file in the repository root.
 
+> **Note:** React requires environment variables to be prefixed with `REACT_APP_` to be accessible in the browser.
+
 | Parameter | Description |
 |:----------|:------------|
-| `UID_CLIENT_BASE_URL` | API base URL for client-side calls. Example: `https://operator-integ.uidapi.com` (UID2) or `https://integ.euid.eu` (EUID) |
-| `UID_CSTG_SUBSCRIPTION_ID` | Your subscription ID for client-side token generation |
-| `UID_CSTG_SERVER_PUBLIC_KEY` | Your server public key for client-side token generation |
-| `UID_JS_SDK_URL` | URL to the JavaScript SDK |
-| `UID_JS_SDK_NAME` | Global variable name for the SDK (`__uid2` or `__euid`) |
-| `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
-| `DOCS_BASE_URL` | Used for UI links to public documentation (`https://unifiedid.com/docs` or `https://euid.eu/docs`) |
+| `REACT_APP_UID_CLIENT_BASE_URL` | API base URL for client-side calls. Example: `https://operator-integ.uidapi.com` (UID2) or `https://integ.euid.eu` (EUID). For local development: `http://localhost:8080` |
+| `REACT_APP_UID_CSTG_SUBSCRIPTION_ID` | Your subscription ID for client-side token generation |
+| `REACT_APP_UID_CSTG_SERVER_PUBLIC_KEY` | Your server public key for client-side token generation |
+| `REACT_APP_UID_JS_SDK_URL` | URL to the JavaScript SDK |
+| `REACT_APP_UID_JS_SDK_NAME` | Global variable name for the SDK (`__uid2` or `__euid`) |
+| `REACT_APP_IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
+| `REACT_APP_DOCS_BASE_URL` | Used for UI links to public documentation |
 
 ## Build and Run Locally
 

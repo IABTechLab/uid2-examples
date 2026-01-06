@@ -36,6 +36,8 @@ All integrations in this folder require common variables plus integration-specif
 | `UID_JS_SDK_URL` | URL to the JavaScript SDK |
 | `UID_JS_SDK_NAME` | Global variable name (`__uid2` or `__euid`) |
 
+> **React Note:** For the React example (`react-client-side/`), all client-side variables must be prefixed with `REACT_APP_` (e.g., `REACT_APP_UID_CLIENT_BASE_URL`). See the [React README](react-client-side/README.md) for the complete list.
+
 ### Client-Server Specific
 
 | Variable | Description |

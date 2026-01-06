@@ -50,6 +50,10 @@ Edit `.env` and add your credentials:
 - `UID_CSTG_SERVER_PUBLIC_KEY` — Your CSTG public key
 - `UID_CSTG_SUBSCRIPTION_ID` — Your CSTG subscription ID
 
+**Important:** When running locally with a local operator, update the base URLs to point to your local operator:
+- `UID_SERVER_BASE_URL` — Use `http://host.docker.internal:8080` (for server-side calls from Docker containers)
+- `UID_CLIENT_BASE_URL` — Use `http://localhost:8080` (for client-side calls from browser)
+
 > **Note:** Additional environment variables may be required depending on the integration type. The `.env.sample.uid2` and `.env.sample.euid` files contain all available variables. See the README in each [integration folder](#available-integrations) for which variables are required for that specific integration.
 
 ### 3. Start the Sample Sites
