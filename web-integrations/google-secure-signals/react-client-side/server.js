@@ -103,7 +103,6 @@ if (fs.existsSync(buildPath)) {
 app.get('*', (req, res, next) => {
   // Don't serve index.html for /ops/* routes
   if (req.path.startsWith('/ops/')) {
-    console.log('Catch-all skipping /ops/ route:', req.path);
     return next();
   }
   serveIndexHtml(req, res);

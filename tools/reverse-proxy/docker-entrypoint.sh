@@ -6,12 +6,7 @@ DOMAIN=${DOMAIN:-sample-dev.com}
 
 # Check if SSL certificates exist
 if [ ! -f /etc/nginx/certs/cert.crt ] || [ ! -f /etc/nginx/certs/cert.key ]; then
-  echo "WARNING: SSL certificates not found at /etc/nginx/certs/"
-  echo "HTTPS will not work until you generate certificates."
-  echo "Run 'npm install && npm run createCA' in the project root to generate certificates."
-  echo "Then trust the CA certificate (ca/ca.crt) in your system/browser."
-  echo ""
-  echo "Creating self-signed fallback certificates for startup..."
+  echo "WARNING: SSL certs missing - creating temporary self-signed fallback"
   # Create fallback self-signed certificate so nginx can start
   mkdir -p /etc/nginx/certs
   openssl req -x509 -nodes -days 1 -newkey rsa:2048 \
