@@ -63,11 +63,6 @@ await pbjs.refreshUserIds();
 | `pbjs.refreshUserIds()` | Trigger user ID module to fetch/generate new IDs |
 | `pbjs.getUserIds()` | Get current user IDs (check if token was generated) |
 
-## Live Examples
-
-- **UID2**: [https://prebid-deferred.samples.uidapi.com/](https://prebid-deferred.samples.uidapi.com/)
-- **EUID**: [https://prebid-deferred.samples.integ.euid.eu/](https://prebid-deferred.samples.integ.euid.eu/)
-
 ## Running Locally
 
 ### Using Docker Compose (recommended)

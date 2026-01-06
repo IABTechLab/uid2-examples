@@ -1,6 +1,6 @@
 # Server-Only UID2 Integration Example
 
-[This example](https://example-srvonly-integ.uidapi.com/) demonstrates how a content publisher can use the [UID2 services](https://unifiedid.com/docs/intro) to implement the [custom UID2 integration workflow](https://unifiedid.com/docs/guides/custom-publisher-integration).
+This example demonstrates how a content publisher can use the [UID2 services](https://unifiedid.com/docs/intro) to implement the [custom UID2 integration workflow](https://unifiedid.com/docs/guides/custom-publisher-integration).
 
 For an example application using the [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/client-side-identity), see [UID2 SDK Integration Example](../standard/README.md).
 

@@ -9,12 +9,6 @@ This example can be configured for either UID2 or EUID — the behavior is deter
 
 > **IMPORTANT:** This implementation requires Prebid.js version **8.42.0 or later**.
 
-## Viewing live site
-
-To view this example running live:
-- UID2: [https://unifiedid.com/examples/cstg-prebid-example/](https://unifiedid.com/examples/cstg-prebid-example/)
-- EUID: [https://euid.eu/examples/cstg-prebid-example/](https://euid.eu/examples/cstg-prebid-example/)
-
 ## Build and Run the Example Application
 
 ### Using Docker Compose (Recommended)
@@ -36,16 +30,6 @@ docker compose logs prebid-client
 
 # Stop the service
 docker compose stop prebid-client
-```
-
-### Using Docker Build
-
-```bash
-# Build the image
-docker build -f web-integrations/prebid-integrations/client-side/Dockerfile -t prebid-client-side .
-
-# Run the container
-docker run -it --rm -p 3051:3051 --env-file .env prebid-client-side
 ```
 
 The following table lists the environment variables that you must specify to start the application.

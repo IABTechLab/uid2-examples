@@ -88,16 +88,6 @@ docker compose logs prebid-secure-signals-client-side
 docker compose stop prebid-secure-signals-client-side
 ```
 
-### Using Docker Build
-
-```bash
-# Build the image
-docker build -f web-integrations/prebid-secure-signals/client-side/Dockerfile -t prebid-secure-signals-client-side .
-
-# Run the container
-docker run -it --rm -p 3061:3061 --env-file .env prebid-secure-signals-client-side
-```
-
 ## Environment Variables
 
 The following environment variables must be set in your `.env` file:

@@ -51,17 +51,6 @@ docker compose logs javascript-sdk-react-client-side
 docker compose stop javascript-sdk-react-client-side
 ```
 
-#### Using Docker Build
-
-```bash
-# Build the image
-docker build -f web-integrations/javascript-sdk/react-client-side/Dockerfile -t javascript-sdk-react-client-side .
-
-# Run the container
-docker run -it --rm -p 3034:3034 --env-file .env javascript-sdk-react-client-side
-```
-
-If needed, to close the application, terminate the docker container or use the `Ctrl+C` keyboard shortcut.
 
 ## Configuration
 

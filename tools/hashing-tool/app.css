@@ -425,13 +425,13 @@ a:hover {
   
   .email_prompt {
     flex-direction: column;
-  }
-  
+}
+
   #input_value {
     border-right: 2px solid var(--border-color);
     border-bottom: none;
-  }
-  
+}
+
   .button {
     width: 100%;
   }

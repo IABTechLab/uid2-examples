@@ -30,16 +30,6 @@ docker compose logs javascript-sdk-client-side
 docker compose stop javascript-sdk-client-side
 ```
 
-### Using Docker Build
-
-```bash
-# Build the image
-docker build -f web-integrations/javascript-sdk/client-side/Dockerfile -t javascript-sdk-client-side .
-
-# Run the container
-docker run -it --rm -p 3031:3031 --env-file .env javascript-sdk-client-side
-```
-
 ## Environment Variables
 
 The application uses environment variables from the `.env` file in the base directory:

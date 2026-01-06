@@ -46,16 +46,6 @@ docker compose logs google-secure-signals-client-side
 docker compose stop google-secure-signals-client-side
 ```
 
-#### Using Docker Build
-
-```bash
-# Build the image
-docker build -f web-integrations/google-secure-signals/client-side/Dockerfile -t google-secure-signals-client-side .
-
-# Run the container
-docker run -it --rm -p 3042:3042 --env-file .env google-secure-signals-client-side
-```
-
 ### Environment Variables
 
 | Variable | Description | Example Values |

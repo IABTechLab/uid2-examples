@@ -34,16 +34,6 @@ docker compose logs prebid-client-server
 docker compose stop prebid-client-server
 ```
 
-### Using Docker Build
-
-```bash
-# Build the image
-docker build -f web-integrations/prebid-integrations/client-server/Dockerfile -t prebid-client-server .
-
-# Run the container
-docker run -it --rm -p 3052:3052 --env-file .env prebid-client-server
-```
-
 The following table lists the environment variables needed to run the application.
 
 ### UID2/EUID Configuration

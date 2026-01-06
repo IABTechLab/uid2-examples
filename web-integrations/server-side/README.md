@@ -1,6 +1,6 @@
 # Server-Side UID2 or EUID Integration Example
 
-[This example](https://example-srvonly-integ.uidapi.com/) demonstrates how a content publisher can use either the UID2 or EUID services to implement the server-side integration workflow without using an SDK.
+This example demonstrates how a content publisher can use either the UID2 or EUID services to implement the server-side integration workflow without using an SDK.
 
 - For UID2: [UID2 services](https://unifiedid.com/docs/intro), [server-side UID2 integration workflow](https://unifiedid.com/docs/guides/integration-publisher-server-side)
 - For EUID: [EUID services](https://euid.eu/docs/intro), [server-side EUID integration workflow](https://euid.eu/docs/guides/integration-publisher-server-side)
@@ -32,16 +32,6 @@ docker compose logs server-side
 
 # Stop the service
 docker compose stop server-side
-```
-
-### Using Docker Build
-
-```bash
-# Build the image
-docker build -f web-integrations/server-side/Dockerfile -t server-side .
-
-# Run the container
-docker run -it --rm -p 3033:3033 --env-file .env server-side
 ```
 
 The following table lists the environment variables that you must specify to start the application.

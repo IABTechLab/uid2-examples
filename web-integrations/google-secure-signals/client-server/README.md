@@ -34,16 +34,6 @@ docker compose logs google-secure-signals-client-server
 docker compose stop google-secure-signals-client-server
 ```
 
-### Using Docker Build
-
-```bash
-# Build the image
-docker build -f web-integrations/google-secure-signals/client-server/Dockerfile -t google-secure-signals-client-server .
-
-# Run the container
-docker run -it --rm -p 3041:3041 --env-file .env google-secure-signals-client-server
-```
-
 ### Using the VS Code Debugger
 
 The easiest way to try the example is to do the following:

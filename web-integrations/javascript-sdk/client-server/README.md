@@ -1,6 +1,6 @@
 # Client-Server UID2 or EUID Integration Example using JavaScript SDK
 
-[This example](https://example-jssdk-integ.uidapi.com/) demonstrates how a content publisher can use either the UID2 or EUID services and the corresponding SDK for JavaScript to implement the client-server integration workflow.
+This example demonstrates how a content publisher can use either the UID2 or EUID services and the corresponding SDK for JavaScript to implement the client-server integration workflow.
 
 - For UID2: [UID2 services](https://unifiedid.com/docs/intro), [UID2 SDK for JavaScript](https://unifiedid.com/docs/sdks/sdk-ref-javascript), [client-server UID2 integration workflow](https://unifiedid.com/docs/guides/integration-javascript-client-server)
 - For EUID: [EUID services](https://euid.eu/docs/intro), [EUID SDK for JavaScript](https://euid.eu/docs/sdks/sdk-ref-javascript), [client-server EUID integration workflow](https://euid.eu/docs/guides/integration-javascript-client-server)
@@ -33,16 +33,6 @@ docker compose logs javascript-sdk-client-server
 
 # Stop the service
 docker compose stop javascript-sdk-client-server
-```
-
-### Using Docker Build
-
-```bash
-# Build the image
-docker build -f web-integrations/javascript-sdk/client-server/Dockerfile -t javascript-sdk-client-server .
-
-# Run the container
-docker run -it --rm -p 3032:3032 --env-file .env javascript-sdk-client-server
 ```
 
 The following table lists the environment variables that you must specify to start the application.

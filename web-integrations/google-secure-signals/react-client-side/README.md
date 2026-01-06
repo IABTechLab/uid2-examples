@@ -55,17 +55,6 @@ docker compose logs google-secure-signals-react-client-side
 docker compose stop google-secure-signals-react-client-side
 ```
 
-#### Using Docker Build
-
-```bash
-# Build the image
-docker build -f web-integrations/google-secure-signals/react-client-side/Dockerfile -t google-secure-signals-react-client-side .
-
-# Run the container
-docker run -it --rm -p 3044:3044 --env-file .env google-secure-signals-react-client-side
-```
-
-If needed, to close the application, terminate the docker container or use the `Ctrl+C` keyboard shortcut.
 
 ## Configuration
 
