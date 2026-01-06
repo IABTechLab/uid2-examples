@@ -14,8 +14,9 @@ The following environment variables are required. Add them to your `.env` file i
 | `UID_CLIENT_BASE_URL` | API base URL for client-side calls. Example: `https://operator-integ.uidapi.com` (UID2) or `https://integ.euid.eu` (EUID) |
 | `UID_CSTG_SUBSCRIPTION_ID` | Your subscription ID for client-side token generation |
 | `UID_CSTG_SERVER_PUBLIC_KEY` | Your server public key for client-side token generation |
-| `UID_STORAGE_KEY` | localStorage key for token storage. Example: `__uid2_advertising_token` or `__euid_advertising_token` |
-| `IDENTITY_NAME` | Display name for the UI. Example: `UID2` or `EUID` |
+| `UID_STORAGE_KEY` | localStorage key for token storage (`__uid2_advertising_token` or `__euid_advertising_token`) |
+| `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
+| `DOCS_BASE_URL` | Documentation base URL |
 
 ## Build and Run Locally
 
@@ -33,6 +34,17 @@ To stop the service:
 docker compose stop prebid-client-side-deferred
 ```
 
+## Test the Example Application
+
+| Step | Description | Comments |
+|:----:|:------------|:---------|
+| 1 | Navigate to `http://localhost:3053` in your browser. | The page loads with Prebid.js configured but **without** UID2/EUID initially. This simulates a publisher who wants to add UID2/EUID later. |
+| 2 | Open the browser console (F12) and run `pbjs.getUserIds()`. | Initially returns an empty object or no `uid2`/`euid` property, since the module hasn't been configured yet. |
+| 3 | Enter a test email address and click **Generate UID2** (or **Generate EUID**). | This triggers `pbjs.mergeConfig()` to add the UID2/EUID module config, then `pbjs.refreshUserIds()` to generate the token. |
+| 4 | Run `pbjs.getUserIds()` again in the console. | Now you should see the `uid2` or `euid` property with the advertising token. The module was added dynamically. |
+| 5 | Refresh the page and note the identity persists. | Even though the page starts without UID2/EUID configured, it checks localStorage on load and configures Prebid if a token exists. |
+| 6 | Click **Clear UID2** (or **Clear EUID**) to log out. | The token is removed from localStorage and the page reloads to clear Prebid's in-memory state. |
+
 ## How It Works
 
 This example uses two Prebid.js functions to add UID2/EUID after page load:
@@ -40,6 +52,6 @@ This example uses two Prebid.js functions to add UID2/EUID after page load:
 1. **`pbjs.mergeConfig()`** - Merges the UID2/EUID module configuration into the existing Prebid config without overwriting other settings
 2. **`pbjs.refreshUserIds()`** - Triggers Prebid to generate the token using the newly merged configuration
 
-## Testing and Debugging
+## Debugging
 
-For testing instructions and debugging tips, see the [Prebid.js README](../README.md).
+For debugging tips, see the [Prebid.js README](../README.md#debugging-tips).

@@ -14,7 +14,8 @@ The following environment variables are required. Add them to your `.env` file i
 | `UID_SERVER_BASE_URL` | API base URL for server-side calls. Example: `https://operator-integ.uidapi.com` (UID2) or `https://integ.euid.eu` (EUID) |
 | `UID_API_KEY` | Your API key for server-side token generation |
 | `UID_CLIENT_SECRET` | Your client secret for server-side token generation |
-| `IDENTITY_NAME` | Display name for the UI. Example: `UID2` or `EUID` |
+| `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
+| `DOCS_BASE_URL` | Documentation base URL |
 
 ## Build and Run Locally
 
@@ -32,19 +33,20 @@ To stop the service:
 docker compose stop server-side
 ```
 
-## Testing
+## Test the Example Application
 
-### Basic Testing Steps
+| Step | Description | Comments |
+|:----:|:------------|:---------|
+| 1 | Navigate to `http://localhost:3033` in your browser. | The main page displays a login form for generating a UID2/EUID identity. **Note:** A real-life application must also display a consent form for targeted advertising. |
+| 2 | Enter a test email address and click **Generate UID2** (or **Generate EUID**). | This calls the `/login` endpoint on the server, which sends an encrypted request to `POST /token/generate` using your API key and client secret. |
+| 3 | The page displays the identity information. | The server stores the identity in a session and renders it into the page. The advertising token is available for ad targeting. |
+| 4 | Refresh the page and note the identity persists. | The server loads the identity from the session. It checks if a refresh is needed and calls `POST /token/refresh` if necessary. |
+| 5 | Observe the token expiration and refresh. | The server handles all token refresh logic. When the token is close to expiration, the server automatically refreshes it using the refresh token. |
+| 6 | Click **Clear UID2** (or **Clear EUID**) to log out. | The server clears the session, removing the identity. The page returns to the login state. |
 
-1. Navigate to `http://localhost:3033`
-2. Enter a test email address in the input field
-3. Click **Generate UID2** (or **Generate EUID**)
-4. Verify the token appears in the UI
-5. Refresh the page—the token should persist (stored server-side)
-6. Click **Clear UID2** (or **Clear EUID**) to log out
-
-### Debugging Tips
+## Debugging Tips
 
 1. **View container logs**: `docker compose logs server-side`
 2. **Check environment**: Run `docker compose config` to see resolved values
 3. **Rebuild after changes**: `docker compose up -d --build server-side`
+4. **Check server-side errors**: The server logs all token generation and refresh errors to the console

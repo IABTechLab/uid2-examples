@@ -20,29 +20,62 @@ The `prebid.js` file in this folder is a custom Prebid.js build (v10.15.0) that 
 - [EUID User ID Module](https://docs.prebid.org/dev-docs/modules/userid-submodules/euid.html)
 - [TCF Consent Management Module](https://docs.prebid.org/dev-docs/modules/consentManagementTcf.html)
 
-## Testing
+## Environment Variables
 
-### Basic Testing Steps
+This integration requires variables for both Prebid.js and Secure Signals. See the individual README for the complete list.
 
-1. Navigate to the application URL (`http://localhost:3061`)
-2. Enter a test email address in the input field
-3. Click **Generate UID2** (or **Generate EUID**)
-4. Open the browser console (F12) and run `pbjs.getUserIds()`
-5. Verify the response contains a `uid2` or `euid` property
-6. Check localStorage for Secure Signals storage key (`_GESPSK-*`)
-7. Click **Play** to trigger an ad request with the encrypted signal
+### Common Variables
 
-### Verifying Integration
+| Variable | Description |
+|:---------|:------------|
+| `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
+| `UID_STORAGE_KEY` | localStorage key for Prebid token storage |
+| `DOCS_BASE_URL` | Documentation base URL |
 
-Open your browser's Developer Tools (F12) and check:
+### Secure Signals Specific
 
-- **Console**: Run `pbjs.getUserIds()` to verify Prebid has the token
-- **Application > Local Storage**: Check for both token storage and Secure Signals storage
-- **Network**: Monitor ad requests for encrypted signal payload
+| Variable | Description |
+|:---------|:------------|
+| `UID_SECURE_SIGNALS_SDK_URL` | URL to the Secure Signals SDK |
+| `UID_SECURE_SIGNALS_STORAGE_KEY` | localStorage key for Secure Signals |
 
-### Debugging Tips
+### Client-Side Specific
 
-1. **Check Prebid config**: Run `pbjs.getConfig('userSync')` in console
-2. **Verify Secure Signals**: Look for `_GESPSK-*` keys in localStorage
-3. **View container logs**: `docker compose logs prebid-secure-signals-client-side`
-4. **Rebuild after changes**: `docker compose up -d --build prebid-secure-signals-client-side`
+| Variable | Description |
+|:---------|:------------|
+| `UID_CLIENT_BASE_URL` | API base URL for client-side calls |
+| `UID_CSTG_SUBSCRIPTION_ID` | Your subscription ID for CSTG |
+| `UID_CSTG_SERVER_PUBLIC_KEY` | Your server public key for CSTG |
+
+## Debugging Tips
+
+### Check Both Prebid and Secure Signals
+
+```javascript
+// Check Prebid token
+pbjs.getUserIds()
+
+// Check Secure Signals storage
+localStorage.getItem('_GESPSK-uidapi.com')  // UID2
+localStorage.getItem('_GESPSK-euid.eu')     // EUID
+```
+
+### View Container Logs
+
+```bash
+docker compose logs prebid-secure-signals-client-side
+```
+
+### Rebuild After Changes
+
+```bash
+docker compose up -d --build prebid-secure-signals-client-side
+```
+
+### Common Issues
+
+| Issue | Possible Cause | Solution |
+|-------|----------------|----------|
+| Prebid token present but Secure Signals empty | Secure Signals SDK not loaded | Verify `UID_SECURE_SIGNALS_SDK_URL` |
+| Neither token present | CSTG credentials incorrect | Check subscription ID and public key |
+| Video ads not showing | Ad blocker | Disable ad blocker for testing |

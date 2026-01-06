@@ -16,25 +16,71 @@ This folder contains sample integrations combining UID2/EUID with Google Ad Mana
 - UID2: [Secure Signals Guide](https://unifiedid.com/docs/guides/integration-google-ss) | [SDK Reference](https://unifiedid.com/docs/sdks/sdk-ref-javascript)
 - EUID: [Secure Signals Guide](https://euid.eu/docs/guides/integration-google-ss) | [SDK Reference](https://euid.eu/docs/sdks/sdk-ref-javascript)
 
-## Testing
+## Environment Variables
 
-### Basic Testing Steps
+All integrations in this folder require common variables plus integration-specific ones. See the individual README for each integration for the complete list of required variables.
 
-1. Navigate to the application URL (e.g., `http://localhost:3042`)
-2. Enter a test email address in the input field
-3. Click **Generate UID2** (or **Generate EUID**)
-4. Verify the token appears in the UI
-5. Check that the Secure Signals storage key is populated in localStorage
-6. Click **Play** to trigger an ad request (if video player is present)
-7. Click **Clear UID2** (or **Clear EUID**) to log out
+### Common Variables
 
-### Verifying Secure Signals
+| Variable | Description |
+|:---------|:------------|
+| `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
+| `DOCS_BASE_URL` | Documentation base URL |
 
-Open your browser's Developer Tools (F12) and check:
+### Secure Signals Specific (Required for all examples in this folder)
 
-- **Application > Local Storage**: Look for `_GESPSK-uidapi.com` (UID2) or `_GESPSK-euid.eu` (EUID)
-- **Network**: Monitor ad requests to Google—the encrypted signal should be included
-- **Console**: Check for any Secure Signals initialization messages
+| Variable | Description |
+|:---------|:------------|
+| `UID_SECURE_SIGNALS_SDK_URL` | URL to the Secure Signals SDK |
+| `UID_SECURE_SIGNALS_STORAGE_KEY` | localStorage key for Secure Signals (`_GESPSK-uidapi.com` or `_GESPSK-euid.eu`) |
+
+### Client-Side Specific
+
+| Variable | Description |
+|:---------|:------------|
+| `UID_CLIENT_BASE_URL` | API base URL for client-side calls |
+| `UID_CSTG_SUBSCRIPTION_ID` | Your subscription ID for CSTG |
+| `UID_CSTG_SERVER_PUBLIC_KEY` | Your server public key for CSTG |
+| `UID_JS_SDK_URL` | URL to the JavaScript SDK |
+| `UID_JS_SDK_NAME` | Global variable name (`__uid2` or `__euid`) |
+
+### Client-Server / Server-Side Specific
+
+| Variable | Description |
+|:---------|:------------|
+| `UID_SERVER_BASE_URL` | API base URL for server-side calls |
+| `UID_API_KEY` | Your API key for server-side token generation |
+| `UID_CLIENT_SECRET` | Your client secret for server-side token generation |
+
+## Debugging Tips
+
+### Check Secure Signals Storage
+
+Open Developer Tools (F12) > Application > Local Storage and look for:
+- `_GESPSK-uidapi.com` (UID2)
+- `_GESPSK-euid.eu` (EUID)
+
+### Verify SDK Loaded
+
+```javascript
+// Check if Secure Signals providers are available
+googletag.secureSignalProviders
+```
+
+### View Container Logs
+
+```bash
+docker compose logs google-secure-signals-client-side
+docker compose logs google-secure-signals-client-server
+docker compose logs google-secure-signals-server-side
+docker compose logs google-secure-signals-react-client-side
+```
+
+### Rebuild After Changes
+
+```bash
+docker compose up -d --build SERVICE_NAME
+```
 
 ### Common Issues
 
@@ -43,10 +89,4 @@ Open your browser's Developer Tools (F12) and check:
 | Secure Signals not loading | Script URL incorrect | Verify `UID_SECURE_SIGNALS_SDK_URL` |
 | Signal not in ad requests | Token not generated | Generate token before ad request |
 | Video not playing | Ad blocker | Disable ad blocker for testing |
-
-### Debugging Tips
-
-1. **Check Secure Signals storage**: Look for `_GESPSK-*` keys in localStorage
-2. **Verify SDK loaded**: Check for `googletag.secureSignalProviders` in console
-3. **View container logs**: `docker compose logs google-secure-signals-client-side`
-4. **Rebuild after changes**: `docker compose up -d --build google-secure-signals-client-side`
+| Storage key empty | SDK not initialized | Check for initialization errors in console |

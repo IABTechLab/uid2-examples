@@ -22,25 +22,66 @@ The `prebid.js` file in this folder is a custom Prebid.js build (v10.15.0) that 
 - [EUID User ID Module](https://docs.prebid.org/dev-docs/modules/userid-submodules/euid.html)
 - [TCF Consent Management Module](https://docs.prebid.org/dev-docs/modules/consentManagementTcf.html)
 
-## Testing
+## Environment Variables
 
-### Basic Testing Steps
+All integrations in this folder require common variables plus integration-specific ones. See the individual README for each integration for the complete list of required variables.
 
-1. Navigate to the application URL (e.g., `http://localhost:3051`)
-2. Enter a test email address in the input field
-3. Click **Generate UID2** (or **Generate EUID**)
-4. Open the browser console (F12) and run `pbjs.getUserIds()`
-5. Verify the response contains a `uid2` or `euid` property with the advertising token
-6. Refresh the page—the token should persist
-7. Click **Clear UID2** (or **Clear EUID**) to log out
+### Common Variables
 
-### Verifying Token State
+| Variable | Description |
+|:---------|:------------|
+| `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
+| `UID_STORAGE_KEY` | localStorage key for Prebid token storage |
+| `DOCS_BASE_URL` | Documentation base URL |
 
-Open your browser's Developer Tools (F12) and check:
+### Client-Side Specific
 
-- **Console**: Run `pbjs.getUserIds()` to see all configured user IDs
-- **Application > Local Storage**: Check for `__uid2_advertising_token` or `__euid_advertising_token`
-- **Network**: Monitor calls to the operator endpoint
+| Variable | Description |
+|:---------|:------------|
+| `UID_CLIENT_BASE_URL` | API base URL for client-side calls |
+| `UID_CSTG_SUBSCRIPTION_ID` | Your subscription ID for CSTG |
+| `UID_CSTG_SERVER_PUBLIC_KEY` | Your server public key for CSTG |
+
+### Client-Server Specific
+
+| Variable | Description |
+|:---------|:------------|
+| `UID_SERVER_BASE_URL` | API base URL for server-side calls |
+| `UID_API_KEY` | Your API key for server-side token generation |
+| `UID_CLIENT_SECRET` | Your client secret for server-side token generation |
+
+## Debugging Tips
+
+### Check Prebid Config
+
+Open browser console (F12) and run:
+```javascript
+pbjs.getConfig('userSync')
+```
+
+### Force Token Refresh
+
+```javascript
+// For UID2
+pbjs.refreshUserIds({ submoduleNames: ['uid2'] })
+
+// For EUID
+pbjs.refreshUserIds({ submoduleNames: ['euid'] })
+```
+
+### View Container Logs
+
+```bash
+docker compose logs prebid-client
+docker compose logs prebid-client-server
+docker compose logs prebid-client-side-deferred
+```
+
+### Rebuild After Changes
+
+```bash
+docker compose up -d --build SERVICE_NAME
+```
 
 ### Common Issues
 
@@ -49,10 +90,4 @@ Open your browser's Developer Tools (F12) and check:
 | `pbjs.getUserIds()` returns empty | Module not configured | Check Prebid config in page source |
 | "Invalid subscription ID" | Wrong credentials | Verify credentials match operator URL |
 | Token not in bid requests | Token not generated yet | Wait for `pbjs.refreshUserIds()` to complete |
-
-### Debugging Tips
-
-1. **Check Prebid config**: Run `pbjs.getConfig('userSync')` in console
-2. **Force refresh**: Run `pbjs.refreshUserIds({ submoduleNames: ['uid2'] })` or `['euid']`
-3. **View container logs**: `docker compose logs prebid-client`
-4. **Rebuild after changes**: `docker compose up -d --build prebid-client`
+| Module not loading | Prebid build missing module | Use the provided `prebid.js` build |

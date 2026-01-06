@@ -15,10 +15,11 @@ The following environment variables are required. Add them to your `.env` file i
 | `UID_CSTG_SUBSCRIPTION_ID` | Your subscription ID for client-side token generation |
 | `UID_CSTG_SERVER_PUBLIC_KEY` | Your server public key for client-side token generation |
 | `UID_JS_SDK_URL` | URL to the JavaScript SDK |
-| `UID_JS_SDK_NAME` | Global variable name for the SDK. Example: `__uid2` or `__euid` |
+| `UID_JS_SDK_NAME` | Global variable name for the SDK (`__uid2` or `__euid`) |
 | `UID_SECURE_SIGNALS_SDK_URL` | URL to the Secure Signals SDK |
-| `UID_SECURE_SIGNALS_STORAGE_KEY` | Storage key for Secure Signals. Example: `_GESPSK-uidapi.com` or `_GESPSK-euid.eu` |
-| `IDENTITY_NAME` | Display name for the UI. Example: `UID2` or `EUID` |
+| `UID_SECURE_SIGNALS_STORAGE_KEY` | Storage key for Secure Signals (`_GESPSK-uidapi.com` or `_GESPSK-euid.eu`) |
+| `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
+| `DOCS_BASE_URL` | Documentation base URL |
 
 ## Build and Run Locally
 
@@ -36,6 +37,17 @@ To stop the service:
 docker compose stop google-secure-signals-react-client-side
 ```
 
-## Testing and Debugging
+## Test the Example Application
 
-For testing instructions and debugging tips, see the [Google Secure Signals README](../README.md).
+| Step | Description | Comments |
+|:----:|:------------|:---------|
+| 1 | Navigate to `http://localhost:3044` in your browser. | The React application displays a login form and a video player for testing ad requests with Secure Signals. |
+| 2 | Enter a test email address and click **Generate UID2** (or **Generate EUID**). | The React component calls the SDK's `setIdentityFromEmail()` function. The Secure Signals SDK then stores the encrypted signal. |
+| 3 | The UI updates to show the identity information. | React state updates via the SDK callback, displaying the advertising token and Secure Signals status. |
+| 4 | Check localStorage for both tokens. | Open Developer Tools > Application > Local Storage. You should see the UID2/EUID token and the Secure Signals storage key (`_GESPSK-*`). |
+| 5 | Click **Play** to trigger an ad request. | The IMA SDK makes an ad request to Google Ad Manager with the encrypted signal automatically included. |
+| 6 | Click **Clear UID2** (or **Clear EUID**) to log out. | The SDK's `disconnect()` function clears the identity and Secure Signals storage. React state updates to show the login form. |
+
+## Debugging
+
+For debugging tips, see the [Google Secure Signals README](../README.md#debugging-tips).

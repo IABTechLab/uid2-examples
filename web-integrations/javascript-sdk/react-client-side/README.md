@@ -15,8 +15,9 @@ The following environment variables are required. Add them to your `.env` file i
 | `UID_CSTG_SUBSCRIPTION_ID` | Your subscription ID for client-side token generation |
 | `UID_CSTG_SERVER_PUBLIC_KEY` | Your server public key for client-side token generation |
 | `UID_JS_SDK_URL` | URL to the JavaScript SDK |
-| `UID_JS_SDK_NAME` | Global variable name for the SDK. Example: `__uid2` or `__euid` |
-| `IDENTITY_NAME` | Display name for the UI. Example: `UID2` or `EUID` |
+| `UID_JS_SDK_NAME` | Global variable name for the SDK (`__uid2` or `__euid`) |
+| `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
+| `DOCS_BASE_URL` | Documentation base URL |
 
 ## Build and Run Locally
 
@@ -34,6 +35,16 @@ To stop the service:
 docker compose stop javascript-sdk-react-client-side
 ```
 
-## Testing and Debugging
+## Test the Example Application
 
-For testing instructions and debugging tips, see the [JavaScript SDK README](../README.md).
+| Step | Description | Comments |
+|:----:|:------------|:---------|
+| 1 | Navigate to `http://localhost:3034` in your browser. | The React application displays a login form for generating a UID2/EUID identity. |
+| 2 | Enter a test email address and click **Generate UID2** (or **Generate EUID**). | The React component calls the SDK's `setIdentityFromEmail()` function with your CSTG credentials. |
+| 3 | The UI updates to show the identity information. | React state is updated via the SDK callback, displaying the advertising token and identity status. The SDK stores the identity in localStorage. |
+| 4 | Refresh the page and note the identity persists. | The SDK loads the identity from localStorage. React components re-render based on the SDK's state. |
+| 5 | Click **Clear UID2** (or **Clear EUID**) to log out. | The SDK's `disconnect()` function clears the identity and React state updates to show the login form again. |
+
+## Debugging
+
+For debugging tips, see the [JavaScript SDK README](../README.md#debugging-tips).

@@ -15,10 +15,11 @@ The following environment variables are required. Add them to your `.env` file i
 | `UID_CSTG_SUBSCRIPTION_ID` | Your subscription ID for client-side token generation |
 | `UID_CSTG_SERVER_PUBLIC_KEY` | Your server public key for client-side token generation |
 | `UID_JS_SDK_URL` | URL to the JavaScript SDK |
-| `UID_JS_SDK_NAME` | Global variable name for the SDK. Example: `__uid2` or `__euid` |
+| `UID_JS_SDK_NAME` | Global variable name for the SDK (`__uid2` or `__euid`) |
 | `UID_SECURE_SIGNALS_SDK_URL` | URL to the Secure Signals SDK |
-| `UID_SECURE_SIGNALS_STORAGE_KEY` | Storage key for Secure Signals. Example: `_GESPSK-uidapi.com` or `_GESPSK-euid.eu` |
-| `IDENTITY_NAME` | Display name for the UI. Example: `UID2` or `EUID` |
+| `UID_SECURE_SIGNALS_STORAGE_KEY` | Storage key for Secure Signals (`_GESPSK-uidapi.com` or `_GESPSK-euid.eu`) |
+| `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
+| `DOCS_BASE_URL` | Documentation base URL |
 
 ## Build and Run Locally
 
@@ -36,6 +37,17 @@ To stop the service:
 docker compose stop google-secure-signals-client-side
 ```
 
-## Testing and Debugging
+## Test the Example Application
 
-For testing instructions and debugging tips, see the [Google Secure Signals README](../README.md).
+| Step | Description | Comments |
+|:----:|:------------|:---------|
+| 1 | Navigate to `http://localhost:3042` in your browser. | The main page displays a login form and a video player for testing ad requests with Secure Signals. |
+| 2 | Enter a test email address and click **Generate UID2** (or **Generate EUID**). | The SDK's `setIdentityFromEmail()` function generates the token. The Secure Signals SDK then encrypts and stores the signal for Google. |
+| 3 | Check localStorage for both tokens. | Open Developer Tools > Application > Local Storage. You should see the UID2/EUID token and the Secure Signals storage key (`_GESPSK-*`). |
+| 4 | Click **Play** to trigger an ad request. | The IMA SDK makes an ad request to Google Ad Manager. The encrypted signal is automatically included in the request via Secure Signals. |
+| 5 | Observe the video ad playback. | If configured correctly, the ad request includes the UID2/EUID signal, enabling targeted advertising. |
+| 6 | Click **Clear UID2** (or **Clear EUID**) to log out. | The SDK's `disconnect()` function clears the identity, and `googletag.secureSignalProviders.clearAllCache()` clears the Secure Signals storage. |
+
+## Debugging
+
+For debugging tips, see the [Google Secure Signals README](../README.md#debugging-tips).
