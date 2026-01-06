@@ -1,6 +1,6 @@
 # Nginx Reverse Proxy
 
-Routes HTTPS requests to UID sample sites based on subdomain.
+Routes HTTPS requests to UID sample sites based on subdomain. This setup allows you to use the **integration environment operator** (no local operator required).
 
 ## Prerequisites: Environment Variables
 
@@ -20,6 +20,12 @@ Before running the sample sites, create a `.env` file in the project root (`uid2
    - `UID_CLIENT_SECRET` - Your client secret
    - `UID_CSTG_SERVER_PUBLIC_KEY` - Your CSTG public key
    - `UID_CSTG_SUBSCRIPTION_ID` - Your CSTG subscription ID
+
+3. **Keep the integ operator URLs** (these are the defaults in the sample files):
+   - `UID_SERVER_BASE_URL=https://operator-integ.uidapi.com`
+   - `UID_CLIENT_BASE_URL=https://operator-integ.uidapi.com`
+
+   > **Note:** Unlike the [localhost setup](../../README.md#running-locally), this reverse-proxy approach uses HTTPS with custom domains (`*.sample-dev.com`), which allows you to connect to the hosted integ operator instead of requiring a local operator.
 
 See the sample files for all available configuration options.
 

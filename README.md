@@ -1,28 +1,25 @@
-# UID2 Integration Examples
+# UID2 and EUID Integration Examples
 
-Sample sites demonstrating UID2/EUID integration patterns.
+This repository contains sample sites demonstrating various integration patterns for UID2 (Unified ID 2.0) and EUID (European Unified ID). 
 
-## Prerequisites
+## Available Integrations
 
-### 1. Set Up Environment Variables
+- **[JavaScript SDK](web-integrations/javascript-sdk/)** — Direct SDK integration for client-side or client-server token management
+- **[Prebid.js](web-integrations/prebid-integrations/)** — Header bidding integration where Prebid.js manages the token workflow
+- **[Google Secure Signals](web-integrations/google-secure-signals/)** — Integration with Google Ad Manager's Secure Signals feature
+- **[Prebid.js + Secure Signals](web-integrations/prebid-secure-signals/)** — Combined Prebid.js and Google Secure Signals integration
+- **[Server-Side](web-integrations/server-side/)** — All token logic handled on the server
+- **[Hashing Tool](tools/hashing-tool/)** — Tool for normalizing and hashing email/phone
 
-Copy one of the sample environment files:
+For a list of all deployed sample sites and related documentation, see the [UID2 Integration Samples and Tools](https://unifiedid.com/docs/ref-info/integration-sample-sites) or [EUID Integration Samples and Tools](https://euid.eu/docs/ref-info/integration-sample-sites) pages.
 
-```bash
-# For UID2
-cp .env.sample.uid2 .env
+---
 
-# For EUID
-cp .env.sample.euid .env
-```
+## Running Locally
 
-Edit `.env` and add your credentials:
-- `UID_API_KEY` - Your API key
-- `UID_CLIENT_SECRET` - Your client secret
-- `UID_CSTG_SERVER_PUBLIC_KEY` - Your CSTG public key
-- `UID_CSTG_SUBSCRIPTION_ID` - Your CSTG subscription ID
+The following instructions are for running the sample sites on your local machine. This requires a local UID2 operator because the hosted operator does not accept requests from `localhost`. If you want to run locally without setting up a local operator, see [Run Without Local Operator](#run-without-local-operator-using-integ-environment) below.
 
-### 2. Run a Local Operator (Required)
+### 1. Run a Local Operator
 
 These sample sites require a local UID2 operator instance.
 
@@ -35,11 +32,31 @@ These sample sites require a local UID2 operator instance.
 
 3. Ensure the operator is running on `http://localhost:8080`
 
----
+### 2. Set Up Environment Variables
 
-## Running the Sample Sites
+Copy one of the sample environment files:
 
-### Start All Services
+```bash
+# For UID2
+cp .env.sample.uid2 .env
+
+# For EUID
+cp .env.sample.euid .env
+```
+
+Edit `.env` and add your credentials:
+- `UID_API_KEY` — Your API key
+- `UID_CLIENT_SECRET` — Your client secret
+- `UID_CSTG_SERVER_PUBLIC_KEY` — Your CSTG public key
+- `UID_CSTG_SUBSCRIPTION_ID` — Your CSTG subscription ID
+
+**Important:** When running locally with a local operator, update the base URLs to point to your local operator:
+- `UID_SERVER_BASE_URL` — Use `http://host.docker.internal:8080` (for server-side calls from Docker containers)
+- `UID_CLIENT_BASE_URL` — Use `http://localhost:8080` (for client-side calls from browser)
+
+> **Note:** Additional environment variables may be required depending on the integration type. The `.env.sample.uid2` and `.env.sample.euid` files contain all available variables. See the README in each [integration folder](#available-integrations) for which variables are required for that specific integration.
+
+### 3. Start the Sample Sites
 
 ```bash
 # Start all sample sites
@@ -49,7 +66,7 @@ docker-compose up -d
 docker-compose down
 ```
 
-### Start a Single Service
+#### Start a Single Service
 
 ```bash
 # Start only prebid-client
@@ -59,8 +76,7 @@ docker-compose up -d prebid-client
 docker-compose stop prebid-client
 ```
 
-
-### Rebuild After Code Changes
+#### Rebuild After Code Changes
 
 ```bash
 # Rebuild all
@@ -69,7 +85,6 @@ docker-compose up -d --build
 # Rebuild a single service
 docker-compose up -d --build prebid-client
 ```
-See the list below for the name of all individual services. 
 
 ---
 
@@ -95,7 +110,7 @@ See the list below for the name of all individual services.
 
 ## Run Without Local Operator (Using Integ Environment)
 
-If you don't want to run a local operator, you can use HTTPS with custom domains to hit the integration environment operator instead.
+If you don't want to run a local operator, you can use HTTPS with custom domains to connect to the integration environment operator instead.
 
 This setup:
 - Uses `https://` with subdomains (e.g., `https://prebid-client.sample-dev.com`)

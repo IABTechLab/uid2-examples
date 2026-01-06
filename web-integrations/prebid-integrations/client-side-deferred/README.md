@@ -1,123 +1,59 @@
-# Deferred UID2/EUID Integration with Prebid.js (using mergeConfig)
+# Deferred Client-Side Integration Example with Prebid.js
 
-This example demonstrates how to integrate UID2 or EUID with Prebid.js using **deferred configuration**. Unlike the standard integration where UID2/EUID is configured on page load, this pattern uses `mergeConfig()` and `refreshUserIds()` to add the identity module *after* the page has already loaded.
+This example demonstrates how to add the UID2/EUID module to an existing Prebid.js configuration after page load using `mergeConfig()` and `refreshUserIds()`.
 
-## Use Cases
+- UID2: [Running Site](https://prebid-deferred.samples.uidapi.com/) | [Documentation](https://unifiedid.com/docs/guides/integration-prebid-client-side)
+- EUID: [Running Site](https://prebid-deferred.samples.integ.euid.eu/) | [Documentation](https://euid.eu/docs/guides/integration-prebid-client-side)
 
-This pattern is useful for:
+For configuration details, see the [Prebid.js README](../README.md#how-it-works).
 
-- **Async Login**: User logs in after the page has loaded
-- **Delayed Consent**: Consent is given asynchronously (e.g., via a consent management platform)
-- **Single Page Applications (SPAs)**: Dynamic login/logout without full page reloads
-- **Lazy Loading**: Only load UID2/EUID when actually needed
-- **User State Changes**: Handle logout and re-login scenarios
+## Prerequisites
 
-## How It Works
+The following environment variables are required. Add them to your `.env` file in the repository root.
 
-### Standard Flow (for comparison)
-```javascript
-// Page load: UID2 configured immediately
-pbjs.setConfig({
-  userSync: {
-    userIds: [{ name: 'uid2', params: {...} }]
-  }
-});
-```
+| Parameter | Description |
+|:----------|:------------|
+| `UID_CLIENT_BASE_URL` | API base URL for client-side calls. Example: `https://operator-integ.uidapi.com` (UID2) or `https://integ.euid.eu` (EUID) |
+| `UID_CSTG_SUBSCRIPTION_ID` | Your subscription ID for client-side token generation |
+| `UID_CSTG_SERVER_PUBLIC_KEY` | Your server public key for client-side token generation |
+| `UID_STORAGE_KEY` | localStorage key for token storage (`__uid2_advertising_token` or `__euid_advertising_token`) |
+| `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
+| `DOCS_BASE_URL` | Used for UI links to public documentation (`https://unifiedid.com/docs` or `https://euid.eu/docs`) |
 
-### Deferred Flow (this example)
-```javascript
-// Step 1: Page load - Prebid configured WITHOUT UID2
-pbjs.setConfig({
-  userSync: {
-    syncDelay: 5000,
-    auctionDelay: 1000,
-    // Note: NO userIds configured here!
-  }
-});
+## Build and Run Locally
 
-// Step 2: Later (after login, consent, etc.) - Add UID2 via mergeConfig
-pbjs.mergeConfig({
-  userSync: {
-    userIds: [{
-      name: 'uid2',
-      params: {
-        uid2ApiBase: 'https://operator-integ.uidapi.com',
-        email: 'user@example.com',
-        subscriptionId: 'your-subscription-id',
-        serverPublicKey: 'your-server-public-key'
-      }
-    }]
-  }
-});
-
-// Step 3: Trigger user ID refresh to generate the token
-await pbjs.refreshUserIds();
-```
-
-## Key Prebid.js APIs
-
-| API | Purpose |
-|-----|---------|
-| `pbjs.setConfig()` | Initial configuration (without UID2) |
-| `pbjs.mergeConfig()` | Add/update configuration without replacing existing config |
-| `pbjs.refreshUserIds()` | Trigger user ID module to fetch/generate new IDs |
-| `pbjs.getUserIds()` | Get current user IDs (check if token was generated) |
-
-## Live Examples
-
-- **UID2**: [https://prebid-deferred.samples.uidapi.com/](https://prebid-deferred.samples.uidapi.com/)
-- **EUID**: [https://prebid-deferred.samples.integ.euid.eu/](https://prebid-deferred.samples.integ.euid.eu/)
-
-## Running Locally
-
-### Using Docker Compose (recommended)
-
-From the repository root:
+From the repository root directory:
 
 ```bash
 docker compose up prebid-client-side-deferred
 ```
 
-Access at: http://localhost:3053
+Once running, access the application at: **http://localhost:3053**
 
-### Using the Reverse Proxy
+To stop the service:
 
 ```bash
-docker compose up
+docker compose stop prebid-client-side-deferred
 ```
 
-Access at: http://prebid-deferred.sample-dev.com (requires hosts file configuration)
+## Test the Example Application
 
-## Environment Variables
+| Step | Description | Comments |
+|:----:|:------------|:---------|
+| 1 | Navigate to `http://localhost:3053` in your browser. | The page loads with Prebid.js configured but **without** UID2/EUID initially. This simulates a publisher who wants to add UID2/EUID later. |
+| 2 | Open the browser console (F12) and run `pbjs.getUserIds()`. | Initially returns an empty object or no `uid2`/`euid` property, since the module hasn't been configured yet. |
+| 3 | Enter a test email address and click **Generate UID2** (or **Generate EUID**). | This triggers `pbjs.mergeConfig()` to add the UID2/EUID module config, then `pbjs.refreshUserIds()` to generate the token. |
+| 4 | Run `pbjs.getUserIds()` again in the console. | Now you should see the `uid2` or `euid` property with the advertising token. The module was added dynamically. |
+| 5 | Refresh the page and note the identity persists. | Even though the page starts without UID2/EUID configured, it checks localStorage on load and configures Prebid if a token exists. |
+| 6 | Click **Clear UID2** (or **Clear EUID**) to log out. | The token is removed from localStorage and the page reloads to clear Prebid's in-memory state. |
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `UID_CLIENT_BASE_URL` | API base URL for client-side calls | `https://operator-integ.uidapi.com` |
-| `UID_CSTG_SUBSCRIPTION_ID` | Your CSTG subscription ID | Test value provided |
-| `UID_CSTG_SERVER_PUBLIC_KEY` | Your CSTG server public key | Test value provided |
-| `UID_STORAGE_KEY` | localStorage key for token storage | `__uid2_advertising_token` |
-| `IDENTITY_NAME` | Display name (UID2 or EUID) | `UID2` |
-| `DOCS_BASE_URL` | Base URL for documentation links | `https://unifiedid.com/docs` |
+## How It Works
 
-## Testing Flow
+This example uses two Prebid.js functions to add UID2/EUID after page load:
 
-1. **Page loads** - Observe that Prebid is loaded but UID2 shows "Not yet configured (deferred)"
-2. **Enter email** - Type an email address in the input field
-3. **Click "Configure UID2 with mergeConfig()"** - This triggers:
-   - `pbjs.mergeConfig()` to add UID2 configuration
-   - `pbjs.refreshUserIds()` to generate the token
-4. **Observe results** - Token appears in the status tables
-5. **Test opt-out** - Use `test@example.com` to see opt-out behavior
+1. **`pbjs.mergeConfig()`** - Merges the UID2/EUID module configuration into the existing Prebid config without overwriting other settings
+2. **`pbjs.refreshUserIds()`** - Triggers Prebid to generate the token using the newly merged configuration
 
-## Documentation
+## Debugging
 
-- [UID2 Client-Side Integration Guide for Prebid.js](https://unifiedid.com/docs/guides/integration-prebid-client-side)
-- [EUID Client-Side Integration Guide for Prebid.js](https://euid.eu/docs/guides/integration-prebid-client-side)
-- [Prebid.js User ID Module](https://docs.prebid.org/dev-docs/modules/userId.html)
-- [Prebid.js mergeConfig](https://docs.prebid.org/dev-docs/publisher-api-reference/mergeConfig.html)
-
-## Related Examples
-
-- [client-side](../client-side/) - Standard Prebid + UID2 (configured on page load)
-- [client-server](../client-server/) - Server-side token generation with Prebid
-
+For debugging tips, see the [Prebid.js README](../README.md#debugging-tips).

@@ -1,112 +1,53 @@
-# Server-Side UID2 or EUID Integration Example with Google Secure Signals
+# Server-Side Integration Example with Google Secure Signals
 
-This example demonstrates how a content publisher who is working with [Google Interactive Media Ads(IMA) SDKs](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) can use [Google Secure Signal](https://support.google.com/admanager/answer/10488752) with either UID2 or EUID to share tokens directly with bidders, in a server-side implementation without using an SDK.
+This example demonstrates a full server-side UID2/EUID implementation combined with Google Secure Signals for sharing encrypted identity with Google Ad Manager.
 
-- For UID2: [Google Ad Manager Secure Signals Integration Guide](https://unifiedid.com/docs/guides/integration-google-ss#server-side-integration)
-- For EUID: [EUID Google Ad Manager Secure Signals Integration Guide](https://euid.eu/docs/guides/integration-google-ss#server-side-integration)
+- UID2: [Running Site](https://ss-server-side.samples.uidapi.com/) | [Documentation](https://unifiedid.com/docs/guides/integration-google-ss)
+- EUID: [Running Site](https://ss-server-side.samples.integ.euid.eu/) | [Documentation](https://euid.eu/docs/guides/integration-google-ss)
 
-This example can be configured for either UID2 or EUID — the behavior is determined by your environment variable configuration. You cannot use both simultaneously.
+For configuration details, see the [Google Secure Signals README](../README.md#how-it-works).
 
-For an example application using the SDK, see [Client-Server UID2 or EUID SDK Integration Example with Google Secure Signals](../client-server/README.md) or [Client-Side UID2 or EUID SDK Integration Example with Google Secure Signals](../client-side/README.md).
+## Prerequisites
 
-> NOTE: Although the server side of the example application is implemented in JavaScript using node.js, it is not a requirement. You can use any technology of your choice and refer to the example application for an illustration of the functionality that needs to be implemented.
+The following environment variables are required. Add them to your `.env` file in the repository root.
 
-## Build and Run the Example Application
+| Parameter | Description |
+|:----------|:------------|
+| `UID_SERVER_BASE_URL` | API base URL for server-side calls. Example: `https://operator-integ.uidapi.com` (UID2) or `https://integ.euid.eu` (EUID) |
+| `UID_API_KEY` | Your API key for server-side token generation |
+| `UID_CLIENT_SECRET` | Your client secret for server-side token generation |
+| `UID_SECURE_SIGNALS_SDK_URL` | URL to the Secure Signals SDK |
+| `UID_SECURE_SIGNALS_STORAGE_KEY` | Storage key for Secure Signals (`_GESPSK-uidapi.com` or `_GESPSK-euid.eu`) |
+| `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
+| `DOCS_BASE_URL` | Used for UI links to public documentation (`https://unifiedid.com/docs` or `https://euid.eu/docs`) |
 
-### Environment Configuration
-
-Copy the appropriate sample environment file:
-
-```bash
-# For UID2
-cp .env.sample.uid2 .env
-
-# For EUID
-cp .env.sample.euid .env
-```
-
-Then update the `.env` file with your credentials.
-
-### Running with Docker
-
-#### Using Docker Compose (Recommended)
+## Build and Run Locally
 
 From the repository root directory:
 
 ```bash
-# Start the service
 docker compose up google-secure-signals-server-side
 ```
 
-The application will be available at http://localhost:3043
+Once running, access the application at: **http://localhost:3043**
 
-To view logs or stop the service:
+To stop the service:
 
 ```bash
-# View logs (in another terminal)
-docker compose logs google-secure-signals-server-side
-
-# Stop the service
 docker compose stop google-secure-signals-server-side
 ```
 
-#### Using Docker Build
-
-```bash
-# Build the image
-docker build -f web-integrations/google-secure-signals/server-side/Dockerfile -t google-secure-signals-server-side .
-
-# Run the container
-docker run -it --rm -p 3043:3043 --env-file .env google-secure-signals-server-side
-```
-
-### Environment Variables
-
-| Variable | Description | Example Values |
-|:---------|:------------|:---------------|
-| `UID_SERVER_BASE_URL` | The base URL of the UID2/EUID service for server-side API calls | UID2: `https://operator-integ.uidapi.com`<br/>EUID: `https://integ.euid.eu` |
-| `UID_API_KEY` | Your UID2/EUID authentication key for the UID2/EUID service specified in UID_SERVER_BASE_URL. | Your assigned API key |
-| `UID_CLIENT_SECRET` | Your UID2/EUID client secret for the UID2/EUID service specified in UID_SERVER_BASE_URL. | Your assigned client secret |
-| `SESSION_KEY` | The key to the encryption session data stored in the application's session cookie | Any secure random string |
-| `UID_SECURE_SIGNALS_SDK_URL` | URL to the Secure Signals SDK | UID2: `https://cdn.integ.uidapi.com/uid2SecureSignal.js`<br/>EUID: `https://cdn.integ.euid.eu/euidSecureSignal.js` |
-| `IDENTITY_NAME` | Identity name for UI display | UID2: `UID2`<br/>EUID: `EUID` |
-| `DOCS_BASE_URL` | Documentation base URL | UID2: `https://unifiedid.com/docs`<br/>EUID: `https://euid.eu/docs` |
-
-**Note:** The example uses a Google IMA sample ad tag URL in `public/ads.js`. To test with your own ad tag, edit line 56 in `public/ads.js` to use your ad tag URL.
-
-Output similar to the following indicates that the example application is up and running.
-
-```
-> uid2-publisher@1.0.0 start /usr/src/app
-> node server.js
-
-Example app listening at http://localhost:3043
-```
-
-If needed, to close the application, terminate the Docker container or use the `Ctrl+C` keyboard shortcut.
-
 ## Test the Example Application
 
-The application provides three main pages:
+| Step | Description | Comments |
+|:----:|:------------|:---------|
+| 1 | Navigate to `http://localhost:3043` in your browser. | The main page displays a login form and a video player for testing ad requests with Secure Signals. |
+| 2 | Enter a test email address and click **Generate UID2** (or **Generate EUID**). | This calls the `/login` endpoint on the server, which generates the token and stores it in a server-side session. |
+| 3 | The page reloads with the identity embedded. | The server renders the advertising token directly into the page. The Secure Signals SDK picks up the token and stores the encrypted signal. |
+| 4 | Check localStorage for the Secure Signals storage. | Open Developer Tools > Application > Local Storage and look for `_GESPSK-uidapi.com` (UID2) or `_GESPSK-euid.eu` (EUID). |
+| 5 | Click **Play** to trigger an ad request. | The IMA SDK makes an ad request to Google Ad Manager with the encrypted signal automatically included. |
+| 6 | Click **Clear UID2** (or **Clear EUID**) to log out. | The server clears the session and Secure Signals storage is cleared. |
 
-- index (main)
-- example content 1
-- example content 2
+## Debugging
 
-Access to these pages is possible only after the user completes the login process. If login is not complete, the user is redirected to the login page.
-
-Submitting the login form simulates logging in to a publisher's application in the real world. Normally, the login
-would require checking the user's secure credentials (for example, a password). In this example, for demonstration purposes, this
-step is omitted, and the login process focuses on integration with the UID2/EUID services instead.
-
-**Note:** For API endpoint documentation, see the UID2 or EUID docs based on your configuration.
-
-The following table outlines and annotates the steps you can take to test and explore the example application.
-
-| Step | Description                                                                                                                                                                                                               | Comments                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| :--: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-|  1   | In your browser, navigate to the application main page at `http://localhost:3043`.                                                                                                                                        | The displayed main (index) page of the example application provides a [login form](views/login.html) for the user to complete the UID2/EUID login process.</br>IMPORTANT: A real-life application must also display a form for the user to consent to targeted advertising.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-|  2   | Enter the email address that you want to use for testing and click **Generate UID2** or **Generate EUID**. Note: The button label depends on your environment configuration; in a real production environment, labels may differ. | The click calls the Secure Signal [`clearAllCache()`](https://developers.google.com/publisher-tag/reference#googletag.secureSignals.SecureSignalProvidersArray_clearAllCache) function, to clear all cached signals from local storage, and then calls the `/login` endpoint ([server.js](server.js)). The login initiated on the server side then calls the POST /token/generate endpoint and processes the received response.                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-|      | The main page updates to display the established identity information and a video player.                                                                                                                            | The displayed identity information is the `body` property of the JSON response payload from the successful POST /token/generate response. If the response is successful, the returned identity is saved to a session cookie (a real-world application would use a different way to store session data) and the protected index page is rendered. While the main page is loading, [Google Publisher Tag (GPT)](https://developers.google.com/publisher-tag/reference#googletag) auto-loads the Secure Signal script which pushes the advertising token to GPT local storage. The [Interactive Media Ads (IMA) SDK](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side) then makes an ad request, and transmits the encoded signal in the request. |
-|  4   | Click **Play**.                                                                                                                                                                                                           | This triggers AdsManager to insert the ad returned from the ad request, for display. The ad tag used in this example contains a 10-second pre-roll ad.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-|  5   | To exit the application, click **Clear UID2** or **Clear EUID**.                                                                                                                                                                            | This event calls the Secure Signal [`clearAllCache()`](https://developers.google.com/publisher-tag/reference#googletag.secureSignals.SecureSignalProvidersArray_clearAllCache) function, to clear all cached signals, and then calls the `/logout` endpoint on the server ([server.js](server.js)), which clears the session and the first-party cookie and presents the user with the login form again.<br/> NOTE: The page displays the **Clear** button as long as the user identity is valid and refreshable within the integration test environment.                                                                                                                                                                                                                                                                                                             |
+For debugging tips, see the [Google Secure Signals README](../README.md#debugging-tips).

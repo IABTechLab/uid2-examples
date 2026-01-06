@@ -1,0 +1,171 @@
+# Prebid.js Integrations
+
+This folder contains sample integrations using Prebid.js with the UID2/EUID User ID module. Prebid.js manages token storage, refresh, and inclusion in bid requests.
+
+## How It Works
+
+When using Prebid.js for UID2/EUID integration, Prebid handles the entire token workflow:
+
+1. **Token Generation** — Either client-side (CSTG) or via server-provided token
+2. **Token Storage** — Stored in localStorage under `__uid2_advertising_token` or `__euid_advertising_token`
+3. **Token Refresh** — Prebid automatically refreshes tokens before expiration
+4. **Bid Requests** — Token is automatically included in bid requests via the User ID module
+
+### Client-Side Configuration (CSTG)
+
+Prebid generates the token directly from an email address:
+
+```javascript
+pbjs.setConfig({
+  userSync: {
+    userIds: [{
+      name: 'uid2',  // or 'euid'
+      params: {
+        email: userEmail,
+        subscriptionId: 'your-sub-id',
+        serverPublicKey: 'your-public-key'
+      }
+    }]
+  }
+});
+```
+
+### Client-Server Configuration
+
+Server provides the initial token, but CSTG credentials are still required for Prebid to refresh it:
+
+```javascript
+pbjs.setConfig({
+  userSync: {
+    userIds: [{
+      name: 'uid2',  // or 'euid'
+      params: {
+        uid2Token: tokenFromServer,         // Initial token from server
+        subscriptionId: 'your-sub-id',      // Required for refresh
+        serverPublicKey: 'your-public-key'  // Required for refresh
+      }
+    }]
+  }
+});
+```
+
+> **EUID Note:** If using EUID, you must configure consent management for GDPR compliance. See the [EUID Permissions documentation](https://euid.eu/docs/getting-started/gs-permissions).
+
+## Available Examples
+
+| Folder | Description | Port |
+|--------|-------------|------|
+| `client-side/` | Prebid.js handles all token management client-side using CSTG | 3051 |
+| `client-server/` | Server generates initial token, Prebid.js manages refresh | 3052 |
+| `client-side-deferred/` | Add UID2/EUID module to existing Prebid config using `mergeConfig()` | 3053 |
+
+## Documentation
+
+- UID2: [Client-Side Guide](https://unifiedid.com/docs/guides/integration-prebid-client-side) | [Client-Server Guide](https://unifiedid.com/docs/guides/integration-prebid-client-server) | [Deferred Configuration](https://unifiedid.com/docs/guides/integration-prebid-client-side#deferred-client-side-uid2-configuration-with-mergeconfig)
+- EUID: [Client-Side Guide](https://euid.eu/docs/guides/integration-prebid-client-side) | [Client-Server Guide](https://euid.eu/docs/guides/integration-prebid-client-server) | [Deferred Configuration](https://euid.eu/docs/guides/integration-prebid-client-side#deferred-client-side-euid-configuration-with-mergeconfig)
+
+## Prebid.js Build
+
+The `prebid.js` file in this folder is a custom Prebid.js build (v10.15.0) that includes:
+- [UID2 User ID Module](https://docs.prebid.org/dev-docs/modules/userid-submodules/unified2.html)
+- [EUID User ID Module](https://docs.prebid.org/dev-docs/modules/userid-submodules/euid.html)
+- [TCF Consent Management Module](https://docs.prebid.org/dev-docs/modules/consentManagementTcf.html)
+
+## Environment Variables
+
+All integrations in this folder require common variables plus integration-specific ones. See the individual README for each integration for the complete list of required variables.
+
+### Common Variables
+
+| Variable | Description |
+|:---------|:------------|
+| `IDENTITY_NAME` | Display name for the UI (`UID2` or `EUID`) |
+| `UID_STORAGE_KEY` | localStorage key for Prebid token storage |
+| `DOCS_BASE_URL` | Used for UI links to public documentation (`https://unifiedid.com/docs` or `https://euid.eu/docs`) |
+
+### Client-Side Specific
+
+| Variable | Description |
+|:---------|:------------|
+| `UID_CLIENT_BASE_URL` | API base URL for client-side calls |
+| `UID_CSTG_SUBSCRIPTION_ID` | Your subscription ID for CSTG |
+| `UID_CSTG_SERVER_PUBLIC_KEY` | Your server public key for CSTG |
+
+### Client-Server Specific
+
+| Variable | Description |
+|:---------|:------------|
+| `UID_SERVER_BASE_URL` | API base URL for server-side calls |
+| `UID_API_KEY` | Your API key for server-side token generation |
+| `UID_CLIENT_SECRET` | Your client secret for server-side token generation |
+
+## Debugging Tips
+
+### Check Prebid Config
+
+Open browser console (F12) and run:
+```javascript
+pbjs.getConfig('userSync')
+```
+
+### Force Token Refresh
+
+```javascript
+// For UID2
+pbjs.refreshUserIds({ submoduleNames: ['uid2'] })
+
+// For EUID
+pbjs.refreshUserIds({ submoduleNames: ['euid'] })
+```
+
+### View Container Logs
+
+```bash
+docker compose logs prebid-client
+docker compose logs prebid-client-server
+docker compose logs prebid-client-side-deferred
+```
+
+### Rebuild After Changes
+
+```bash
+docker compose up -d --build SERVICE_NAME
+```
+
+### Common Issues
+
+| Issue | Possible Cause | Solution |
+|-------|----------------|----------|
+| `pbjs.getUserIds()` returns empty | Module not configured | Check Prebid config in page source |
+| "Invalid subscription ID" | Wrong credentials | Verify credentials match operator URL |
+| Token not in bid requests | Token not generated yet | Wait for `pbjs.refreshUserIds()` to complete |
+| Module not loading | Prebid build missing module | Use the provided `prebid.js` build |
+
+## Troubleshooting
+
+### "Request failed with status code 401"
+
+- Verify your `UID_API_KEY` and `UID_CLIENT_SECRET` are correct
+- Ensure your API key has the **GENERATOR** role
+- Check that credentials match your environment (local vs. integration)
+- For EUID, ensure your operator's `identity_scope` is set to `"euid"` and you're using `EUID-C-` keys
+
+### "Request failed with status code 500"
+
+**For local operator:**
+- Verify the operator is running at `localhost:8080`
+- Check `enable_v2_encryption: true` is set in the operator's config
+- Review operator logs for errors
+- Ensure `identity_scope` matches your credentials (e.g., `"uid2"` or `"euid"`)
+
+**For Docker:**
+- Ensure `UID_SERVER_BASE_URL` uses `host.docker.internal:8080` not `localhost:8080`
+
+### Prebid Doesn't Have the Identity
+
+Run `pbjs.getUserIds()` in console. If empty or missing `uid2`/`euid`:
+- Check console for Prebid errors
+- Verify Prebid.js loaded correctly (check Network tab)
+- Ensure `pbjs.setConfig()` is being called after token generation
+- Check the browser console for "Configuring Prebid.js with..." message to confirm configuration
+- Check that `IDENTITY_NAME` matches the expected identity type (UID2 or EUID)
