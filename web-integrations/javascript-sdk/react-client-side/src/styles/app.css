@@ -150,7 +150,6 @@ p {
   line-height: 1.8;
 }
 
-/* Section summary - matches other sample sites */
 p.section-summary {
   font-size: 0.95rem;
   color: var(--text-gray);

@@ -172,7 +172,7 @@ a:hover {
   opacity: 0.8;
 }
 
-/* State Table - 0 top so gap = section-summary's 1rem only (Prebid collapses; we have overflow:hidden) */
+/* State Table */
 #uid_state {
   width: 100%;
   border-collapse: collapse;
