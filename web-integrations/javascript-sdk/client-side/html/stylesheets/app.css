@@ -56,14 +56,11 @@ body {
   gap: 2rem;
   max-width: 1400px;
   margin: 0 auto;
-  min-height: calc(100vh - 4rem);
 }
 
 /* Main Content Area (75%) */
 .main-content {
   flex: 3;
-  display: flex;
-  flex-direction: column;
   background: var(--bg-white);
   border-radius: 12px;
   padding: 2.5rem;
@@ -153,7 +150,6 @@ p {
   line-height: 1.8;
 }
 
-/* Section summary - matches Prebid */
 p.section-summary {
   font-size: 0.95rem;
   color: var(--text-gray);
