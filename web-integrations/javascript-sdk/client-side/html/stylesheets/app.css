@@ -150,7 +150,6 @@ p {
   line-height: 1.8;
 }
 
-/* Section summary - same styling as intro but gray */
 p.section-summary {
   font-size: 0.95rem;
   color: var(--text-gray);
@@ -173,7 +172,7 @@ a:hover {
 #uid_state {
   width: 100%;
   border-collapse: collapse;
-  margin: 2rem 0;
+  margin: 0 0 2rem 0;
   font-size: 0.875rem;
   border: 1px solid var(--border-color);
   border-radius: 8px;
@@ -351,7 +350,7 @@ a:hover {
   color: white;
   padding: 10px;
   border-radius: 4px;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   line-height: 1.125; 
   min-width: 300px; 
   max-width: 570px; 
