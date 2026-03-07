@@ -9,14 +9,13 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
       const getUid2AdvertisingToken = async () => {
-        const response = await fetch('/getFreshToken', { credentials: 'same-origin' });
+        const response = await fetch('/getFreshToken');
         if (!response.ok) return undefined;
         const result = await response.json();
         return result && result.advertising_token;
       };
       window.getUid2AdvertisingToken = getUid2AdvertisingToken;
     </script>
-    <!-- Load Secure Signals SDK after callback (sync, same order as client-side). -->
     <script src="<%- secureSignalsSdkUrl %>"></script>
     <script type="text/javascript">
       if (window.__uid2SecureSignalProvider) {
