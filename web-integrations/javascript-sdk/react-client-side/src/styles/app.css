@@ -150,6 +150,14 @@ p {
   line-height: 1.8;
 }
 
+/* Section summary - matches other sample sites */
+p.section-summary {
+  font-size: 0.95rem;
+  color: var(--text-gray);
+  margin-bottom: 1rem;
+  line-height: 1.8;
+}
+
 a {
   color: var(--link-color);
   text-decoration: underline;
@@ -165,7 +173,7 @@ a:hover {
 #uid_state {
   width: 100%;
   border-collapse: collapse;
-  margin: 2rem 0;
+  margin: 0 0 2rem 0;
   font-size: 0.875rem;
   border: 1px solid var(--border-color);
   border-radius: 8px;

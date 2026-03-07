@@ -139,6 +139,8 @@ const ClientSideApp = () => {
         )}
 
         <h2>{IDENTITY_NAME} Integration Status</h2>
+        <p className="section-summary"><strong>Note:</strong> This is a test-only integration environment—it does not collect data or generate production-level tokens.</p>
+
         <table id="uid_state">
           <tbody>
             <tr>
