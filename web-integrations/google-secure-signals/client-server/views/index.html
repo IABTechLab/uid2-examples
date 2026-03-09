@@ -26,6 +26,7 @@
           $("#identity_state").html(String(JSON.stringify(payload, null, 2)));
           
           updateSecureSignals();
+          // Give Secure Signals SDK time to write to localStorage; run again after 1s when we have a token.
           if (sdk.getAdvertisingToken()) {
             setTimeout(updateSecureSignals, 1000);
           }
@@ -58,6 +59,7 @@
             const secureSignalsStorageKey = '<%- secureSignalsStorageKey %>';
             const secureSignalsStorage = localStorage[secureSignalsStorageKey];
             const token = sdk.getAdvertisingToken();
+            // Token valid but Secure Signals not yet written; reload so the SDK gets another chance.
             if (token && !secureSignalsStorage) {
               location.reload();
               return;

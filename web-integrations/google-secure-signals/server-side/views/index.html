@@ -8,6 +8,7 @@
     <link rel="shortcut icon" href="/images/favicon.png" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
+      // Define callback before Secure Signals SDK loads so the SDK can find it when it runs.
       const getUid2AdvertisingToken = async () => {
         const response = await fetch('/getFreshToken');
         if (!response.ok) return undefined;
@@ -16,6 +17,7 @@
       };
       window.getUid2AdvertisingToken = getUid2AdvertisingToken;
     </script>
+    <!-- Load Secure Signals SDK after callback (sync, same order as client-side). -->
     <script src="<%- secureSignalsSdkUrl %>"></script>
     <script type="text/javascript">
       if (window.__uid2SecureSignalProvider) {
@@ -46,6 +48,7 @@
           }
         }
         
+        // No "token ready" event on server-side; poll so we update the UI after the SDK writes to localStorage.
         [1000, 2000, 3000].forEach((ms) => setTimeout(updateSecureSignals, ms));
         
         $('#logout').click(() => {
