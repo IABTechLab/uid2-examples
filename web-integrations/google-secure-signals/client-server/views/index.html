@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
     <link rel="shortcut icon" href="/images/favicon.png" />
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="<%- uidJsSdkUrl %>"></script>
     <script src="<%- secureSignalsSdkUrl %>"></script>
@@ -23,7 +24,6 @@
           $("#advertising_token").html(String(sdk.getAdvertisingToken()));
           $("#login_required").html(sdk.isLoginRequired() ? "yes" : "no");
           $("#identity_state").html(String(JSON.stringify(payload, null, 2)));
-          
           updateSecureSignals();
           // Token is set from the server (or refreshed by the SDK); Secure Signals may write to localStorage after a short delay, so re-check once.
           if (sdk.getAdvertisingToken()) {
@@ -37,6 +37,7 @@
           $("#optout_banner").show();
           $('#googleAdContainer').hide();
           <% } else { %>
+          // Before token generation, show login form.
           if (sdk.isLoginRequired()) {
             $("#login_form").show();
             $("#logout_form").hide();
@@ -44,6 +45,7 @@
             $("#optout_banner").hide();
             $('#googleAdContainer').hide();
           } else {
+            // Success case - token generated, show logout form.
             $("#login_form").hide();
             $("#logout_form").show();
             $("#optout_form").hide();
@@ -54,9 +56,11 @@
         }
         
         // Update Secure Signals values displayed in the GUI.
+        // Update Secure Signals values displayed in the GUI.
         function updateSecureSignals() {
           try {
             const secureSignalsStorageKey = '<%- secureSignalsStorageKey %>';
+            // Read from localStorage.
             const secureSignalsStorage = localStorage[secureSignalsStorageKey];
             const token = sdk.getAdvertisingToken();
             // Token valid but Secure Signals not yet written; reload so the SDK gets another chance.
@@ -64,6 +68,7 @@
               location.reload();
               return;
             }
+
             const secureSignalsStorageJson = secureSignalsStorage && JSON.parse(secureSignalsStorage);
             if (secureSignalsStorageJson && secureSignalsStorageJson[1]) {
               $("#secure_signals_loaded").html("yes");
