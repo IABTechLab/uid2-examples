@@ -6,11 +6,12 @@
     <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
     <link rel="shortcut icon" href="/images/favicon.png" />
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="<%- uidJsSdkUrl %>"></script>
     <script src="<%- secureSignalsSdkUrl %>"></script>
     <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
-
+    
     <script>
       $(document).ready(() => {
         const sdkName = '<%- uidJsSdkName %>';
@@ -25,8 +26,11 @@
           $("#login_required").html(sdk.isLoginRequired() ? "yes" : "no");
           $("#identity_state").html(String(JSON.stringify(payload, null, 2)));
           
-          // Update Secure Signals values displayed in the GUI
           updateSecureSignals();
+          // Secure Signals SDK usually writes to localStorage shortly after it gets the token.
+          if (sdk.getAdvertisingToken()) {
+            setTimeout(updateSecureSignals, 1000);
+          }
 
           <% if (isOptout) { %>
           $("#login_form").hide();
@@ -35,7 +39,7 @@
           $("#optout_banner").show();
           $('#googleAdContainer').hide();
           <% } else { %>
-          // before token generation, show login form
+          // before token generation, show login form.
           if (sdk.isLoginRequired()) {
             $("#login_form").show();
             $("#logout_form").hide();
@@ -55,12 +59,17 @@
         
         function updateSecureSignals() {
           try {
-            // Read from localStorage 
             const secureSignalsStorageKey = '<%- secureSignalsStorageKey %>';
+
             const secureSignalsStorage = localStorage[secureSignalsStorageKey];
-            
+            const token = sdk.getAdvertisingToken();
+            // Token valid but Secure Signals not yet written; reload so the SDK gets another chance.
+            if (token && !secureSignalsStorage) {
+              location.reload();
+              return;
+            }
+
             const secureSignalsStorageJson = secureSignalsStorage && JSON.parse(secureSignalsStorage);
-            
             if (secureSignalsStorageJson && secureSignalsStorageJson[1]) {
               $("#secure_signals_loaded").html("yes");
               $("#secure_signals_value").html(JSON.stringify(secureSignalsStorageJson, null, 2));
@@ -83,16 +92,17 @@
         $("#logout").click(() => {
           window.googletag.secureSignalProviders.clearAllCache();
           sdk.disconnect();
+          localStorage.removeItem('<%- secureSignalsStorageKey %>');
           window.location.href = '/';
         });
-        
         $("#try_another").click(() => {
           window.googletag.secureSignalProviders.clearAllCache();
           sdk.disconnect();
+          localStorage.removeItem('<%- secureSignalsStorageKey %>');
           window.location.href = '/';
         });
 
-        sdk.callbacks.push((eventType, payload) => {
+        sdk.callbacks.push((eventType, payload) => {     
           if (eventType === "SdkLoaded") {
             sdk.init({
               baseUrl: "<%- uidBaseUrl %>",
@@ -160,6 +170,7 @@
 
         <!-- UID2 Integration Status Section -->
         <h2><%- identityName %> Integration Status</h2>
+        <p class="section-summary"><strong>Note:</strong> This is a test-only integration environment—it does not collect data or generate production-level tokens.</p>
 
         <table id="uid_state">
           <tr>
@@ -237,7 +248,7 @@
                 </div>
               </div>
             </td>
-            <td class="value"><pre id="secure_signals_loaded"></pre></td>
+            <td class="value"><pre id="secure_signals_loaded">no</pre></td>
           </tr>
           <tr>
             <td class="label">
@@ -251,7 +262,7 @@
                 </div>
               </div>
             </td>
-            <td class="value"><pre id="secure_signals_value"></pre></td>
+            <td class="value"><pre id="secure_signals_value">undefined</pre></td>
           </tr>
         </table>
 
