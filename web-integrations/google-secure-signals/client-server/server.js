@@ -19,7 +19,6 @@ const uidJsSdkName = process.env.UID_JS_SDK_NAME || '__uid2';
 
 // Secure Signals configuration
 const secureSignalsSdkUrl = process.env.UID_SECURE_SIGNALS_SDK_URL || 'https://cdn.integ.uidapi.com/uid2SecureSignal.js';
-const secureSignalsStorageKey = process.env.UID_SECURE_SIGNALS_STORAGE_KEY || '_GESPSK-uidapi.com';
 
 // UI/Display configuration
 const identityName = process.env.IDENTITY_NAME;
@@ -49,7 +48,7 @@ app.get('/', (req, res) => {
     uidJsSdkUrl,
     uidJsSdkName,
     secureSignalsSdkUrl,
-    secureSignalsStorageKey,
+    secureSignalsStorageKey: process.env.UID_SECURE_SIGNALS_STORAGE_KEY,
     identityName,
     docsBaseUrl
   });
@@ -148,7 +147,7 @@ app.post('/login', async (req, res) => {
         uidJsSdkUrl,
         uidJsSdkName,
         secureSignalsSdkUrl,
-        secureSignalsStorageKey,
+        secureSignalsStorageKey: process.env.UID_SECURE_SIGNALS_STORAGE_KEY,
         identityName,
         docsBaseUrl
       });
@@ -174,7 +173,7 @@ app.post('/login', async (req, res) => {
         uidJsSdkUrl,
         uidJsSdkName,
         secureSignalsSdkUrl,
-        secureSignalsStorageKey,
+        secureSignalsStorageKey: process.env.UID_SECURE_SIGNALS_STORAGE_KEY,
         identityName,
         docsBaseUrl
       });

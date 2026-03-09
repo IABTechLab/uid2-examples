@@ -7,22 +7,24 @@
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
     <link rel="shortcut icon" href="/images/favicon.png" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script async src="<%- secureSignalsSdkUrl %>"></script>
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+
     <script type="text/javascript">
       const getUid2AdvertisingToken = async () => {
         const response = await fetch('/getFreshToken');
-        if (!response.ok) return undefined;
         const result = await response.json();
-        return result && result.advertising_token;
+        console.log(result);
+        return result.advertising_token;
       };
+
       window.getUid2AdvertisingToken = getUid2AdvertisingToken;
-    </script>
-    <script src="<%- secureSignalsSdkUrl %>"></script>
-    <script type="text/javascript">
+
+      // If uid2SecureSignalProvider is initialized before getUid2AdvertisingToken is assigned, call registerSecureSignalProvider
       if (window.__uid2SecureSignalProvider) {
         window.__uid2SecureSignalProvider.registerSecureSignalProvider();
       }
     </script>
-    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
     <script>
       $(document).ready(() => {
         const secureSignalsStorageKey = '<%- secureSignalsStorageKey %>';
@@ -46,7 +48,8 @@
           }
         }
         
-        [1000, 2000, 3000].forEach((ms) => setTimeout(updateSecureSignals, ms));
+        // Update Secure Signals display after SDK has time to load and fetch token
+        setTimeout(updateSecureSignals, 1000);
         
         $('#logout').click(() => {
           if (window.googletag && window.googletag.secureSignalProviders) {
@@ -104,7 +107,6 @@
 
         <!-- UID2 Integration Status Section -->
         <h2><%- identityName %> Integration Status</h2>
-        <p class="section-summary"><strong>Note:</strong> This is a test-only integration environment—it does not collect data or generate production-level tokens.</p>
 
         <table id="uid_state">
           <tr>

@@ -25,10 +25,8 @@
           $("#login_required").html(sdk.isLoginRequired() ? "yes" : "no");
           $("#identity_state").html(String(JSON.stringify(payload, null, 2)));
           
+          // Update Secure Signals values displayed in the GUI
           updateSecureSignals();
-          if (sdk.getAdvertisingToken()) {
-            setTimeout(updateSecureSignals, 1000);
-          }
 
           <% if (isOptout) { %>
           $("#login_form").hide();
@@ -37,6 +35,7 @@
           $("#optout_banner").show();
           $('#googleAdContainer').hide();
           <% } else { %>
+          // before token generation, show login form
           if (sdk.isLoginRequired()) {
             $("#login_form").show();
             $("#logout_form").hide();
@@ -44,6 +43,7 @@
             $("#optout_banner").hide();
             $('#googleAdContainer').hide();
           } else {
+            // Success case - token generated, show logout form
             $("#login_form").hide();
             $("#logout_form").show();
             $("#optout_form").hide();
@@ -55,14 +55,12 @@
         
         function updateSecureSignals() {
           try {
+            // Read from localStorage 
             const secureSignalsStorageKey = '<%- secureSignalsStorageKey %>';
             const secureSignalsStorage = localStorage[secureSignalsStorageKey];
-            const token = sdk.getAdvertisingToken();
-            if (token && !secureSignalsStorage) {
-              location.reload();
-              return;
-            }
+            
             const secureSignalsStorageJson = secureSignalsStorage && JSON.parse(secureSignalsStorage);
+            
             if (secureSignalsStorageJson && secureSignalsStorageJson[1]) {
               $("#secure_signals_loaded").html("yes");
               $("#secure_signals_value").html(JSON.stringify(secureSignalsStorageJson, null, 2));
@@ -85,14 +83,12 @@
         $("#logout").click(() => {
           window.googletag.secureSignalProviders.clearAllCache();
           sdk.disconnect();
-          localStorage.removeItem('<%- secureSignalsStorageKey %>');
           window.location.href = '/';
         });
         
         $("#try_another").click(() => {
           window.googletag.secureSignalProviders.clearAllCache();
           sdk.disconnect();
-          localStorage.removeItem('<%- secureSignalsStorageKey %>');
           window.location.href = '/';
         });
 
@@ -107,12 +103,16 @@
         sdk.callbacks.push((eventType, payload) => {
           if (eventType === 'InitCompleted') {
             <% if (identity !== null && typeof identity !== 'undefined') { %>
+            // Server provided an identity, set it
             if (sdk.isLoginRequired()) {
               sdk.setIdentity(<%- JSON.stringify(identity) %>);
             } else {
+              // Identity already exists, just update GUI
               updateGuiElements(payload);
             }
             <% } else { %>
+            // No identity from server (including opt-out case)
+            // SDK will naturally remain in "login required" state
             updateGuiElements(payload);
             <% if (isOptout) { %>
             $("#optout_banner").show();
@@ -160,7 +160,6 @@
 
         <!-- UID2 Integration Status Section -->
         <h2><%- identityName %> Integration Status</h2>
-        <p class="section-summary"><strong>Note:</strong> This is a test-only integration environment—it does not collect data or generate production-level tokens.</p>
 
         <table id="uid_state">
           <tr>
@@ -238,7 +237,7 @@
                 </div>
               </div>
             </td>
-            <td class="value"><pre id="secure_signals_loaded">no</pre></td>
+            <td class="value"><pre id="secure_signals_loaded"></pre></td>
           </tr>
           <tr>
             <td class="label">
@@ -252,7 +251,7 @@
                 </div>
               </div>
             </td>
-            <td class="value"><pre id="secure_signals_value">undefined</pre></td>
+            <td class="value"><pre id="secure_signals_value"></pre></td>
           </tr>
         </table>
 
