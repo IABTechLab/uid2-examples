@@ -102,7 +102,7 @@
           window.location.href = '/';
         });
 
-        sdk.callbacks.push((eventType, payload) => {         
+        sdk.callbacks.push((eventType, payload) => {     
           if (eventType === "SdkLoaded") {
             sdk.init({
               baseUrl: "<%- uidBaseUrl %>",
@@ -113,8 +113,8 @@
         sdk.callbacks.push((eventType, payload) => {
           if (eventType === 'InitCompleted') {
             <% if (identity !== null && typeof identity !== 'undefined') { %>
-              // If identity is set, set it on the SDK
-              if (sdk.isLoginRequired()) {
+            // Server provided an identity, set it
+            if (sdk.isLoginRequired()) {
               sdk.setIdentity(<%- JSON.stringify(identity) %>);
             } else {
               // Identity already exists, just update GUI

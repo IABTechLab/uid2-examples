@@ -47,7 +47,7 @@
           }
         }
         
-        // No "token ready" event on server-side; poll so we update the UI after the SDK writes to localStorage.
+        // Update Secure Signals display after SDK has time to load and fetch token, allowing for additional tries
         [1000, 2000, 3000].forEach((ms) => setTimeout(updateSecureSignals, ms));
         
         $('#logout').click(() => {
