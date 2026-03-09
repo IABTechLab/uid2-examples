@@ -6,68 +6,6 @@
     <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
     <link rel="shortcut icon" href="/images/favicon.png" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript">
-      // Define callback before Secure Signals SDK loads so the SDK can find it when it runs.
-      const getUid2AdvertisingToken = async () => {
-        const response = await fetch('/getFreshToken');
-        if (!response.ok) return undefined;
-        const result = await response.json();
-        return result && result.advertising_token;
-      };
-      window.getUid2AdvertisingToken = getUid2AdvertisingToken;
-    </script>
-    <!-- Load Secure Signals SDK after callback (sync, same order as client-side). -->
-    <script src="<%- secureSignalsSdkUrl %>"></script>
-    <script type="text/javascript">
-      if (window.__uid2SecureSignalProvider) {
-        window.__uid2SecureSignalProvider.registerSecureSignalProvider();
-      }
-    </script>
-    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
-    <script>
-      $(document).ready(() => {
-        const secureSignalsStorageKey = '<%- secureSignalsStorageKey %>';
-        
-        function updateSecureSignals() {
-          try {
-            const secureSignalsStorage = localStorage[secureSignalsStorageKey];
-            const secureSignalsStorageJson = secureSignalsStorage && JSON.parse(secureSignalsStorage);
-            
-            if (secureSignalsStorageJson && secureSignalsStorageJson[1]) {
-              $("#secure_signals_loaded").html("yes");
-              $("#secure_signals_value").html(JSON.stringify(secureSignalsStorageJson, null, 2));
-            } else {
-              $("#secure_signals_loaded").html("no");
-              $("#secure_signals_value").html("undefined");
-            }
-          } catch (e) {
-            console.log("Secure signals not yet available", e);
-            $("#secure_signals_loaded").html("no");
-            $("#secure_signals_value").html("undefined");
-          }
-        }
-        
-        // No "token ready" event on server-side; poll so we update the UI after the SDK writes to localStorage.
-        [1000, 2000, 3000].forEach((ms) => setTimeout(updateSecureSignals, ms));
-        
-        $('#logout').click(() => {
-          if (window.googletag && window.googletag.secureSignalProviders) {
-            window.googletag.secureSignalProviders.clearAllCache();
-          }
-          localStorage.removeItem(secureSignalsStorageKey);
-          window.location.href = '/logout';
-        });
-
-        $('#try_another').click(() => {
-          if (window.googletag && window.googletag.secureSignalProviders) {
-            window.googletag.secureSignalProviders.clearAllCache();
-          }
-          localStorage.removeItem(secureSignalsStorageKey);
-          window.location.href = '/logout';
-        });
-      });
-    </script>
   </head>
   <body>
     <div class="page-wrapper">
@@ -292,5 +230,66 @@
         </div>
       </aside>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+      // For server-side integrations, the token callback must be defined before the SDKs that use it (e.g. Secure Signals) load.
+      const getUid2AdvertisingToken = async () => {
+        const response = await fetch('/getFreshToken');
+        if (!response.ok) return undefined;
+        const result = await response.json();
+        return result && result.advertising_token;
+      };
+      window.getUid2AdvertisingToken = getUid2AdvertisingToken;
+    </script>
+    <script src="<%- secureSignalsSdkUrl %>"></script>
+    <script type="text/javascript">
+      if (window.__uid2SecureSignalProvider) {
+        window.__uid2SecureSignalProvider.registerSecureSignalProvider();
+      }
+    </script>
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+    <script>
+      $(document).ready(() => {
+        const secureSignalsStorageKey = '<%- secureSignalsStorageKey %>';
+        
+        function updateSecureSignals() {
+          try {
+            const secureSignalsStorage = localStorage[secureSignalsStorageKey];
+            const secureSignalsStorageJson = secureSignalsStorage && JSON.parse(secureSignalsStorage);
+            
+            if (secureSignalsStorageJson && secureSignalsStorageJson[1]) {
+              $("#secure_signals_loaded").html("yes");
+              $("#secure_signals_value").html(JSON.stringify(secureSignalsStorageJson, null, 2));
+            } else {
+              $("#secure_signals_loaded").html("no");
+              $("#secure_signals_value").html("undefined");
+            }
+          } catch (e) {
+            console.log("Secure signals not yet available", e);
+            $("#secure_signals_loaded").html("no");
+            $("#secure_signals_value").html("undefined");
+          }
+        }
+        
+        // No "token ready" event on server-side; poll so we update the UI after the SDK writes to localStorage.
+        [1000, 2000, 3000].forEach((ms) => setTimeout(updateSecureSignals, ms));
+        
+        $('#logout').click(() => {
+          if (window.googletag && window.googletag.secureSignalProviders) {
+            window.googletag.secureSignalProviders.clearAllCache();
+          }
+          localStorage.removeItem(secureSignalsStorageKey);
+          window.location.href = '/logout';
+        });
+
+        $('#try_another').click(() => {
+          if (window.googletag && window.googletag.secureSignalProviders) {
+            window.googletag.secureSignalProviders.clearAllCache();
+          }
+          localStorage.removeItem(secureSignalsStorageKey);
+          window.location.href = '/logout';
+        });
+      });
+    </script>
   </body>
 </html>

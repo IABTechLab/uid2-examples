@@ -6,126 +6,6 @@
     <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
     <link rel="shortcut icon" href="/images/favicon.png" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="<%- uidJsSdkUrl %>"></script>
-    <script src="<%- secureSignalsSdkUrl %>"></script>
-    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
-
-    <script>
-      $(document).ready(() => {
-        const sdkName = '<%- uidJsSdkName %>';
-        let sdk = window[sdkName];
-        sdk = sdk || { callbacks: [] };
-        
-        function updateGuiElements(payload) {
-          $("#targeted_advertising_ready").html(
-            sdk.getAdvertisingToken() ? "yes" : "no"
-          );
-          $("#advertising_token").html(String(sdk.getAdvertisingToken()));
-          $("#login_required").html(sdk.isLoginRequired() ? "yes" : "no");
-          $("#identity_state").html(String(JSON.stringify(payload, null, 2)));
-          
-          updateSecureSignals();
-          // Give Secure Signals SDK time to write to localStorage; run again after 1s when we have a token.
-          if (sdk.getAdvertisingToken()) {
-            setTimeout(updateSecureSignals, 1000);
-          }
-
-          <% if (isOptout) { %>
-          $("#login_form").hide();
-          $("#logout_form").hide();
-          $("#optout_form").show();
-          $("#optout_banner").show();
-          $('#googleAdContainer').hide();
-          <% } else { %>
-          if (sdk.isLoginRequired()) {
-            $("#login_form").show();
-            $("#logout_form").hide();
-            $("#optout_form").hide();
-            $("#optout_banner").hide();
-            $('#googleAdContainer').hide();
-          } else {
-            $("#login_form").hide();
-            $("#logout_form").show();
-            $("#optout_form").hide();
-            $("#optout_banner").hide();
-            $('#googleAdContainer').show();
-          }
-          <% } %>
-        }
-        
-        function updateSecureSignals() {
-          try {
-            const secureSignalsStorageKey = '<%- secureSignalsStorageKey %>';
-            const secureSignalsStorage = localStorage[secureSignalsStorageKey];
-            const token = sdk.getAdvertisingToken();
-            // Token valid but Secure Signals not yet written; reload so the SDK gets another chance.
-            if (token && !secureSignalsStorage) {
-              location.reload();
-              return;
-            }
-            const secureSignalsStorageJson = secureSignalsStorage && JSON.parse(secureSignalsStorage);
-            if (secureSignalsStorageJson && secureSignalsStorageJson[1]) {
-              $("#secure_signals_loaded").html("yes");
-              $("#secure_signals_value").html(JSON.stringify(secureSignalsStorageJson, null, 2));
-            } else {
-              $("#secure_signals_loaded").html("no");
-              $("#secure_signals_value").html("undefined");
-            }
-          } catch (e) {
-            console.log("Secure signals not yet available", e);
-            $("#secure_signals_loaded").html("no");
-            $("#secure_signals_value").html("undefined");
-          }
-        }
-
-        function onIdentityUpdated(eventType, payload) {
-          // Allow secure signals time to load
-          setTimeout(() => updateGuiElements(payload), 1000);
-        }
-
-        $("#logout").click(() => {
-          window.googletag.secureSignalProviders.clearAllCache();
-          sdk.disconnect();
-          localStorage.removeItem('<%- secureSignalsStorageKey %>');
-          window.location.href = '/';
-        });
-        
-        $("#try_another").click(() => {
-          window.googletag.secureSignalProviders.clearAllCache();
-          sdk.disconnect();
-          localStorage.removeItem('<%- secureSignalsStorageKey %>');
-          window.location.href = '/';
-        });
-
-        sdk.callbacks.push((eventType, payload) => {
-          if (eventType === "SdkLoaded") {
-            sdk.init({
-              baseUrl: "<%- uidBaseUrl %>",
-            });
-          }
-        });
-        
-        sdk.callbacks.push((eventType, payload) => {
-          if (eventType === 'InitCompleted') {
-            <% if (identity !== null && typeof identity !== 'undefined') { %>
-            if (sdk.isLoginRequired()) {
-              sdk.setIdentity(<%- JSON.stringify(identity) %>);
-            } else {
-              updateGuiElements(payload);
-            }
-            <% } else { %>
-            updateGuiElements(payload);
-            <% if (isOptout) { %>
-            $("#optout_banner").show();
-            <% } %>
-            <% } %>
-          }
-        });
-        
-        sdk.callbacks.push(onIdentityUpdated);
-      });
-    </script>
   </head>
   <body>
     <div class="page-wrapper">
@@ -331,5 +211,125 @@
         </div>
       </aside>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="<%- uidJsSdkUrl %>"></script>
+    <script src="<%- secureSignalsSdkUrl %>"></script>
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+    <script>
+      $(document).ready(() => {
+        const sdkName = '<%- uidJsSdkName %>';
+        let sdk = window[sdkName];
+        sdk = sdk || { callbacks: [] };
+        
+        function updateGuiElements(payload) {
+          $("#targeted_advertising_ready").html(
+            sdk.getAdvertisingToken() ? "yes" : "no"
+          );
+          $("#advertising_token").html(String(sdk.getAdvertisingToken()));
+          $("#login_required").html(sdk.isLoginRequired() ? "yes" : "no");
+          $("#identity_state").html(String(JSON.stringify(payload, null, 2)));
+          
+          updateSecureSignals();
+          // Token is set from the server (or refreshed by the SDK); Secure Signals may write to localStorage after a short delay, so re-check once.
+          if (sdk.getAdvertisingToken()) {
+            setTimeout(updateSecureSignals, 1000);
+          }
+
+          <% if (isOptout) { %>
+          $("#login_form").hide();
+          $("#logout_form").hide();
+          $("#optout_form").show();
+          $("#optout_banner").show();
+          $('#googleAdContainer').hide();
+          <% } else { %>
+          if (sdk.isLoginRequired()) {
+            $("#login_form").show();
+            $("#logout_form").hide();
+            $("#optout_form").hide();
+            $("#optout_banner").hide();
+            $('#googleAdContainer').hide();
+          } else {
+            $("#login_form").hide();
+            $("#logout_form").show();
+            $("#optout_form").hide();
+            $("#optout_banner").hide();
+            $('#googleAdContainer').show();
+          }
+          <% } %>
+        }
+        
+        // Update Secure Signals values displayed in the GUI.
+        function updateSecureSignals() {
+          try {
+            const secureSignalsStorageKey = '<%- secureSignalsStorageKey %>';
+            const secureSignalsStorage = localStorage[secureSignalsStorageKey];
+            const token = sdk.getAdvertisingToken();
+            // Token valid but Secure Signals not yet written; reload so the SDK gets another chance.
+            if (token && !secureSignalsStorage) {
+              location.reload();
+              return;
+            }
+            const secureSignalsStorageJson = secureSignalsStorage && JSON.parse(secureSignalsStorage);
+            if (secureSignalsStorageJson && secureSignalsStorageJson[1]) {
+              $("#secure_signals_loaded").html("yes");
+              $("#secure_signals_value").html(JSON.stringify(secureSignalsStorageJson, null, 2));
+            } else {
+              $("#secure_signals_loaded").html("no");
+              $("#secure_signals_value").html("undefined");
+            }
+          } catch (e) {
+            console.log("Secure signals not yet available", e);
+            $("#secure_signals_loaded").html("no");
+            $("#secure_signals_value").html("undefined");
+          }
+        }
+
+        function onIdentityUpdated(eventType, payload) {
+          // Allow secure signals time to load
+          setTimeout(() => updateGuiElements(payload), 1000);
+        }
+
+        $("#logout").click(() => {
+          window.googletag.secureSignalProviders.clearAllCache();
+          sdk.disconnect();
+          localStorage.removeItem('<%- secureSignalsStorageKey %>');
+          window.location.href = '/';
+        });
+        
+        $("#try_another").click(() => {
+          window.googletag.secureSignalProviders.clearAllCache();
+          sdk.disconnect();
+          localStorage.removeItem('<%- secureSignalsStorageKey %>');
+          window.location.href = '/';
+        });
+
+        sdk.callbacks.push((eventType, payload) => {
+          if (eventType === "SdkLoaded") {
+            sdk.init({
+              baseUrl: "<%- uidBaseUrl %>",
+            });
+          }
+        });
+        
+        sdk.callbacks.push((eventType, payload) => {
+          if (eventType === 'InitCompleted') {
+            <% if (identity !== null && typeof identity !== 'undefined') { %>
+            if (sdk.isLoginRequired()) {
+              sdk.setIdentity(<%- JSON.stringify(identity) %>);
+            } else {
+              updateGuiElements(payload);
+            }
+            <% } else { %>
+            updateGuiElements(payload);
+            <% if (isOptout) { %>
+            $("#optout_banner").show();
+            <% } %>
+            <% } %>
+          }
+        });
+        
+        sdk.callbacks.push(onIdentityUpdated);
+      });
+    </script>
   </body>
 </html>
