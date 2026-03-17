@@ -33,7 +33,10 @@
             const secureSignalsStorage = localStorage[secureSignalsStorageKey];
             const secureSignalsStorageJson = secureSignalsStorage && JSON.parse(secureSignalsStorage);
             
-            if (secureSignalsStorageJson && secureSignalsStorageJson[1]) {
+            // Check index [2] (expiry timestamp) rather than [1] (token).
+            // Newer GPT versions use a 10-element format where index [1] is null
+            // and the token is no longer stored in plaintext in the cache.
+            if (secureSignalsStorageJson && secureSignalsStorageJson[2]) {
               $("#secure_signals_loaded").html("yes");
               $("#secure_signals_value").html(JSON.stringify(secureSignalsStorageJson, null, 2));
             } else {
