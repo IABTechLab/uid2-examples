@@ -1,6 +1,6 @@
 # UID2 and EUID Integration Examples
 
-This repository contains sample sites demonstrating various integration patterns for UID2 (Unified ID 2.0) and EUID (European Unified ID).
+This repository contains sample sites demonstrating various integration patterns for UID2 (Unified ID 2.0) and EUID (European Unified ID). 
 
 ## Available Integrations
 
