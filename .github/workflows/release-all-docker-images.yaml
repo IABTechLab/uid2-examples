@@ -18,6 +18,7 @@ jobs:
     with:
       release_type: ${{ inputs.release_type }}
       working_dir: .
+      merge_environment: ${{ github.ref_protected && 'ci-auto-merge' || '' }}
     secrets: inherit
     
   publishReverseProxyImage:
