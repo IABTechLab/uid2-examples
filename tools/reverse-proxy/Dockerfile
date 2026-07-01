@@ -1,5 +1,8 @@
 FROM nginx:alpine
 
+# Upgrade base Alpine packages to latest security builds (openssl/libssl3/libcrypto3, musl, zlib, libxml2, libexpat, nghttp2)
+RUN apk upgrade --no-cache
+
 # Install wget for healthcheck, gettext for envsubst, and openssl for fallback cert generation
 RUN apk add --no-cache wget gettext openssl
 
