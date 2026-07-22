@@ -12,7 +12,7 @@
     "node": "20.11.0"
   },
   "dependencies": {
-    "axios": ">=1.15.2",
+    "axios": ">=1.18.0",
     "body-parser": "^1.20.3",
     "dotenv": "^17.2.3",
     "ejs": "^3.1.7",
@@ -35,7 +35,9 @@
     "picomatch": "^2.3.2",
     "@babel/plugin-transform-modules-systemjs": ">=7.29.4",
     "fast-uri": ">=3.1.2",
-    "form-data": ">=4.0.6"
+    "form-data": ">=4.0.6",
+    "brace-expansion@5": "5.0.7",
+    "js-yaml@3": "3.15.0"
   },
   "resolutions": {
     "jws": "4.0.1",
