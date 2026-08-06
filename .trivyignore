@@ -26,7 +26,7 @@ GHSA-2p49-hgcm-8545 exp:2026-08-23
 # tooling); client-server & google-secure-signals server-side resolve 3.1.2 dev-only; no direct
 # fast-uri import; sample-app build/dev tooling
 # See: UID2-7633
-CVE-2026-18446 exp:2026-09-06
+CVE-2026-18446 exp:2026-11-06
 
 # CVE-2026-69152 — brace-expansion (npm, transitive via minimatch) (HIGH).
 # Not exploitable here: web-integrations/server-side/package-lock.json:600 brace-
@@ -34,4 +34,4 @@ CVE-2026-18446 exp:2026-09-06
 # axios/express/cookie-session/ejs/nocache/crypto; no minimatch/glob/brace-expansion on request
 # path
 # See: UID2-7619
-CVE-2026-69152 exp:2026-09-06
+CVE-2026-69152 exp:2026-11-06
