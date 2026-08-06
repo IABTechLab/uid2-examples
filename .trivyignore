@@ -20,3 +20,9 @@ CVE-2026-22184 exp:2026-09-09
 # 2.8.3+); forcing it across the major breaks the create-react-app build. Suppressing until
 # react-scripts is upgraded/removed. See: UID2-7555 (fix precedent UID2-6698)
 GHSA-2p49-hgcm-8545 exp:2026-08-23
+
+# CVE-2026-18446 — fast-uri (npm) (HIGH).
+# Not exploitable here: package.json:24 pins fast-uri >=3.1.2 in overrides/resolutions; no
+# node_modules/fast-uri resolved entry and no source import — build-tooling pin only.
+# See: UID2-7633
+CVE-2026-18446 exp:2026-09-06
