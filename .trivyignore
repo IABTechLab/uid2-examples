@@ -20,3 +20,11 @@ CVE-2026-22184 exp:2026-09-09
 # 2.8.3+); forcing it across the major breaks the create-react-app build. Suppressing until
 # react-scripts is upgraded/removed. See: UID2-7555 (fix precedent UID2-6698)
 GHSA-2p49-hgcm-8545 exp:2026-08-23
+
+# CVE-2026-69152 — brace-expansion (npm) (HIGH).
+# Not exploitable here: brace-expansion@5=5.0.8 override across web-integrations sub-projects
+# (server-side, javascript-sdk, google-secure-signals, prebid). Demo integration apps; no
+# minimatch/glob/brace-expansion invocation in the example JS sources — reached only via build
+# tooling.
+# See: UID2-7619
+CVE-2026-69152 exp:2026-09-06
