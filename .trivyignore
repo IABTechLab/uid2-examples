@@ -35,3 +35,19 @@ CVE-2026-18446 exp:2026-11-06
 # path
 # See: UID2-7619
 CVE-2026-69152 exp:2026-11-06
+
+# CVE-2026-67213 — nanoid (transitive via postcss) (HIGH).
+# Not exploitable here: nanoid 3.3.16 is a single transitive dep of postcss in both scanned
+# lockfiles (javascript-sdk & google-secure-signals react-client-side). No source imports
+# nanoid or calls customAlphabet/customRandom; postcss uses only the default nanoid() for
+# internal IDs, never the vulnerable custom* functions. postcss runs at CRA build time only.
+# See: UID2-7658
+CVE-2026-67213 exp:2026-11-11
+
+# GHSA-5p4m-2wfm-xmqj — js-yaml (3.15.0 and 4.3.0, transitive npm dependency) (HIGH).
+# Not exploitable here: js-yaml 3.15.0/4.3.0 appear only as dev/build transitives of eslint,
+# react-scripts and @istanbuljs/load-nyc-config in static demo apps (package-lock entries
+# marked dev:true); no source imports js-yaml or calls yaml.load, so no untrusted-YAML runtime
+# path
+# See: UID2-7659
+GHSA-5p4m-2wfm-xmqj exp:2026-11-11
