@@ -63,3 +63,18 @@ GHSA-5p4m-2wfm-xmqj exp:2026-11-11
 # not configured.
 # See: UID2-7707
 CVE-2026-73650 exp:2026-11-18
+
+# CVE-2026-73088 — browserslist (HIGH).
+# Not exploitable here: Both react-client-side apps (javascript-sdk, google-secure-signals) use
+# react-scripts build/start; browserslist is a query array in package.json; no *stats*.json
+# file, no --stats invocation, no opts.stats
+# See: UID2-7802
+CVE-2026-73088 exp:2026-12-02
+
+# CVE-2026-73089 — browserslist (HIGH).
+# Not exploitable here: google-secure-signals lock:5010 browserslist@4.26.3, javascript-sdk
+# lock:4991 browserslist@4.28.0; both are react-scripts@5 CRA apps (build/dev/test scripts).
+# browserslist invoked at webpack/babel build time with fixed 'browserslist' config array; no
+# runtime path accepts attacker-controlled queries.
+# See: UID2-7803
+CVE-2026-73089 exp:2026-12-02
