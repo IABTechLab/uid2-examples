@@ -78,3 +78,36 @@ CVE-2026-73088 exp:2026-12-02
 # runtime path accepts attacker-controlled queries.
 # See: UID2-7803
 CVE-2026-73089 exp:2026-12-02
+
+# CVE-2026-75899 — fast-uri (HIGH).
+# Not exploitable here: Flagged lockfiles (google-secure-signals/react-client-side, javascript-
+# sdk/react-client-side) resolve fast-uri 3.1.4 as node_modules/fast-uri declared by ajv
+# (^3.0.1) pulled in by CRA/webpack build tooling; server-side lock resolves 3.1.2 via
+# table>ajv (eslint devtool). Root package.json only lists fast-uri under overrides. No source
+# file imports fast-uri or calls normalize/resolve.
+# See: UID2-7812
+CVE-2026-75899 exp:2026-12-03
+
+# CVE-2026-75931 — fast-uri (HIGH).
+# Not exploitable here: fast-uri@3.1.4 present in react-client-side lock files transitively via
+# ajv (react-scripts/webpack schema-utils); overrides pin in package.json. No source imports of
+# fast-uri/ajv; no fastify. Runtime server.js is a plain Express static file server with no
+# ajv/fast-uri usage and no host-policy resolve() call.
+# See: UID2-7813
+CVE-2026-75931 exp:2026-12-03
+
+# CVE-2026-75975 — fast-uri (HIGH).
+# Not exploitable here: fast-uri@3.1.4 in react-client-side lockfiles (both javascript-sdk and
+# google-secure-signals) solely under ajv; overrides ^3.1.4 in package.json. No source imports
+# fast-uri/ajv. Client-side React example apps; no untrusted-URL normalization before outbound
+# requests.
+# See: UID2-7814
+CVE-2026-75975 exp:2026-12-03
+
+# CVE-2026-76172 — fast-uri (HIGH).
+# Not exploitable here: fast-uri@3.1.4 appears as node_modules/fast-uri under ajv (via ajv-
+# formats, schema-utils, workbox-build) in the react-client-side lockfiles. server.js only
+# requires fs/path/express to serve the static build; no fast-uri/ajv import and no URL
+# resolve/normalize on untrusted input.
+# See: UID2-7815
+CVE-2026-76172 exp:2026-12-03
