@@ -111,3 +111,11 @@ CVE-2026-75975 exp:2026-12-03
 # resolve/normalize on untrusted input.
 # See: UID2-7815
 CVE-2026-76172 exp:2026-12-03
+
+# js-yaml is only a transitive build-tooling dependency (eslint/react-scripts/test coverage) in the demo apps; not used by served application code
+# See: UID2-7851
+CVE-2026-84375 exp:2026-10-10
+
+# svgo runs only at build time via @svgr/plugin-svgo, postcss-svgo, and CRA's bundled @svgr/webpack, optimizing repo-owned SVGs; each demo app serves only its static build output, no runtime SVG sanitization of user content
+# See: UID2-7852
+CVE-2026-84370 exp:2026-10-10
