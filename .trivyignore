@@ -13,7 +13,7 @@
 # Dockerfile runs 'npm run build' then 'npm start'=node server.js. bfj/jsonpath execute only
 # during the CRA build, never at runtime, and no attacker-controlled JSON Path expression is
 # ever passed to .query/.nodes/.value/etc.
-# See: [TICKET]
+# See: UID2-7873
 CVE-2026-1615 exp:2026-12-17
 
 # zlib contrib/untgz demo utility buffer overflow - not exploitable; Alpine does not ship the untgz binary.
