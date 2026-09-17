@@ -4,9 +4,17 @@
 # e.g.
 # CVE-2022-3996
 
-# CVE-2026-1615: HIGH - jsonpath 1.2.1 - Arbitrary Code Execution via unsafe JSON path evaluation
-# No fix confirmed in 1.3.0 (latest). Tracked in UID2-6610.
-CVE-2026-1615 exp:2026-09-16
+# CVE-2026-1615 — jsonpath (HIGH).
+# Not exploitable here: jsonpath@1.2.1 appears only as a deep transitive of build tooling:
+# react-scripts → react-dev-utils@12 → bfj@7.1.0 → jsonpath@^1.1.1 in both react-client-side
+# package-lock.json files. No app code references it: grep for 'jsonpath'/'bfj' across src/ and
+# server.js in both google-secure-signals and javascript-sdk react-client-side returns nothing.
+# server.js is a plain Express static-file server (require dotenv/fs/path/express only);
+# Dockerfile runs 'npm run build' then 'npm start'=node server.js. bfj/jsonpath execute only
+# during the CRA build, never at runtime, and no attacker-controlled JSON Path expression is
+# ever passed to .query/.nodes/.value/etc.
+# See: UID2-7873
+CVE-2026-1615 exp:2026-12-17
 
 # zlib contrib/untgz demo utility buffer overflow - not exploitable; Alpine does not ship the untgz binary.
 # See: UID2-6704
