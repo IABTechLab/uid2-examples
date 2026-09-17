@@ -18,10 +18,8 @@ ENV NODE_ENV=production
 ENV PORT=3044
 
 COPY package.json package-lock.json ./
-# npm is needed to install dependencies, but the runtime starts directly with node.
 RUN npm ci --omit=dev \
-    && npm cache clean --force \
-    && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
+    && npm cache clean --force
 
 COPY --chown=node:node server.js ./
 COPY --from=builder --chown=node:node /usr/src/app/build ./build
