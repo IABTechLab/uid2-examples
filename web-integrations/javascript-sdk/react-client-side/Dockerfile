@@ -1,24 +1,31 @@
-FROM node:20.11.0-alpine3.18
+FROM node:20.11.0-alpine3.18 AS builder
 
 WORKDIR /usr/src/app
 
-# Copy package files
-COPY package*.json ./
+COPY package.json package-lock.json ./
+RUN npm ci
 
-# Install dependencies
-RUN npm install
-
-# Copy source files
 COPY src ./src
 COPY public ./public
-COPY server.js ./
-
-# Build the React app
 RUN npm run build
 
-# Expose port
+
+FROM node:20.11.0-alpine3.18 AS runtime
+
+WORKDIR /usr/src/app
+
+ENV NODE_ENV=production
+ENV PORT=3034
+
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev \
+    && npm cache clean --force
+
+COPY --chown=node:node server.js ./
+COPY --from=builder --chown=node:node /usr/src/app/build ./build
+
 EXPOSE 3034
 
-# Start the app
-CMD ["npm", "start"]
+USER node
 
+CMD ["node", "server.js"]
