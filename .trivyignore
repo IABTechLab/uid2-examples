@@ -127,3 +127,126 @@ CVE-2026-84375 exp:2026-10-10
 # svgo runs only at build time via @svgr/plugin-svgo, postcss-svgo, and CRA's bundled @svgr/webpack, optimizing repo-owned SVGs; each demo app serves only its static build output, no runtime SVG sanitization of user content
 # See: UID2-7852
 CVE-2026-84370 exp:2026-10-10
+
+# CVE-2024-21538 — cross-spawn (HIGH).
+# Not exploitable here: Scan target is usr/local/lib/node_modules/npm/node_modules/cross-
+# spawn/package.json = cross-spawn 7.0.3 bundled inside npm in the node:20.11.0-alpine3.18 base
+# image (all Node Dockerfiles: FROM node:20.11.0-alpine3.18). Containers run CMD npm start ->
+# 'node server.js' (per-service package.json scripts), so npm/cross-spawn is invoked only at
+# startup with static, non-attacker-controlled args. The project's own cross-spawn in every
+# lockfile is already 7.0.6 (>=7.0.5, patched) and dev-only in client-server/server-side and
+# build-time-only in react-client-side; root package.json declares no cross-spawn dependency.
+# See: [TICKET]
+CVE-2024-21538 exp:2026-12-18
+
+# CVE-2024-29415 — ip (node-ip) (HIGH).
+# Not exploitable here: Scanner path is
+# usr/local/lib/node_modules/npm/node_modules/ip/package.json — ip bundled inside the npm CLI
+# of the node:20.11.0-alpine3.18 base image (all 6 node Dockerfiles use FROM
+# node:20.11.0-alpine3.18; the rest use nginx:alpine). ip is not declared in any app
+# package.json, 0 references in package-lock.json (grep node_modules/ip|node-ip|indutny = 0),
+# and no require('ip')/import 'ip'/isPublic/isPrivate in any .js/.ts source. Services run via
+# 'node server.js'/'npm start'; app deps are express/axios/ejs/etc., none pulling ip.
+# See: [TICKET]
+CVE-2024-29415 exp:2026-12-18
+
+# CVE-2024-6119 — libcrypto3 (Alpine base-image OpenSSL) (HIGH).
+# Not exploitable here: All 7 flagged scan targets build FROM node:20.11.0-alpine3.18 and run
+# `npm start` (node server.js) — plain Express apps. libcrypto3 is the Alpine SYSTEM OpenSSL in
+# the base image, but Node.js links its OWN statically-compiled OpenSSL into the node binary,
+# so its TLS stack (axios→https) never calls the system libcrypto3 .so. Grep of web-
+# integrations *.js/*.ts/Dockerfile shows no openssl/curl/wget/child_process invocation of a
+# native binary; only refs are node-forge (pure-JS) and Node built-in crypto (createCipheriv
+# AES-256-GCM in server-side/server.js — no X.509 name checks). apk add lines (gettext) and
+# entrypoint.sh appear only in the client-side variants, which are NOT among the flagged
+# targets.
+# See: [TICKET]
+CVE-2024-6119 exp:2026-12-18
+
+# CVE-2025-26519 — musl (Alpine base image libc) (HIGH).
+# Not exploitable here: All 7 flagged Dockerfiles (web-integrations/{google-secure-
+# signals/client-server,react-client-side,server-side; javascript-sdk/client-server,react-
+# client-side; prebid-integrations/client-server; server-side}) use FROM
+# node:20.11.0-alpine3.18 (musl-based). Services are Node.js Express apps (server.js each); no
+# exec/spawn/child_process or `iconv` CLI invocation, and no native iconv(3) call on EUC-KR
+# input. The only iconv reference is the pure-JS npm `iconv-lite` in package-lock.json, which
+# does not link musl's C iconv().
+# See: [TICKET]
+CVE-2025-26519 exp:2026-12-18
+
+# CVE-2025-64756 — glob (HIGH).
+# Not exploitable here: Scan target is
+# usr/local/lib/node_modules/npm/node_modules/glob/package.json — glob 10.3.10 vendored inside
+# npm in the node:20.11.0-alpine3.18 base image (Dockerfiles: web-integrations/*/Dockerfile use
+# FROM node:20.11.0-alpine3.18; nginx:alpine images have no Node/glob). No project code invokes
+# the glob CLI: `grep -rn 'glob -c|glob --cmd'` returns nothing, and only npm scripts are `npm
+# start`/`npm run build`. The sole glob declared as a direct/transitive dependency in project
+# lockfiles is glob@7.2.3, which is outside the affected 10.2.0–11.1.0 range.
+# See: [TICKET]
+CVE-2025-64756 exp:2026-12-18
+
+# CVE-2026-13149 — brace-expansion (bundled inside the npm CLI in the node:20.11.0-alpine3.18
+# base image) (HIGH).
+# Not exploitable here: Scanner flagged brace-expansion 2.0.1 at
+# usr/local/lib/node_modules/npm/node_modules/brace-expansion/package.json — npm's own bundled
+# copy in the node:20.11.0-alpine3.18 base image (used by all 7 Node Dockerfiles, e.g. web-
+# integrations/server-side/Dockerfile:1 FROM node:20.11.0-alpine3.18). It is exercised only by
+# the npm CLI at build time; runtime CMDs are 'npm start'/'npm run build' with no attacker-
+# controlled input reaching expand(). Every app package.json pins its own tree via overrides
+# 'brace-expansion@5':'5.0.8' (e.g. web-integrations/server-side/package.json:37) — already >=
+# fixed 5.0.7 — so the application dependency graph is not the flagged instance.
+# See: [TICKET]
+CVE-2026-13149 exp:2026-12-18
+
+# CVE-2026-13676 — fast-uri (HIGH).
+# Not exploitable here: Scanner flagged fast-uri@3.1.2 at usr/src/app/node_modules/fast-
+# uri/package.json. In the lockfiles resolving 3.1.2 (google-secure-signals/server-side,
+# javascript-sdk/client-server, google-secure-signals/client-server) fast-uri is a transitive
+# of ajv@8.x (^3.0.1) marked "dev": true. No app source imports fast-uri or ajv (grep across
+# *.js/*.ts/*.jsx/*.tsx returned nothing). Runtime entrypoints (server.js) require only
+# axios/express/cookie-session/ejs/nocache/crypto/dotenv — no URL host-policy
+# resolve/normalize/equal call. react-client-side apps resolve fast-uri@3.1.4 (already patched,
+# outside this CVE's flagged version).
+# See: [TICKET]
+CVE-2026-13676 exp:2026-12-18
+
+# CVE-2026-14257 — brace-expansion (npm — npm CLI's own bundled copy in the node base image)
+# (HIGH).
+# Not exploitable here: Scan target path is usr/local/lib/node_modules/npm/node_modules/brace-
+# expansion/package.json = npm CLI's own bundled copy (v2.0.1) inside the
+# node:20.11.0-alpine3.18 base image (7 node-based Dockerfiles all FROM
+# node:20.11.0-alpine3.18). It is exercised only by the npm CLI over static developer-authored
+# manifests during npm install/build, never over request data. App-level brace-expansion
+# resolves to 5.0.8 (already fixed) in every package-lock.json (e.g. web-integrations/server-
+# side/package-lock.json:601), pulled transitively via minimatch dev/build tooling and pinned
+# by 'brace-expansion@5':'5.0.8' overrides. All runtime server.js require only
+# axios/express/ejs/cookie-session/nocache/crypto/fs/path — no minimatch/glob/brace-expansion
+# on any request path.
+# See: [TICKET]
+CVE-2026-14257 exp:2026-12-18
+
+# CVE-2026-16221 — fast-uri (HIGH).
+# Not exploitable here: fast-uri@3.1.2 appears only in the lockfiles of web-
+# integrations/{google-secure-signals/client-server, google-secure-signals/server-side,
+# javascript-sdk/client-server}, in every case marked "dev": true, resolved transitively via
+# eslint -> table -> ajv ("fast-uri": "^3.0.1"). No production dependency
+# (axios/express/ejs/dotenv/minimist) pulls it; grep for 'fast-uri' and 'new URL' across all
+# non-node_modules *.js/*.ts source returns zero hits, and server.js implements no
+# allowlist/denylist/SSRF/redirect host policy. Each Dockerfile runs 'npm install' (not
+# --omit=dev) so the package does land in the image at usr/src/app/node_modules/fast-uri
+# matching the scan path, but the runtime is CMD npm start -> node server.js; eslint (the only
+# fast-uri consumer, via ajv $ref URI resolution) is never invoked at runtime. react-client-
+# side projects already ship fast-uri@3.1.4 (patched) and were not flagged.
+# See: [TICKET]
+CVE-2026-16221 exp:2026-12-18
+
+# CVE-2026-26996 — minimatch (HIGH).
+# Not exploitable here: Scan target is
+# usr/local/lib/node_modules/npm/node_modules/minimatch/package.json — minimatch bundled inside
+# the npm CLI in the node:20.11.0-alpine3.18 base image (matches installed 9.0.3), not an app
+# dependency. No *.js/*.ts/*.mjs file requires/imports minimatch (grep for require/import
+# returns nothing). Node Dockerfiles use npm only at build time (RUN npm install) and CMD npm
+# start execs node server.js; app-level package.json overrides already pin minimatch ^10.2.3.
+# No runtime path passes user-controlled strings to minimatch() as a pattern.
+# See: [TICKET]
+CVE-2026-26996 exp:2026-12-18
