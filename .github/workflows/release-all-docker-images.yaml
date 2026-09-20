@@ -13,6 +13,16 @@ on:
         - Snapshot
 
 jobs:
+  loadImageMatrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Load sample image matrix
+        id: matrix
+        run: echo "matrix=$(jq -c . .github/sample-images.json)" >> "$GITHUB_OUTPUT"
+
   incrementVersionNumber:
     uses: iabtechlab/uid2-shared-actions/.github/workflows/shared-increase-version-number.yaml@v3
     with:
@@ -21,184 +31,21 @@ jobs:
       merge_environment: ${{ github.ref_protected && 'ci-auto-merge' || '' }}
     secrets: inherit
     
-  publishReverseProxyImage:
+  publishImages:
+    name: Publish ${{ matrix.name }}
+    needs:
+      - loadImageMatrix
+      - incrementVersionNumber
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.loadImageMatrix.outputs.matrix) }}
     uses: iabtechlab/uid2-shared-actions/.github/workflows/shared-publish-to-docker-versioned.yaml@v3
-    needs: incrementVersionNumber
-    with: 
+    with:
       new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
       image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
       release_type: ${{ inputs.release_type }}
-      docker_file: tools/reverse-proxy/Dockerfile
-      docker_context: tools/reverse-proxy
-      docker_image_name: iabtechlab/uid-reverse-proxy
-      docker_registry: ghcr.io
-    secrets: inherit
-
-  publishSecureSignalsClientServerImage:
-    uses: iabtechlab/uid2-shared-actions/.github/workflows/shared-publish-to-docker-versioned.yaml@v3
-    needs: incrementVersionNumber
-    with: 
-      new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
-      image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
-      release_type: ${{ inputs.release_type }}
-      docker_file: web-integrations/google-secure-signals/client-server/Dockerfile
-      docker_context: web-integrations/google-secure-signals/client-server
-      docker_image_name: iabtechlab/uid-google-secure-signals-client-server
-      docker_registry: ghcr.io
-    secrets: inherit
-
-  publishSecureSignalsClientSideImage:
-    uses: iabtechlab/uid2-shared-actions/.github/workflows/shared-publish-to-docker-versioned.yaml@v3
-    needs: incrementVersionNumber
-    with: 
-      new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
-      image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
-      release_type: ${{ inputs.release_type }}
-      docker_file: web-integrations/google-secure-signals/client-side/Dockerfile
-      docker_context: web-integrations/google-secure-signals/client-side
-      docker_image_name: iabtechlab/uid-google-secure-signals-client-side
-      docker_registry: ghcr.io
-    secrets: inherit
-
-  publishSecureSignalsServerSideImage:
-    uses: iabtechlab/uid2-shared-actions/.github/workflows/shared-publish-to-docker-versioned.yaml@v3
-    needs: incrementVersionNumber
-    with: 
-      new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
-      image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
-      release_type: ${{ inputs.release_type }}
-      docker_file: web-integrations/google-secure-signals/server-side/Dockerfile
-      docker_context: web-integrations/google-secure-signals/server-side
-      docker_image_name: iabtechlab/uid-google-secure-signals-server-side
-      docker_registry: ghcr.io
-    secrets: inherit
-
-  publishSecureSignalsReactClientSideImage:
-    uses: iabtechlab/uid2-shared-actions/.github/workflows/shared-publish-to-docker-versioned.yaml@v3
-    needs: incrementVersionNumber
-    with: 
-      new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
-      image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
-      release_type: ${{ inputs.release_type }}
-      docker_file: web-integrations/google-secure-signals/react-client-side/Dockerfile
-      docker_context: web-integrations/google-secure-signals/react-client-side
-      docker_image_name: iabtechlab/uid-google-secure-signals-react-client-side
-      docker_registry: ghcr.io
-    secrets: inherit
-
-  publishJavascriptSdkClientSideImage:
-    uses: iabtechlab/uid2-shared-actions/.github/workflows/shared-publish-to-docker-versioned.yaml@v3
-    needs: incrementVersionNumber
-    with: 
-      new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
-      image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
-      release_type: ${{ inputs.release_type }}
-      docker_file: web-integrations/javascript-sdk/client-side/Dockerfile
-      docker_context: web-integrations/javascript-sdk/client-side
-      docker_image_name: iabtechlab/uid-javascript-sdk-client-side
-      docker_registry: ghcr.io
-    secrets: inherit
-
-  publishJavascriptSdkClientServerImage:
-    uses: iabtechlab/uid2-shared-actions/.github/workflows/shared-publish-to-docker-versioned.yaml@v3
-    needs: incrementVersionNumber
-    with: 
-      new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
-      image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
-      release_type: ${{ inputs.release_type }}
-      docker_file: web-integrations/javascript-sdk/client-server/Dockerfile
-      docker_context: web-integrations/javascript-sdk/client-server
-      docker_image_name: iabtechlab/uid-javascript-sdk-client-server
-      docker_registry: ghcr.io
-    secrets: inherit
-
-  publishJavascriptSdkReactClientSideImage:
-    uses: iabtechlab/uid2-shared-actions/.github/workflows/shared-publish-to-docker-versioned.yaml@v3
-    needs: incrementVersionNumber
-    with: 
-      new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
-      image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
-      release_type: ${{ inputs.release_type }}
-      docker_file: web-integrations/javascript-sdk/react-client-side/Dockerfile
-      docker_context: web-integrations/javascript-sdk/react-client-side
-      docker_image_name: iabtechlab/uid-javascript-sdk-react-client-side
-      docker_registry: ghcr.io
-    secrets: inherit
-
-  publishServerSideImage:
-    uses: iabtechlab/uid2-shared-actions/.github/workflows/shared-publish-to-docker-versioned.yaml@v3
-    needs: incrementVersionNumber
-    with: 
-      new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
-      image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
-      release_type: ${{ inputs.release_type }}
-      docker_file: web-integrations/server-side/Dockerfile
-      docker_context: web-integrations/server-side
-      docker_image_name: iabtechlab/uid-server-side
-      docker_registry: ghcr.io
-    secrets: inherit
-
-  publishPrebidClientSideImage:
-    uses: iabtechlab/uid2-shared-actions/.github/workflows/shared-publish-to-docker-versioned.yaml@v3
-    needs: incrementVersionNumber
-    with: 
-      new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
-      image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
-      release_type: ${{ inputs.release_type }}
-      docker_file: web-integrations/prebid-integrations/client-side/Dockerfile
-      docker_context: web-integrations/prebid-integrations
-      docker_image_name: iabtechlab/uid-prebid-client-side
-      docker_registry: ghcr.io
-    secrets: inherit
-
-  publishPrebidClientServerImage:
-    uses: iabtechlab/uid2-shared-actions/.github/workflows/shared-publish-to-docker-versioned.yaml@v3
-    needs: incrementVersionNumber
-    with: 
-      new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
-      image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
-      release_type: ${{ inputs.release_type }}
-      docker_file: web-integrations/prebid-integrations/client-server/Dockerfile
-      docker_context: web-integrations/prebid-integrations
-      docker_image_name: iabtechlab/uid-prebid-client-server
-      docker_registry: ghcr.io
-    secrets: inherit
-
-  publishPrebidClientSideDeferredImage:
-    uses: iabtechlab/uid2-shared-actions/.github/workflows/shared-publish-to-docker-versioned.yaml@v3
-    needs: incrementVersionNumber
-    with: 
-      new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
-      image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
-      release_type: ${{ inputs.release_type }}
-      docker_file: web-integrations/prebid-integrations/client-side-deferred/Dockerfile
-      docker_context: web-integrations/prebid-integrations
-      docker_image_name: iabtechlab/uid-prebid-client-side-deferred
-      docker_registry: ghcr.io
-    secrets: inherit
-
-  publishPrebidSecureSignalsClientSideImage:
-    uses: iabtechlab/uid2-shared-actions/.github/workflows/shared-publish-to-docker-versioned.yaml@v3
-    needs: incrementVersionNumber
-    with: 
-      new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
-      image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
-      release_type: ${{ inputs.release_type }}
-      docker_file: web-integrations/prebid-secure-signals/client-side/Dockerfile
-      docker_context: web-integrations/prebid-secure-signals
-      docker_image_name: iabtechlab/uid-prebid-secure-signals-client-side
-      docker_registry: ghcr.io
-    secrets: inherit
-
-  publishHashingToolImage:
-    uses: iabtechlab/uid2-shared-actions/.github/workflows/shared-publish-to-docker-versioned.yaml@v3
-    needs: incrementVersionNumber
-    with: 
-      new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
-      image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
-      release_type: ${{ inputs.release_type }}
-      docker_file: tools/hashing-tool/Dockerfile
-      docker_context: tools/hashing-tool
-      docker_image_name: iabtechlab/uid-hashing-tool
+      docker_file: ${{ matrix.dockerfile }}
+      docker_context: ${{ matrix.context }}
+      docker_image_name: ${{ matrix.image }}
       docker_registry: ghcr.io
     secrets: inherit

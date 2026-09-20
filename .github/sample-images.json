@@ -1,0 +1,88 @@
+{
+  "include": [
+    {
+      "name": "reverse-proxy",
+      "dockerfile": "tools/reverse-proxy/Dockerfile",
+      "context": "tools/reverse-proxy",
+      "image": "iabtechlab/uid-reverse-proxy"
+    },
+    {
+      "name": "secure-signals-client-server",
+      "dockerfile": "web-integrations/google-secure-signals/client-server/Dockerfile",
+      "context": "web-integrations/google-secure-signals/client-server",
+      "image": "iabtechlab/uid-google-secure-signals-client-server"
+    },
+    {
+      "name": "secure-signals-client-side",
+      "dockerfile": "web-integrations/google-secure-signals/client-side/Dockerfile",
+      "context": "web-integrations/google-secure-signals/client-side",
+      "image": "iabtechlab/uid-google-secure-signals-client-side"
+    },
+    {
+      "name": "secure-signals-server-side",
+      "dockerfile": "web-integrations/google-secure-signals/server-side/Dockerfile",
+      "context": "web-integrations/google-secure-signals/server-side",
+      "image": "iabtechlab/uid-google-secure-signals-server-side"
+    },
+    {
+      "name": "secure-signals-react-client-side",
+      "dockerfile": "web-integrations/google-secure-signals/react-client-side/Dockerfile",
+      "context": "web-integrations/google-secure-signals/react-client-side",
+      "image": "iabtechlab/uid-google-secure-signals-react-client-side"
+    },
+    {
+      "name": "javascript-sdk-client-side",
+      "dockerfile": "web-integrations/javascript-sdk/client-side/Dockerfile",
+      "context": "web-integrations/javascript-sdk/client-side",
+      "image": "iabtechlab/uid-javascript-sdk-client-side"
+    },
+    {
+      "name": "javascript-sdk-client-server",
+      "dockerfile": "web-integrations/javascript-sdk/client-server/Dockerfile",
+      "context": "web-integrations/javascript-sdk/client-server",
+      "image": "iabtechlab/uid-javascript-sdk-client-server"
+    },
+    {
+      "name": "javascript-sdk-react-client-side",
+      "dockerfile": "web-integrations/javascript-sdk/react-client-side/Dockerfile",
+      "context": "web-integrations/javascript-sdk/react-client-side",
+      "image": "iabtechlab/uid-javascript-sdk-react-client-side"
+    },
+    {
+      "name": "server-side",
+      "dockerfile": "web-integrations/server-side/Dockerfile",
+      "context": "web-integrations/server-side",
+      "image": "iabtechlab/uid-server-side"
+    },
+    {
+      "name": "prebid-client-side",
+      "dockerfile": "web-integrations/prebid-integrations/client-side/Dockerfile",
+      "context": "web-integrations/prebid-integrations",
+      "image": "iabtechlab/uid-prebid-client-side"
+    },
+    {
+      "name": "prebid-client-server",
+      "dockerfile": "web-integrations/prebid-integrations/client-server/Dockerfile",
+      "context": "web-integrations/prebid-integrations",
+      "image": "iabtechlab/uid-prebid-client-server"
+    },
+    {
+      "name": "prebid-client-side-deferred",
+      "dockerfile": "web-integrations/prebid-integrations/client-side-deferred/Dockerfile",
+      "context": "web-integrations/prebid-integrations",
+      "image": "iabtechlab/uid-prebid-client-side-deferred"
+    },
+    {
+      "name": "prebid-secure-signals-client-side",
+      "dockerfile": "web-integrations/prebid-secure-signals/client-side/Dockerfile",
+      "context": "web-integrations/prebid-secure-signals",
+      "image": "iabtechlab/uid-prebid-secure-signals-client-side"
+    },
+    {
+      "name": "hashing-tool",
+      "dockerfile": "tools/hashing-tool/Dockerfile",
+      "context": "tools/hashing-tool",
+      "image": "iabtechlab/uid-hashing-tool"
+    }
+  ]
+}
