@@ -1,4 +1,4 @@
-FROM node:20.11.0-alpine3.18 AS builder
+FROM node:24.21.0-alpine3.24 AS builder
 
 WORKDIR /usr/src/app
 
@@ -10,7 +10,7 @@ COPY public ./public
 RUN npm run build
 
 
-FROM node:20.11.0-alpine3.18 AS runtime
+FROM node:24.21.0-alpine3.24 AS runtime
 
 WORKDIR /usr/src/app
 
@@ -19,7 +19,8 @@ ENV PORT=3034
 
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev \
-    && npm cache clean --force
+    && npm cache clean --force \
+    && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 
 COPY --chown=node:node server.js ./
 COPY --from=builder --chown=node:node /usr/src/app/build ./build
