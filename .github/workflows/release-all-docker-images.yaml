@@ -28,6 +28,7 @@ jobs:
       new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
       image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
       release_type: ${{ inputs.release_type }}
+      force_release: no
       docker_file: tools/reverse-proxy/Dockerfile
       docker_context: tools/reverse-proxy
       docker_image_name: iabtechlab/uid-reverse-proxy
@@ -41,6 +42,7 @@ jobs:
       new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
       image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
       release_type: ${{ inputs.release_type }}
+      force_release: no
       docker_file: web-integrations/google-secure-signals/client-server/Dockerfile
       docker_context: web-integrations/google-secure-signals/client-server
       docker_image_name: iabtechlab/uid-google-secure-signals-client-server
@@ -54,6 +56,7 @@ jobs:
       new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
       image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
       release_type: ${{ inputs.release_type }}
+      force_release: no
       docker_file: web-integrations/google-secure-signals/client-side/Dockerfile
       docker_context: web-integrations/google-secure-signals/client-side
       docker_image_name: iabtechlab/uid-google-secure-signals-client-side
@@ -67,6 +70,7 @@ jobs:
       new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
       image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
       release_type: ${{ inputs.release_type }}
+      force_release: no
       docker_file: web-integrations/google-secure-signals/server-side/Dockerfile
       docker_context: web-integrations/google-secure-signals/server-side
       docker_image_name: iabtechlab/uid-google-secure-signals-server-side
@@ -80,6 +84,7 @@ jobs:
       new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
       image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
       release_type: ${{ inputs.release_type }}
+      force_release: no
       docker_file: web-integrations/google-secure-signals/react-client-side/Dockerfile
       docker_context: web-integrations/google-secure-signals/react-client-side
       docker_image_name: iabtechlab/uid-google-secure-signals-react-client-side
@@ -93,6 +98,7 @@ jobs:
       new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
       image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
       release_type: ${{ inputs.release_type }}
+      force_release: no
       docker_file: web-integrations/javascript-sdk/client-side/Dockerfile
       docker_context: web-integrations/javascript-sdk/client-side
       docker_image_name: iabtechlab/uid-javascript-sdk-client-side
@@ -106,6 +112,7 @@ jobs:
       new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
       image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
       release_type: ${{ inputs.release_type }}
+      force_release: no
       docker_file: web-integrations/javascript-sdk/client-server/Dockerfile
       docker_context: web-integrations/javascript-sdk/client-server
       docker_image_name: iabtechlab/uid-javascript-sdk-client-server
@@ -119,6 +126,7 @@ jobs:
       new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
       image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
       release_type: ${{ inputs.release_type }}
+      force_release: no
       docker_file: web-integrations/javascript-sdk/react-client-side/Dockerfile
       docker_context: web-integrations/javascript-sdk/react-client-side
       docker_image_name: iabtechlab/uid-javascript-sdk-react-client-side
@@ -132,6 +140,7 @@ jobs:
       new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
       image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
       release_type: ${{ inputs.release_type }}
+      force_release: no
       docker_file: web-integrations/server-side/Dockerfile
       docker_context: web-integrations/server-side
       docker_image_name: iabtechlab/uid-server-side
@@ -145,6 +154,7 @@ jobs:
       new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
       image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
       release_type: ${{ inputs.release_type }}
+      force_release: no
       docker_file: web-integrations/prebid-integrations/client-side/Dockerfile
       docker_context: web-integrations/prebid-integrations
       docker_image_name: iabtechlab/uid-prebid-client-side
@@ -158,6 +168,7 @@ jobs:
       new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
       image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
       release_type: ${{ inputs.release_type }}
+      force_release: no
       docker_file: web-integrations/prebid-integrations/client-server/Dockerfile
       docker_context: web-integrations/prebid-integrations
       docker_image_name: iabtechlab/uid-prebid-client-server
@@ -171,6 +182,7 @@ jobs:
       new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
       image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
       release_type: ${{ inputs.release_type }}
+      force_release: no
       docker_file: web-integrations/prebid-integrations/client-side-deferred/Dockerfile
       docker_context: web-integrations/prebid-integrations
       docker_image_name: iabtechlab/uid-prebid-client-side-deferred
@@ -184,6 +196,7 @@ jobs:
       new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
       image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
       release_type: ${{ inputs.release_type }}
+      force_release: no
       docker_file: web-integrations/prebid-secure-signals/client-side/Dockerfile
       docker_context: web-integrations/prebid-secure-signals
       docker_image_name: iabtechlab/uid-prebid-secure-signals-client-side
@@ -197,8 +210,67 @@ jobs:
       new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
       image_tag: ${{ needs.incrementVersionNumber.outputs.image_tag }}
       release_type: ${{ inputs.release_type }}
+      force_release: no
       docker_file: tools/hashing-tool/Dockerfile
       docker_context: tools/hashing-tool
       docker_image_name: iabtechlab/uid-hashing-tool
       docker_registry: ghcr.io
     secrets: inherit
+
+  createRelease:
+    name: Create Release
+    if: ${{ inputs.release_type != 'Snapshot' }}
+    needs:
+      - incrementVersionNumber
+      - publishReverseProxyImage
+      - publishSecureSignalsClientServerImage
+      - publishSecureSignalsClientSideImage
+      - publishSecureSignalsServerSideImage
+      - publishSecureSignalsReactClientSideImage
+      - publishJavascriptSdkClientSideImage
+      - publishJavascriptSdkClientServerImage
+      - publishJavascriptSdkReactClientSideImage
+      - publishServerSideImage
+      - publishPrebidClientSideImage
+      - publishPrebidClientServerImage
+      - publishPrebidClientSideDeferredImage
+      - publishPrebidSecureSignalsClientSideImage
+      - publishHashingToolImage
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - name: Setup
+        id: setup
+        uses: IABTechLab/uid2-shared-actions/actions/shared_publish_setup@v3
+        with:
+          release_type: ${{ inputs.release_type }}
+          git_tag_or_hash: v${{ needs.incrementVersionNumber.outputs.new_version }}
+
+      - name: Create Release
+        uses: IABTechLab/uid2-shared-actions/actions/shared_create_releases@v3
+        with:
+          is_release: ${{ steps.setup.outputs.is_release }}
+          new_version: ${{ needs.incrementVersionNumber.outputs.new_version }}
+          # The shared action adds "docker pull " before this whole value, so
+          # prefix each line after the first to render one command per image.
+          tags: |
+            ghcr.io/iabtechlab/uid-reverse-proxy:${{ needs.incrementVersionNumber.outputs.new_version }}
+            docker pull ghcr.io/iabtechlab/uid-google-secure-signals-client-server:${{ needs.incrementVersionNumber.outputs.new_version }}
+            docker pull ghcr.io/iabtechlab/uid-google-secure-signals-client-side:${{ needs.incrementVersionNumber.outputs.new_version }}
+            docker pull ghcr.io/iabtechlab/uid-google-secure-signals-server-side:${{ needs.incrementVersionNumber.outputs.new_version }}
+            docker pull ghcr.io/iabtechlab/uid-google-secure-signals-react-client-side:${{ needs.incrementVersionNumber.outputs.new_version }}
+            docker pull ghcr.io/iabtechlab/uid-javascript-sdk-client-side:${{ needs.incrementVersionNumber.outputs.new_version }}
+            docker pull ghcr.io/iabtechlab/uid-javascript-sdk-client-server:${{ needs.incrementVersionNumber.outputs.new_version }}
+            docker pull ghcr.io/iabtechlab/uid-javascript-sdk-react-client-side:${{ needs.incrementVersionNumber.outputs.new_version }}
+            docker pull ghcr.io/iabtechlab/uid-server-side:${{ needs.incrementVersionNumber.outputs.new_version }}
+            docker pull ghcr.io/iabtechlab/uid-prebid-client-side:${{ needs.incrementVersionNumber.outputs.new_version }}
+            docker pull ghcr.io/iabtechlab/uid-prebid-client-server:${{ needs.incrementVersionNumber.outputs.new_version }}
+            docker pull ghcr.io/iabtechlab/uid-prebid-client-side-deferred:${{ needs.incrementVersionNumber.outputs.new_version }}
+            docker pull ghcr.io/iabtechlab/uid-prebid-secure-signals-client-side:${{ needs.incrementVersionNumber.outputs.new_version }}
+            docker pull ghcr.io/iabtechlab/uid-hashing-tool:${{ needs.incrementVersionNumber.outputs.new_version }}
+          image_tag: All versioned uid2-examples images listed above
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_platform: Docker
+          prerelease: 'true'
