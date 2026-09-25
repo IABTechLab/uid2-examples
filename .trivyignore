@@ -1,2 +1,7 @@
 # Add accepted vulnerability IDs here with an expiry date and justification.
 # See https://trivy.dev/latest/docs/configuration/filtering/#by-finding-ids
+
+# CVE-2026-93990 — libexpat (Alpine base-image native C library) (HIGH). Not exploitable here.
+# See the ticket below for the assessment.
+# See: [TICKET]
+CVE-2026-93990 exp:2026-12-25
