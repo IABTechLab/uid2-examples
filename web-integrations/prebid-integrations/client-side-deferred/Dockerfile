@@ -1,7 +1,7 @@
 FROM nginx:alpine
 
-# Install gettext for envsubst
-RUN apk add --no-cache gettext
+# Install gettext for envsubst, and upgrade pcre2
+RUN apk add --no-cache --upgrade gettext pcre2
 
 # Copy static files from client-side-deferred directory
 COPY client-side-deferred/app.css /usr/share/nginx/html/
