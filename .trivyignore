@@ -5,3 +5,8 @@
 # See the ticket below for the assessment.
 # See: UID2-7962
 CVE-2026-93990 exp:2026-12-25
+
+# CVE-2026-103111 — pcre2, pcre2-syntax (HIGH). Required attack preconditions are absent in this
+# configuration.
+# See: UID2-8033
+CVE-2026-103111 exp:2027-01-06
