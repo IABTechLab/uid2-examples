@@ -19,3 +19,11 @@ CVE-2026-90711 exp:2027-01-07
 # CVE-2026-4775 — tiff (HIGH). Not vulnerable.
 # See: UID2-8063
 CVE-2026-4775 exp:2027-01-09
+
+# CVE-2026-77214 — libexpat (HIGH). Not vulnerable.
+# See: UID2-8106
+CVE-2026-77214 exp:2027-01-19
+
+# CVE-2026-88806 — libx11 (HIGH). Not vulnerable.
+# See: UID2-8108
+CVE-2026-88806 exp:2027-01-19
