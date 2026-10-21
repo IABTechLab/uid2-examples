@@ -27,3 +27,11 @@ CVE-2026-77214 exp:2027-01-19
 # CVE-2026-88806 — libx11 (HIGH). Not vulnerable.
 # See: UID2-8108
 CVE-2026-88806 exp:2027-01-19
+
+# CVE-2026-111755 — follow-redirects (HIGH). Not vulnerable.
+# See: UID2-8119
+CVE-2026-111755 exp:2027-04-21
+
+# CVE-2026-111756 — follow-redirects (HIGH). Not vulnerable.
+# See: UID2-8120
+CVE-2026-111756 exp:2027-04-21
