@@ -35,3 +35,7 @@ CVE-2026-111755 exp:2027-04-21
 # CVE-2026-111756 — follow-redirects (HIGH). Not vulnerable.
 # See: UID2-8120
 CVE-2026-111756 exp:2027-04-21
+
+# CVE-2026-111497 — brotli-libs (HIGH). Not vulnerable.
+# See: UID2-8173
+CVE-2026-111497 exp:2027-04-26
