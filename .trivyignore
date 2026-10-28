@@ -39,3 +39,7 @@ CVE-2026-111756 exp:2027-04-21
 # CVE-2026-111497 — brotli-libs (HIGH). Not vulnerable.
 # See: UID2-8173
 CVE-2026-111497 exp:2027-04-26
+
+# CVE-2026-92392 — curl, libcurl (HIGH). Not vulnerable.
+# See: UID2-8184
+CVE-2026-92392 exp:2027-04-28
