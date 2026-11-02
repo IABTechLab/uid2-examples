@@ -43,3 +43,7 @@ CVE-2026-111497 exp:2027-04-26
 # CVE-2026-92392 — curl, libcurl (HIGH). Not vulnerable.
 # See: UID2-8184
 CVE-2026-92392 exp:2027-04-28
+
+# CVE-2026-116689 — follow-redirects (HIGH). Not vulnerable.
+# See: UID2-8239
+CVE-2026-116689 exp:2027-05-02
