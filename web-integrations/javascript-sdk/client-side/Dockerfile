@@ -1,10 +1,7 @@
-FROM nginx:alpine
+FROM nginx:alpine-slim
 
 # Install gettext for envsubst
 RUN apk add --no-cache gettext
-
-# Remove the unused image-filter module and its image and font libraries
-RUN apk del --no-cache nginx-module-image-filter
 
 # Copy static files from client-side directory
 COPY html /usr/share/nginx/html/
