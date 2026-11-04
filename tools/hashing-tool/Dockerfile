@@ -3,6 +3,9 @@ FROM nginx:alpine
 # Install gettext for envsubst
 RUN apk add --no-cache gettext
 
+# Remove the unused image-filter module and its image and font libraries
+RUN apk del --no-cache nginx-module-image-filter
+
 # Copy static files
 COPY index.html /usr/share/nginx/html/index.html
 COPY app.css /usr/share/nginx/html/app.css

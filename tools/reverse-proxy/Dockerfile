@@ -6,6 +6,9 @@ RUN apk upgrade --no-cache
 # Install wget for healthcheck, gettext for envsubst, and openssl for fallback cert generation
 RUN apk add --no-cache wget gettext openssl
 
+# Remove the unused image-filter module and its image and font libraries
+RUN apk del --no-cache nginx-module-image-filter
+
 # Create templates directory
 RUN mkdir -p /etc/nginx/templates
 
