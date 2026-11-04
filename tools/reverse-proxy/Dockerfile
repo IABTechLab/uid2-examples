@@ -1,4 +1,4 @@
-FROM nginx:alpine
+FROM nginx:alpine-slim
 
 # Upgrade base Alpine packages to latest security builds (openssl/libssl3/libcrypto3, musl, zlib, libxml2, libexpat, nghttp2)
 RUN apk upgrade --no-cache

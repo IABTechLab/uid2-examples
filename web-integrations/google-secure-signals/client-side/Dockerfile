@@ -1,4 +1,4 @@
-FROM nginx:alpine
+FROM nginx:alpine-slim
 
 # Install gettext for envsubst
 RUN apk add --no-cache gettext
