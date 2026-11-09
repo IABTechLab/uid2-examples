@@ -1,4 +1,4 @@
-FROM node:24.21.0-alpine3.24 AS builder
+FROM node:24.22.2-alpine3.24@sha256:a34ab6d7f6f4813f4d0c5469d74685604b962fbdbf5793a7bc7b4998ecb867c8 AS builder
 
 WORKDIR /usr/src/app
 
@@ -10,7 +10,7 @@ COPY public ./public
 RUN npm run build
 
 
-FROM node:24.21.0-alpine3.24 AS runtime
+FROM node:24.22.2-alpine3.24@sha256:a34ab6d7f6f4813f4d0c5469d74685604b962fbdbf5793a7bc7b4998ecb867c8 AS runtime
 
 WORKDIR /usr/src/app
 
